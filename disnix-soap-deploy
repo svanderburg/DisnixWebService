@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Axis2 libraries
+
+AXIS2_PATH=/home/sander/axis2-1.4
+AXIS2_LIB=""
+
+for i in $AXIS2_PATH/lib/*.jar
+do
+    AXIS2_LIB="$AXIS2_LIB:$i"
+done
+
+# Execute client
+java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixDeploy $@
