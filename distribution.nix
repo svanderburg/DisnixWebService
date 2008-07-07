@@ -1,6 +1,5 @@
-{pkgs ? "foo", infrastructure ? "bar"}:
+{compositions ? (import ./compositions.nix), infrastructure ? (import ./infrastructure.nix)}:
 
 [
-#    { composition = pkgs.helloworld ; machine = infrastructure.test; }
-    { composition = "helloworld"; machine = "kubuntuvm"; }
+    { composition = compositions.helloworld; machine = infrastructure.dummy; }
 ]

@@ -1,6 +1,6 @@
 #let pkgs = import /etc/nixos/nixpkgs/pkgs/top-level/all-packages.nix { };
-let pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
-#let pkgs = import /home/sander/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
+#let pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
+let pkgs = import /home/sander/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
 in
 with pkgs;
 
