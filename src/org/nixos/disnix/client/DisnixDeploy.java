@@ -22,46 +22,26 @@ import java.util.*;
 public class DisnixDeploy
 {
 	public static void main(String[] args) throws Exception
-	{
-		String compositionsExpr = "compositions.nix";
-		Vector<String> closuresToSend = new Vector<String>();
+	{			
+		String filename = args[0];
 		
-		System.out.println("Getting all compositions...");
+		DistributionModel model = new DistributionModel(filename);
+		Vector<DistributionElement> deployElements = model.getResult();
 		
-		Vector<String> compositions = NixInterface.getInstance().queryAttributePaths(compositionsExpr);
+		/* Copy all closures to target machine */
 		
-		/* Instantiate and realise each composition */
-		
-		for(int i=0; i<compositions.size(); i++)
+		for(DistributionElement e : deployElements)
 		{
-			System.out.println("Instantatie composition: "+compositions.elementAt(i));
-			String drvpath = NixInterface.getInstance().instantiate(compositionsExpr, compositions.elementAt(i)).elementAt(0);
-							
-			System.out.println("Realise derivation: "+drvpath);
-			String storepath = NixInterface.getInstance().realise(drvpath);
-			
-			System.out.println("result: "+storepath);
-			closuresToSend.add(storepath);
+			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
+			DisnixCopyClosure.copyClosure(e.getComposition(), disnixInterface);
 		}
 		
-		/* Connect to EPR */
+		/* Activate the closures in the environments on the target machine */
 		
-		DisnixInterface disnixInterface = new DisnixInterface("http://localhost:8080/axis2/services/DisnixService");
-		
-		/* Copy closures to target machines */
-		
-		for(int i=0; i<closuresToSend.size(); i++)
+		for(DistributionElement e : deployElements)
 		{
-			System.out.println("Copy closure: "+closuresToSend.elementAt(i)+" to target EPR");
-			DisnixCopyClosure.copyClosure(closuresToSend.elementAt(i), disnixInterface);
-		}
-		
-		/* Activate closures on target machines */
-		
-		for(int i=0; i<closuresToSend.size(); i++)
-		{
-			System.out.println("Install closure: "+closuresToSend.elementAt(i));
-			disnixInterface.install("", closuresToSend.elementAt(i), false);
+			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
+			disnixInterface.install("", e.getComposition(), false);
 		}
 	}
 }
