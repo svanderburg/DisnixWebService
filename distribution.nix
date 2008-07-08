@@ -1,5 +1,5 @@
-{compositions ? (import ./compositions.nix), infrastructure ? (import ./infrastructure.nix)}:
+{compositions, infrastructure}:
 
 [
-    { composition = compositions.helloworld; machine = infrastructure.dummy; }
+    { composition = compositions.helloworld.pkg.outPath; target = infrastructure.dummy.targetEPR; }
 ]

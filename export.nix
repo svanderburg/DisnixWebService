@@ -1,21 +1,7 @@
-{ stdenv, lib, distribution }:
+{ stdenv, distribution }:
 
 stdenv.mkDerivation rec {
-    name = "distribution-export";
-    
-    generateDistributionElement = item: ''<dist composition="${item.composition.pkg.name}" machine="${item.machine.name}" />'';
-    
-    concatDistributionElements = elements: lib.concatStringsSep "\n" elements;
-    
-    distrElements = map generateDistributionElement distribution;
-    
-    outputXML = ''<?xml version="1.0" encoding="utf-8">
-    <distribution>
-    '' +
-    concatDistributionElements distrElements +
-    ''
-    </distribution>
-    '';
-    
+    name = "distribution-export";        
+    outputXML = builtins.toXML distribution;
     builder = ./builder.sh;
 }

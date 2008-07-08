@@ -11,6 +11,6 @@ rec {
 
     export = import ./export.nix {
 	inherit distribution;
-	inherit (pkgs) stdenv lib;
+	inherit (pkgs) stdenv;
     };
 }

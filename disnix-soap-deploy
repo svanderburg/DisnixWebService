@@ -1,4 +1,57 @@
-#!/bin/sh
+#!/bin/sh -e
+
+# Check parameters
+
+if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
+then
+    echo "Usage:"
+    echo "$0 compositions infrastructure distribution"
+    exit 1;
+fi
+
+# Get absolute paths of models
+
+compositions=`readlink -f $1`
+infrastructure=`readlink -f $2`
+distribution=`readlink -f $3`
+exportexpr=`readlink -f ./export.nix`
+
+# Generate expression which generates a distribution model
+
+echo "Generate distribution nix expression..."
+
+tmpfilename=`mktemp -p /tmp`
+echo "Filename is: $tmpfilename"
+
+cat > $tmpfilename <<EOF
+rec {
+    pkgs = import /home/sander/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
+EOF
+( echo "    infrastructure = import $infrastructure;"
+  echo "    compositions = import $compositions;"
+  echo "    distribution = import $distribution {"
+) >> $tmpfilename
+cat >> $tmpfilename <<EOF
+	inherit compositions infrastructure;
+    };
+EOF
+echo "    export = import $exportexpr {" >> $tmpfilename
+cat >> $tmpfilename <<EOF
+	inherit distribution;
+	inherit (pkgs) stdenv;
+    };
+}
+EOF
+
+# Create XML export of distribution
+
+echo "Instantiate the expression..."
+drvPaths="`nix-instantiate $tmpfilename`"
+echo "derivations: $drvPaths"
+
+echo "Realising the expression..."
+outPath="`nix-store --realise $drvPaths`"
+echo "outpath: $outPath"
 
 # Axis2 libraries
 
@@ -11,4 +64,10 @@ do
 done
 
 # Execute client
-java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixDeploy $@
+
+echo "Distributing...."
+#java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixDeploy $deployXML
+
+# Remove temp files
+
+#rm -f $tmpfilename
