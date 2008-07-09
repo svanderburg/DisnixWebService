@@ -53,6 +53,7 @@ public class DisnixCopyClosure
 		{
 			/* Import serialisation in remote store */			
 			disnixInterface.importClosure("/tmp/out.closure");
+			
 		}
 	}
 	

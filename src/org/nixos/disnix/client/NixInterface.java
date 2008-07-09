@@ -76,12 +76,18 @@ public class NixInterface
 					
 		if(invalidPaths.length > 0)
 		{
-			Process p = Runtime.getRuntime().exec("nix-store --export "+invalidPathsStr+" > /tmp/out.closure");
-			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line;
-			while((line = br.readLine()) != null)		
-				System.out.println(line);
-			br.close();
+			System.out.println("Creating serialisation...");
+			Process p = Runtime.getRuntime().exec("nix-store --export "+invalidPathsStr);
+			InputStream is = p.getInputStream();
+			FileOutputStream os = new FileOutputStream("/tmp/out.closure");
+			byte[] buf = new byte[1024];
+			int i = 0;
+			
+			while((i = is.read(buf)) != -1)
+				os.write(buf, 0, i);
+			
+			is.close();
+			os.close();
 		}
 	}
 	
