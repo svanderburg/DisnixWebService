@@ -22,26 +22,58 @@ import java.util.*;
 public class DisnixDeploy
 {
 	public static void main(String[] args) throws Exception
-	{			
-		String filename = args[0];
+	{		
+		/* Get set of target deploy items */
+		String target_filename = args[0];
 		
-		DistributionModel model = new DistributionModel(filename);
-		Vector<DistributionElement> deployElements = model.getResult();
+		DistributionModel target_model = new DistributionModel(target_filename);
+		Vector<DistributionElement> targetDeployElements = target_model.getResult();
 		
-		/* Copy all closures to target machine */
+		Vector<DistributionElement> sourceDeployElements;
 		
-		for(DistributionElement e : deployElements)
+		/* Get set of source deploy items */
+		if(args.length >= 2)
+		{
+			String source_filename = args[1];
+			DistributionModel source_model = new DistributionModel(source_filename);
+			sourceDeployElements = source_model.getResult();
+		}
+		else
+			sourceDeployElements = new Vector<DistributionElement>(); // Empty set				
+		
+		/* Determine elements to install and to remove */
+		
+		Vector<DistributionElement> intersection = new Vector<DistributionElement>(targetDeployElements);
+		intersection.retainAll(sourceDeployElements); 
+		
+		Vector<DistributionElement> elementsToInstall = new Vector<DistributionElement>(targetDeployElements);
+		elementsToInstall.removeAll(intersection);
+		
+		Vector<DistributionElement> elementsToUninstall = new Vector<DistributionElement>(sourceDeployElements);
+		elementsToUninstall.removeAll(intersection);
+		
+		/* Copy all closures to install to the target machines */
+		
+		for(DistributionElement e : targetDeployElements)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
 			DisnixCopyClosure.copyClosure(e.getComposition(), disnixInterface);
 		}
 		
-		/* Activate the closures in the environments on the target machine */
+		/* Activate the closures to install in the environments on the target machines */
 		
-		for(DistributionElement e : deployElements)
+		for(DistributionElement e : elementsToInstall)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
 			disnixInterface.install("", e.getComposition(), false);
+		}
+		
+		/* Deactivate the closures to uninstall in the environments on the target machines */
+		
+		for(DistributionElement e : elementsToUninstall)
+		{
+			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
+			disnixInterface.uninstall(e.getComposition());
 		}
 	}
 }
