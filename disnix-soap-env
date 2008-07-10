@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+# Check parameters
+
+if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
+then
+    echo "Usage:"
+    echo "$0 compositions infrastructure distribution"
+    exit 1;
+fi
+
+# Generate distribution
+outPath=`./disnix-soap-gendist "$1" "$2" "$3"`
+
+# Execute client
+
+echo "Distributing...."
+./disnix-soap-deploy $outPath/output.xml
+
+# Remove temp files
+
+#rm -f $tmpfilename

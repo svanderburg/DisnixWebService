@@ -1,0 +1,58 @@
+#!/bin/sh -e
+
+# Check parameters
+
+if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
+then
+    echo "Usage:"
+    echo "$0 compositions infrastructure distribution"
+    exit 1;
+fi
+
+# Get absolute paths of models
+
+compositions=`readlink -f $1`
+infrastructure=`readlink -f $2`
+distribution=`readlink -f $3`
+exportexpr=`readlink -f ./export.nix`
+
+# Generate expression which generates a distribution model
+
+echo "Generate distribution nix expression..." >&2
+
+tmpfilename=`mktemp -p /tmp`
+echo "Filename is: $tmpfilename" >&2
+
+cat > $tmpfilename <<EOF
+rec {
+    pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
+EOF
+( echo "    infrastructure = import $infrastructure;"
+  echo "    compositions = import $compositions;"
+  echo "    distribution = import $distribution {"
+) >> $tmpfilename
+cat >> $tmpfilename <<EOF
+	inherit compositions infrastructure;
+    };
+EOF
+echo "    export = import $exportexpr {" >> $tmpfilename
+cat >> $tmpfilename <<EOF
+	inherit distribution;
+	inherit (pkgs) stdenv;
+    };
+}
+EOF
+
+# Create XML export of distribution
+
+echo "Instantiate the expression..." >&2
+drvPaths="`nix-instantiate $tmpfilename`"
+echo "derivations: $drvPaths" >&2
+
+echo "Realising the expression..." >&2
+outPath="`nix-store --realise $drvPaths`"
+echo "$outPath"
+
+# Remove temp files
+
+#rm -f $tmpfilename
