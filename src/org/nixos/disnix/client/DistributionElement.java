@@ -2,7 +2,7 @@ package org.nixos.disnix.client;
 
 public class DistributionElement
 {
-	public String composition;
+	public String component;
 	
 	public String targetEPR;
 
@@ -10,20 +10,20 @@ public class DistributionElement
 	{
 	}
 	
-	public DistributionElement(String composition, String targetEPR)
+	public DistributionElement(String component, String targetEPR)
 	{
-		setComposition(composition);
+		setComponent(component);
 		setTargetEPR(targetEPR);
 	}
 	
-	public String getComposition()
+	public String getComponent()
 	{
-		return composition;
+		return component;
 	}
 
-	public void setComposition(String composition)
+	public void setComponent(String component)
 	{
-		this.composition = composition;
+		this.component = component;
 	}
 
 	public String getTargetEPR()

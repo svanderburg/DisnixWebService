@@ -3,10 +3,10 @@ rec {
     
     infrastructure = import ./infrastructure.nix;
     
-    compositions = import ./compositions.nix;
+    components = import ./components.nix;
 
     distribution = import ./distribution.nix {
-	inherit compositions infrastructure;
+	inherit components infrastructure;
     };
 
     export = import ./export.nix {

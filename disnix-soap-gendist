@@ -5,13 +5,13 @@
 if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
 then
     echo "Usage:"
-    echo "$0 compositions infrastructure distribution"
+    echo "$0 components infrastructure distribution"
     exit 1;
 fi
 
 # Get absolute paths of models
 
-compositions=`readlink -f $1`
+components=`readlink -f $1`
 infrastructure=`readlink -f $2`
 distribution=`readlink -f $3`
 exportexpr=`readlink -f ./export.nix`
@@ -28,11 +28,11 @@ rec {
     pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
 EOF
 ( echo "    infrastructure = import $infrastructure;"
-  echo "    compositions = import $compositions;"
+  echo "    components = import $components;"
   echo "    distribution = import $distribution {"
 ) >> $tmpfilename
 cat >> $tmpfilename <<EOF
-	inherit compositions infrastructure;
+	inherit components infrastructure;
     };
 EOF
 echo "    export = import $exportexpr {" >> $tmpfilename

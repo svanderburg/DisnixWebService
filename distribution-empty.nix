@@ -1,4 +1,4 @@
-{compositions, infrastructure}:
+{components, infrastructure}:
 
 [
 ]

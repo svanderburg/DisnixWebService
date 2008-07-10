@@ -28,7 +28,7 @@ public class DistributionModel
 			List<OMElement> nodeListAttrName = xpathAttrName.selectNodes(getAttrsNode);
 			
 			// Iterate over attributes in attributeset
-			String composition = "";
+			String component = "";
 			String target = "";
 			
 			for(OMElement attrNameNode : nodeListAttrName)
@@ -42,14 +42,14 @@ public class DistributionModel
 					String value = valueNode.getAttribute(new QName("value")).getAttributeValue();				
 					String name = attrNameNode.getAttribute(new QName("name")).getAttributeValue();
 					
-					if(name.equals("composition"))
-						composition = value;
+					if(name.equals("component"))
+						component = value;
 					else if(name.equals("target"))
 						target = value;
 				}
 			}
 			
-			DistributionElement e = new DistributionElement(composition, target);
+			DistributionElement e = new DistributionElement(component, target);
 			result.add(e);
 		}
 		
