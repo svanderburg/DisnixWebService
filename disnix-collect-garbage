@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+if [ "$1" = "" ]
+then
+    echo "Usage:"
+    echo "$0 infrastructure"
+    exit 1;
+fi
+
+# Axis2 libraries
+
+AXIS2_PATH=/home/sander/axis2-1.4
+AXIS2_LIB=""
+
+for i in $AXIS2_PATH/lib/*.jar
+do
+    AXIS2_LIB="$AXIS2_LIB:$i"
+done
+
+# Create XML representation from infrastructure expression
+
+tmpfile=`mktemp -p /tmp`
+nix-instantiate --eval-only --xml $1 > $tmpfile
+
+# Execute client
+
+java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixCollectGarbage $tmpfile
