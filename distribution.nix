@@ -1,5 +1,5 @@
 {compositions, infrastructure}:
 
 [
-    { composition = compositions.helloworld.pkg.outPath; target = infrastructure.dummy.targetEPR; }
+    { composition = compositions.hello.pkg.outPath; target = infrastructure.dummy.targetEPR; }
 ]

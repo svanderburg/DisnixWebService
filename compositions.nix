@@ -1,9 +1,9 @@
 let compositions = rec {
-    pkgs = import ./test-pkg.nix;
+    pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
     
-    helloworld = {
+    hello = {
 	recurseForDerivations = true;
-	pkg = pkgs.helloworld;
+	pkg = pkgs.hello;
 	dependsOn = [];
     };
 }; in compositions
