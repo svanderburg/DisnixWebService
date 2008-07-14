@@ -35,4 +35,17 @@ public class DistributionElement
 	{
 		this.targetEPR = targetEPR;
 	}
+	
+	public boolean equals(Object object)
+	{
+		if(object instanceof DistributionElement)
+		{
+			DistributionElement e = (DistributionElement)object;
+			
+			return this.getComponent().equals(e.getComponent()) &&
+				   this.getTargetEPR().equals(e.getTargetEPR());
+		}
+		else
+			return false;
+	}
 }
