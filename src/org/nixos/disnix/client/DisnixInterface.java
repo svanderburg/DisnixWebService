@@ -39,11 +39,17 @@ public class DisnixInterface
 		Options options = serviceClient.getOptions();
 		EndpointReference targetEPR = new EndpointReference(serviceURL);
 		options.setTo(targetEPR);
+		/* Timeout */
 		options.setTimeOutInMilliSeconds(TIMEOUT);
+		/* MTOM settings */
 		options.setProperty(Constants.Configuration.ENABLE_MTOM, Constants.VALUE_TRUE);
+		options.setProperty(Constants.Configuration.CACHE_ATTACHMENTS, Constants.VALUE_TRUE);
+		options.setProperty(Constants.Configuration.ATTACHMENT_TEMP_DIR, "/tmp");
+		options.setProperty(Constants.Configuration.FILE_SIZE_THRESHOLD, "4000");		
+		/* Transport settings */
 		options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
 		options.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
-		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);		
 	}
 	
 	public void install(String file, String args, boolean isAttr) throws AxisFault
