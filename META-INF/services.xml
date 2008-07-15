@@ -13,8 +13,4 @@
 	<parameter name="ServiceClass">
 		org.nixos.disnix.service.DisnixService
 	</parameter>
-	<parameter name="enableMTOM">true</parameter>
-	<parameter name="cacheAttachments">true</parameter>
-    <parameter name="attachmentDIR">/tmp</parameter>
-    <parameter name="sizeThreshold">4000</parameter>
 </service>
