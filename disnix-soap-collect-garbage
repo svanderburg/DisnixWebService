@@ -3,7 +3,8 @@
 if [ "$1" = "" ]
 then
     echo "Usage:"
-    echo "$0 infrastructure"
+    echo "$0 [ -d | --delete-old ] infrastructure"
+    echo "$0 [ -h | --help ]"
     exit 1;
 fi
 
@@ -17,11 +18,6 @@ do
     AXIS2_LIB="$AXIS2_LIB:$i"
 done
 
-# Create XML representation from infrastructure expression
-
-tmpfile=`mktemp -p /tmp`
-nix-instantiate --eval-only --xml $1 > $tmpfile
-
 # Execute client
 
-java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixCollectGarbage $tmpfile
+java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixCollectGarbage $@
