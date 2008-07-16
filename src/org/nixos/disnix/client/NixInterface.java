@@ -91,7 +91,7 @@ public class NixInterface
 		}
 	}
 	
-	public InputStream toXML(String expr) throws IOException
+	public InputStream evaluateToXML(String expr) throws IOException
 	{
 		Process p = Runtime.getRuntime().exec("nix-instantiate --eval-only --xml "+expr);
 		return p.getInputStream();

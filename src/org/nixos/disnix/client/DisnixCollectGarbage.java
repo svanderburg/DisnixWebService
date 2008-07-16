@@ -20,7 +20,7 @@ public class DisnixCollectGarbage
 	
 	public static void collectGarbage(String infrastructureFile, boolean deleteOld) throws Exception
 	{
-		InputStream is = NixInterface.getInstance().toXML(infrastructureFile);
+		InputStream is = NixInterface.getInstance().evaluateToXML(infrastructureFile);
 		StAXOMBuilder builder = new StAXOMBuilder(is);
 		OMElement documentElement = builder.getDocumentElement();
 		
