@@ -55,4 +55,4 @@ echo "$outPath"
 
 # Remove temp files
 
-#rm -f $tmpfilename
+rm -f $tmpfilename

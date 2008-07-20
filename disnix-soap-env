@@ -18,5 +18,4 @@ echo "Distributing...."
 ./disnix-soap-deploy $outPath/output.xml
 
 # Remove temp files
-
-#rm -f $tmpfilename
+rm -f $tmpfilename

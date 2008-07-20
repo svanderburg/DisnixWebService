@@ -43,9 +43,16 @@
 		</jar>
 	</target>
 	
+	<target name="generate.client.jar" depends="compile">
+		<jar destfile="DisnixClient.jar">
+			<fileset dir="${deploybuild.dir}" includes="org/nixos/disnix/client/*.class" />
+		</jar>
+	</target>
+	
 	<target name="clean">
 		<delete file="DisnixConnection.jar" />
 		<delete file="DisnixService.aar" />
+		<delete file="DisnixClient.jar" />
 		<delete dir="${deploybuild.dir}" />
 	</target>
 </project>

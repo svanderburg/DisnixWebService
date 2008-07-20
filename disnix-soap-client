@@ -11,4 +11,4 @@ do
 done
 
 # Execute client
-java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixClient $@
+java -cp .:./jargs.jar:$AXIS2_LIB:./DisnixClient.jar org.nixos.disnix.client.DisnixClient $@

@@ -34,7 +34,6 @@ public class DisnixDeploy
 		/* Get set of source deploy items */
 		if(args.length >= 2)
 		{
-			System.out.println("delta");
 			String source_filename = args[1];
 			DistributionModel source_model = new DistributionModel(source_filename);
 			sourceDeployElements = source_model.getResult();

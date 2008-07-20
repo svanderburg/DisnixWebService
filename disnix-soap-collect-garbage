@@ -1,13 +1,5 @@
 #!/bin/sh -e
 
-if [ "$1" = "" ]
-then
-    echo "Usage:"
-    echo "$0 [ -d | --delete-old ] infrastructure"
-    echo "$0 [ -h | --help ]"
-    exit 1;
-fi
-
 # Axis2 libraries
 
 AXIS2_PATH=/home/sander/axis2-1.4
@@ -20,4 +12,4 @@ done
 
 # Execute client
 
-java -cp .:./jargs.jar:$AXIS2_LIB:./bin org.nixos.disnix.client.DisnixCollectGarbage $@
+java -cp .:./jargs.jar:$AXIS2_LIB:./DisnixClient.jar org.nixos.disnix.client.DisnixCollectGarbage $@
