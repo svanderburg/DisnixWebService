@@ -25,7 +25,7 @@ echo "Filename is: $tmpfilename" >&2
 
 cat > $tmpfilename <<EOF
 rec {
-    pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
+    pkgs = import (builtins.getEnv "NIXPKGS_ALL") { };
 EOF
 ( echo "    infrastructure = import $infrastructure;"
   echo "    components = import $components;"
