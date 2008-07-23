@@ -1,4 +1,4 @@
-let components = rec {
+rec {
     pkgs = import /home/sander/nixsc/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
     
     hello = {
@@ -6,4 +6,5 @@ let components = rec {
 	pkg = pkgs.hello;
 	dependsOn = [];
     };
-}; in components
+}
+
