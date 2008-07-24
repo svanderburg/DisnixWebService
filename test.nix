@@ -1,5 +1,5 @@
 rec {
-    pkgs = import /home/sander/nix/nixpkgs/trunk/pkgs/top-level/all-packages.nix { };
+    pkgs = import (builtins.getEnv "NIXPKGS_ALL") { };
     
     infrastructure = import ./infrastructure.nix;
     
