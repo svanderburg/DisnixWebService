@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ "$DISNIX_SOAP_HOME" = "" ]
+then
+    PRG="`which $0`"
+    REALPRG="`readlink -f $PRG`"
+    DISNIX_SOAP_HOME="`dirname $REALPRG`"
+fi
+
 # Axis2 libraries
 
 AXIS2_PATH=/home/sander/axis2-1.4
@@ -11,4 +18,4 @@ do
 done
 
 # Execute client
-java -cp .:./jargs.jar:$AXIS2_LIB:./DisnixClient.jar org.nixos.disnix.client.DisnixCopyClosure $@
+java -cp $DISNIX_SOAP_HOME/jargs.jar:$AXIS2_LIB:$DISNIX_SOAP_HOME/DisnixClient.jar org.nixos.disnix.client.DisnixCopyClosure $@

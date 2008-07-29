@@ -10,12 +10,12 @@ then
 fi
 
 # Generate distribution
-outPath=`./disnix-soap-gendist "$1" "$2" "$3"`
+outPath=`disnix-soap-gendist "$1" "$2" "$3"`
 
 # Execute client
 
 echo "Distributing...."
-./disnix-soap-deploy $outPath/output.xml
+disnix-soap-deploy $outPath/output.xml
 
 # Remove temp files
 rm -f $tmpfilename

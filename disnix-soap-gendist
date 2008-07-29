@@ -1,5 +1,12 @@
 #!/bin/sh -e
 
+if [ "$DISNIX_SOAP_HOME" = "" ]
+then
+    PRG="`which $0`"
+    REALPRG="`readlink -f $PRG`"
+    DISNIX_SOAP_HOME="`dirname $REALPRG`"
+fi
+
 # Check parameters
 
 if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
@@ -14,7 +21,7 @@ fi
 components=`readlink -f $1`
 infrastructure=`readlink -f $2`
 distribution=`readlink -f $3`
-exportexpr=`readlink -f ./export.nix`
+exportexpr=`readlink -f $DISNIX_SOAP_HOME/export.nix`
 
 # Generate expression which generates a distribution model
 
