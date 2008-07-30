@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 if [ "$DISNIX_SOAP_HOME" = "" ]
 then

@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/bash -e
+
+# Resolve the path of the Disnix soap utilities
 
 if [ "$DISNIX_SOAP_HOME" = "" ]
 then
@@ -7,12 +9,16 @@ then
     DISNIX_SOAP_HOME="`dirname $REALPRG`"
 fi
 
-# Axis2 libraries
+# Add Axis2 libraries to the classpath
 
-AXIS2_PATH=/home/sander/axis2-1.4
+if [ "$AXIS2_LIBDIR" = "" ]
+then
+    AXIS2_LIBDIR=
+fi
+
 AXIS2_LIB=""
 
-for i in $AXIS2_PATH/lib/*.jar
+for i in $AXIS2_LIBDIR/*.jar
 do
     AXIS2_LIB="$AXIS2_LIB:$i"
 done
