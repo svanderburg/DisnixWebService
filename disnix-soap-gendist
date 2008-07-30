@@ -2,7 +2,7 @@
 
 if [ "$DISNIX_SOAP_HOME" = "" ]
 then
-    PRG="`which $0`"
+    PRG="`type -p $0`"
     REALPRG="`readlink -f $PRG`"
     DISNIX_SOAP_HOME="`dirname $REALPRG`"
 fi
