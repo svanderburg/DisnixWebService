@@ -1,5 +1,5 @@
-{components, infrastructure}:
+{services, infrastructure}:
 
 [
-    { component = components.hello; target = infrastructure.dummy; }
+    { service = services.hello; target = infrastructure.dummy; }
 ]

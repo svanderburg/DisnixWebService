@@ -5,7 +5,7 @@
 if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
 then
     echo "Usage:"
-    echo "$0 components infrastructure distribution"
+    echo "$0 services infrastructure distribution"
     exit 1;
 fi
 

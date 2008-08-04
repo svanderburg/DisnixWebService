@@ -12,13 +12,13 @@ fi
 if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
 then
     echo "Usage:"
-    echo "$0 components infrastructure distribution"
+    echo "$0 services infrastructure distribution"
     exit 1;
 fi
 
 # Get absolute paths of models
 
-components=`readlink -f $1`
+services=`readlink -f $1`
 infrastructure=`readlink -f $2`
 distribution=`readlink -f $3`
 exportexpr=`readlink -f $DISNIX_SOAP_HOME/export.nix`
@@ -35,11 +35,11 @@ rec {
     pkgs = import (builtins.getEnv "NIXPKGS_ALL") { };
 EOF
 ( echo "    infrastructure = import $infrastructure;"
-  echo "    components = import $components;"
+  echo "    services = import $services;"
   echo "    distribution = import $distribution {"
 ) >> $tmpfilename
 cat >> $tmpfilename <<EOF
-	inherit components infrastructure;
+	inherit services infrastructure;
     };
 EOF
 echo "    export = import $exportexpr {" >> $tmpfilename

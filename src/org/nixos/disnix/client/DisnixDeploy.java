@@ -57,7 +57,7 @@ public class DisnixDeploy
 		for(DistributionElement e : targetDeployElements)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			DisnixCopyClosure.copyClosure(e.getComponent(), disnixInterface);
+			DisnixCopyClosure.copyClosure(e.getService(), disnixInterface);
 		}
 		
 		/* Activate the closures to install in the environments on the target machines */
@@ -65,7 +65,7 @@ public class DisnixDeploy
 		for(DistributionElement e : elementsToInstall)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			disnixInterface.install("", e.getComponent(), false);
+			disnixInterface.install("", e.getService(), false);
 		}
 		
 		/* Deactivate the closures to uninstall in the environments on the target machines */
@@ -73,7 +73,7 @@ public class DisnixDeploy
 		for(DistributionElement e : elementsToUninstall)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			disnixInterface.uninstall(e.getComponent());
+			disnixInterface.uninstall(e.getService());
 		}
 	}
 }

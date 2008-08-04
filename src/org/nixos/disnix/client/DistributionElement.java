@@ -2,7 +2,7 @@ package org.nixos.disnix.client;
 
 public class DistributionElement
 {
-	public String component;
+	public String service;
 	
 	public String targetEPR;
 
@@ -10,20 +10,20 @@ public class DistributionElement
 	{
 	}
 	
-	public DistributionElement(String component, String targetEPR)
+	public DistributionElement(String service, String targetEPR)
 	{
-		setComponent(component);
+		setService(service);
 		setTargetEPR(targetEPR);
 	}
 	
-	public String getComponent()
+	public String getService()
 	{
-		return component;
+		return service;
 	}
 
-	public void setComponent(String component)
+	public void setService(String service)
 	{
-		this.component = component;
+		this.service = service;
 	}
 
 	public String getTargetEPR()
@@ -42,7 +42,7 @@ public class DistributionElement
 		{
 			DistributionElement e = (DistributionElement)object;
 			
-			return this.getComponent().equals(e.getComponent()) &&
+			return this.getService().equals(e.getService()) &&
 				   this.getTargetEPR().equals(e.getTargetEPR());
 		}
 		else

@@ -1,9 +1,7 @@
 { stdenv, distribution }:
 
 let
-
-    distributionExport = map (entry: { component = entry.component.pkg.outPath; target = entry.target.targetEPR; } ) distribution;
-
+    distributionExport = map (entry: { service = entry.service.pkg.outPath; target = entry.target.targetEPR; } ) distribution;
 in
     
 stdenv.mkDerivation rec {
