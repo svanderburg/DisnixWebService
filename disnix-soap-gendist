@@ -35,7 +35,7 @@ rec {
     pkgs = import (builtins.getEnv "NIXPKGS_ALL") { };
 EOF
 ( echo "    infrastructure = import $infrastructure;"
-  echo "    services = import $services;"
+  echo "    services = import $services { inherit distribution; } ;"
   echo "    distribution = import $distribution {"
 ) >> $tmpfilename
 cat >> $tmpfilename <<EOF
