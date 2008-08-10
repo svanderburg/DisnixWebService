@@ -49,8 +49,11 @@ public class DistributionModel
 				}
 			}
 			
-			DistributionElement e = new DistributionElement(service, target);
-			result.add(e);
+			if(!service.equals(""))
+			{
+				DistributionElement e = new DistributionElement(service, target);			
+				result.add(e);
+			}
 		}
 		
 		is.close();
