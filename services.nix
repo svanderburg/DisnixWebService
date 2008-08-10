@@ -1,3 +1,5 @@
+{distribution}:
+
 rec {
     pkgs = import (builtins.getEnv "NIXPKGS_ALL") { };
     
@@ -7,4 +9,3 @@ rec {
 	dependsOn = [];
     };
 }
-

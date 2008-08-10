@@ -3,7 +3,7 @@ rec {
     
     infrastructure = import ./infrastructure.nix;
     
-    services = import ./services.nix;
+    services = import ./services.nix { inherit distribution; };
 
     distribution = import ./distribution.nix {
 	inherit services infrastructure;
