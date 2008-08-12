@@ -60,36 +60,22 @@ public class DisnixDeploy
 			DisnixCopyClosure.copyClosure(e.getService(), disnixInterface);
 		}
 		
-		/* Install the closures in the environments on the target machines */
+		/* Deactivate by calling the hook and uninstall the closures in the environments on the target machines */
+		
+		for(DistributionElement e : elementsToUninstall)
+		{
+			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
+			disnixInterface.deactivate(e.getService());
+			disnixInterface.uninstall(e.getService());
+		}
+		
+		/* Install the closures in the environments on the target machines and activate them by calling the hook */
 		
 		for(DistributionElement e : elementsToInstall)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
 			disnixInterface.install("", e.getService(), false);
-		}
-		
-		/* Call the activation hook for each element to install */
-		
-		for(DistributionElement e : elementsToInstall)
-		{
-			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			disnixInterface.activate(e.getService());			
-		}
-		
-		/* Call the deactivation hook for each element to install */
-		
-		for(DistributionElement e : elementsToUninstall)
-		{
-			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			disnixInterface.deactivate(e.getService());			
-		}
-		
-		/* Uninstall the closures in the environments on the target machines */
-		
-		for(DistributionElement e : elementsToUninstall)
-		{
-			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			disnixInterface.uninstall(e.getService());
+			disnixInterface.activate(e.getService());
 		}
 	}
 }
