@@ -331,4 +331,58 @@ public class DisnixService
 		if(disnixThread.getSource() instanceof Disnix.failure)
 			throw new Exception("Installation failed!");
 	}
+	
+	public void activate(final String path) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.activate(path);
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Installation failed!");		
+	}
+	
+	public void deactivate(final String path) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.deactivate(path);
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Installation failed!");		
+	}
 }

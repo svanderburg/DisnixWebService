@@ -39,6 +39,10 @@ public interface Disnix extends DBusInterface
 	
 	public String collect_garbage(boolean delete_old);
 	
+	public String activate(String path);
+	
+	public String deactivate(String path);
+	
 	public static class finish extends DBusSignal
 	{
 		public final String pid;

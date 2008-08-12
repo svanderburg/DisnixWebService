@@ -60,7 +60,7 @@ public class DisnixDeploy
 			DisnixCopyClosure.copyClosure(e.getService(), disnixInterface);
 		}
 		
-		/* Activate the closures to install in the environments on the target machines */
+		/* Install the closures in the environments on the target machines */
 		
 		for(DistributionElement e : elementsToInstall)
 		{
@@ -68,7 +68,23 @@ public class DisnixDeploy
 			disnixInterface.install("", e.getService(), false);
 		}
 		
-		/* Deactivate the closures to uninstall in the environments on the target machines */
+		/* Call the activation hook for each element to install */
+		
+		for(DistributionElement e : elementsToInstall)
+		{
+			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
+			disnixInterface.activate(e.getService());			
+		}
+		
+		/* Call the deactivation hook for each element to install */
+		
+		for(DistributionElement e : elementsToUninstall)
+		{
+			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
+			disnixInterface.deactivate(e.getService());			
+		}
+		
+		/* Uninstall the closures in the environments on the target machines */
 		
 		for(DistributionElement e : elementsToUninstall)
 		{

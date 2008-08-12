@@ -33,6 +33,8 @@ public class DisnixClient
 						   "disnix-soap-client --import {--remotefile filename | --localfile filename} targetEPR\n"+
 						   "disnix-soap-client --print-invalid-paths path targetEPR\n"+
 						   "disnix-soap-client --collect-garbage [-d | --delete-old]\n"+
+						   "disnix-soap-client --activate path\n"+
+						   "disnix-soap-client --deactivate path\n"+
 						   "disnix-soap-client {-h | --help}");
 	}
 		
@@ -49,6 +51,8 @@ public class DisnixClient
 		CmdLineParser.Option opt_import = parser.addBooleanOption("import");
 		CmdLineParser.Option opt_print_invalid_paths = parser.addStringOption("print-invalid-paths");
 		CmdLineParser.Option opt_collect_garbage = parser.addBooleanOption("collect-garbage");
+		CmdLineParser.Option opt_activate = parser.addStringOption("activate");
+		CmdLineParser.Option opt_deactivate = parser.addStringOption("deactivate");
 		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");		
 		CmdLineParser.Option opt_remotefile = parser.addStringOption("remotefile");
 		CmdLineParser.Option opt_localfile = parser.addStringOption("localfile");
@@ -86,8 +90,10 @@ public class DisnixClient
 			Boolean value_instantiate = (Boolean)parser.getOptionValue(opt_instantiate);
 			String value_realise = (String)parser.getOptionValue(opt_realise); 
 			Boolean value_import = (Boolean)parser.getOptionValue(opt_import);
-			String value_print_invalid_paths = (String) parser.getOptionValue(opt_print_invalid_paths);
+			String value_print_invalid_paths = (String)parser.getOptionValue(opt_print_invalid_paths);
 			Boolean value_collect_garbage = (Boolean)parser.getOptionValue(opt_collect_garbage);
+			String value_activate = (String)parser.getOptionValue(opt_activate);
+			String value_deactivate = (String)parser.getOptionValue(opt_deactivate);
 			
 			if(value_install != null)
 			{
@@ -201,13 +207,22 @@ public class DisnixClient
 				System.out.println("Collect garbage. Delete old generations: "+value_delete_old);
 				disnixInterface.collectGarbage(value_delete_old);
 			}
+			else if(value_activate != null)
+			{
+				System.out.println("Activating: "+value_activate);
+				disnixInterface.activate(value_activate);
+			}
+			else if(value_deactivate != null)
+			{
+				System.out.println("Deactivating: "+value_deactivate);
+				disnixInterface.deactivate(value_deactivate);
+			}
 			else
 			{
 				System.err.println("You must specify an operation!");
 				printUsage();
 				System.exit(1);
 			}
-			
 		}
 		catch(CmdLineParser.OptionException ex)
 		{
