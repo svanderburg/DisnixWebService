@@ -24,4 +24,4 @@ do
 done
 
 # Execute client
-java -cp $DISNIX_SOAP_HOME/jargs.jar:$AXIS2_LIB:$DISNIX_SOAP_HOME/DisnixClient.jar org.nixos.disnix.client.DisnixCopyClosure $@
+java -Xms32m -Xmx256m -cp $DISNIX_SOAP_HOME/jargs.jar:$AXIS2_LIB:$DISNIX_SOAP_HOME/DisnixClient.jar org.nixos.disnix.client.DisnixCopyClosure $@
