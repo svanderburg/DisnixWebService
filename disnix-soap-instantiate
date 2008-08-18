@@ -12,7 +12,7 @@ fi
 if [ "$1" = "" ] && [ "$2" = "" ] && [ "$3" = "" ]
 then
     echo "Usage:"
-    echo "$0 services infrastructure distribution"
+    echo "$0 services infrastructure distribution [attrs]"
     exit 1;
 fi
 
@@ -53,7 +53,19 @@ EOF
 # Create XML export of distribution
 
 echo "Instantiate the expression..." >&2
-drvPaths="`nix-instantiate $tmpfilename`"
+
+shift
+shift
+shift
+
+if [ -z $@ ]
+then
+    attrs=""
+else
+    attrs="-A $@"
+fi
+
+drvPaths="`nix-instantiate $tmpfilename $attrs`"
 echo $drvPaths
 
 # Remove temp files
