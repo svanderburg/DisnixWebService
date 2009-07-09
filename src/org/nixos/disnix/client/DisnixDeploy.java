@@ -65,7 +65,7 @@ public class DisnixDeploy
 		for(DistributionElement e : elementsToUninstall)
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
-			disnixInterface.deactivate(e.getService());
+			disnixInterface.deactivate(e.getService(), "echo");
 			disnixInterface.uninstall(e.getService());
 		}
 		
@@ -75,7 +75,7 @@ public class DisnixDeploy
 		{
 			DisnixInterface disnixInterface = new DisnixInterface(e.getTargetEPR());
 			disnixInterface.install("", e.getService(), false);
-			disnixInterface.activate(e.getService());
+			disnixInterface.activate(e.getService(), "echo");
 		}
 	}
 }

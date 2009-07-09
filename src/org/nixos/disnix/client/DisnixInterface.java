@@ -139,18 +139,18 @@ public class DisnixInterface
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void activate(String path) throws AxisFault
+	public void activate(String path, String type) throws AxisFault
 	{
 		QName operation = new QName(NAME_SPACE, "activate");
-		Object[] args_param = new Object[] { path };
+		Object[] args_param = new Object[] { path, type };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void deactivate(String path) throws AxisFault
+	public void deactivate(String path, String type) throws AxisFault
 	{
 		QName operation = new QName(NAME_SPACE, "deactivate");
-		Object[] args_param = new Object[] { path };
+		Object[] args_param = new Object[] { path, type };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}

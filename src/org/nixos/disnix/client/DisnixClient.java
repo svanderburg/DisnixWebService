@@ -33,8 +33,8 @@ public class DisnixClient
 						   "disnix-soap-client --import {--remotefile filename | --localfile filename} targetEPR\n"+
 						   "disnix-soap-client --print-invalid-paths path targetEPR\n"+
 						   "disnix-soap-client --collect-garbage [-d | --delete-old]\n"+
-						   "disnix-soap-client --activate path\n"+
-						   "disnix-soap-client --deactivate path\n"+
+						   "disnix-soap-client --type type --activate path\n"+
+						   "disnix-soap-client --type type --deactivate path\n"+
 						   "disnix-soap-client {-h | --help}");
 	}
 		
@@ -58,6 +58,7 @@ public class DisnixClient
 		CmdLineParser.Option opt_localfile = parser.addStringOption("localfile");
 		CmdLineParser.Option opt_attribute = parser.addStringOption('A', "attr");		
 		CmdLineParser.Option opt_delete_old = parser.addBooleanOption('d', "delete-old");
+		CmdLineParser.Option opt_type = parser.addStringOption("type");
 		
 		try
 		{
@@ -209,13 +210,17 @@ public class DisnixClient
 			}
 			else if(value_activate != null)
 			{
+				String value_type = (String)parser.getOptionValue(opt_type);
+				
 				System.out.println("Activating: "+value_activate);
-				disnixInterface.activate(value_activate);
+				disnixInterface.activate(value_activate, value_type);
 			}
 			else if(value_deactivate != null)
 			{
+				String value_type = (String)parser.getOptionValue(opt_type);
+				
 				System.out.println("Deactivating: "+value_deactivate);
-				disnixInterface.deactivate(value_deactivate);
+				disnixInterface.deactivate(value_deactivate, value_type);
 			}
 			else
 			{

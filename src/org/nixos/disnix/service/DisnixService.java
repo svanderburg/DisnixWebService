@@ -332,7 +332,7 @@ public class DisnixService
 			throw new Exception("Installation failed!");
 	}
 	
-	public void activate(final String path) throws Exception
+	public void activate(final String path, final String type) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -340,7 +340,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.activate(path);
+					String pid = disnixInterface.activate(path, type);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
@@ -359,7 +359,7 @@ public class DisnixService
 			throw new Exception("Installation failed!");		
 	}
 	
-	public void deactivate(final String path) throws Exception
+	public void deactivate(final String path, final String type) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -367,7 +367,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.deactivate(path);
+					String pid = disnixInterface.deactivate(path, type);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
