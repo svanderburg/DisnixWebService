@@ -1,8 +1,0 @@
-#!/bin/bash -e
-
-echo "derivations: $drvPaths" >&2
-drvPaths=`disnix-soap-instantiate $@`
-
-echo "Realising the expression..." >&2
-outPath="`nix-store --realise $drvPaths`"
-echo "$outPath"
