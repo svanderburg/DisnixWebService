@@ -7,6 +7,10 @@
 		<isset property="env.AXIS2_LIB"/>
 	</condition>
 	
+	<condition property="PREFIX" value="${env.PREFIX}" else="/usr/local/DisnixService">
+		<isset property="env.PREFIX"/>
+	</condition>
+	
 	<path id="service.classpath">
 		<fileset dir="${basedir}">
 			<include name="*.jar" />
@@ -48,6 +52,33 @@
 			<fileset dir="${deploybuild.dir}" includes="org/nixos/disnix/client/*.class" />
 		</jar>
 	</target>
+	
+	<target name="install.client" depends="generate.client.jar">
+		<mkdir dir="${PREFIX}/bin" />
+		<mkdir dir="${PREFIX}/share/java" />
+		<copy toDir="${PREFIX}/bin">
+			<fileset dir="scripts" includes="disnix-soap-client" />
+		</copy>
+		<chmod file="${PREFIX}/bin/disnix-soap-client" perm="755" />
+		
+		<copy toDir="${PREFIX}/share/java">
+			<fileset dir="${basedir}" includes="DisnixClient.jar jargs.jar" />			
+		</copy>
+	</target>
+	
+	<target name="install.service" depends="generate.library.jar, generate.service.aar">
+		<mkdir dir="${PREFIX}/webapps/axis2/WEB-INF/services" />
+		<mkdir dir="${PREFIX}/shared/lib" />
+		
+		<copy toDir="${PREFIX}/webapps/axis2/WEB-INF/services" >
+			<fileset dir="${basedir}" includes="DisnixService.aar" />
+		</copy>
+		<copy toDir="${PREFIX}/shared/lib">
+			<fileset dir="${basedir}" includes="DisnixConnection.jar" />
+		</copy>
+	</target>
+	
+	<target name="install" depends="install.service, install.client" />
 	
 	<target name="clean">
 		<delete file="DisnixConnection.jar" />

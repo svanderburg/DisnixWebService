@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#### Disnix SOAP client settings
+
+# Prefix where the Disnix Service package is installed
+#DISNIX_SOAP_HOME=
+
+# Path where the Axis2 JAR files reside
+#AXIS2_LIB=
+
+# Path where a JDK or JRE is installed
+#JAVA_HOME=
+
+# Settings for the Java Virtual Machine
+JAVA_VM_SETTINGS="-Xms32m -Xmx256m"
+
+#### Resolve the path of the Disnix soap utilities
+
+if [ "$DISNIX_SOAP_HOME" = "" ]
+then
+    PRG="`type -p $0`"
+    REALPRG="`readlink -f $PRG`"
+    DISNIX_SOAP_HOME="`dirname $REALPRG`/.."
+fi
+
+#### Add Axis2 libraries to the Classpath
+
+for i in $AXIS2_LIB/*.jar
+do
+    AXIS2_CLASSPATH="$AXIS2_CLASSPATH:$i"
+done
+
+#### Add the location of the JDK or JRE to the PATH
+
+if [ "$JAVA_HOME" != "" ]
+then
+    export PATH=$JAVA_HOME/bin:$PATH
+fi
+
+#### Execute Disnix SOAP client
+java $JAVA_VM_SETTINGS -cp $DISNIX_SOAP_HOME/share/java/jargs.jar:$AXIS2_CLASSPATH:$DISNIX_SOAP_HOME/share/java/DisnixClient.jar org.nixos.disnix.client.DisnixClient "$@"
