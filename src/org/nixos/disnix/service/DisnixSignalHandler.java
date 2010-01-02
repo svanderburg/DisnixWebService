@@ -42,24 +42,36 @@ public class DisnixSignalHandler implements DBusSigHandler
 			System.out.println("Caught finish signal!");
 			String pid = ((Disnix.finish)s).pid;			
 			DisnixThread thread = pids.remove(pid);
-			thread.setSource(s);
-			thread.resume();
+			
+			if(thread != null)
+			{
+				thread.setSource(s);
+				thread.resume();
+			}
 		}
 		else if(s instanceof Disnix.success)
 		{
 			System.out.println("Caught success signal!");
 			String pid = ((Disnix.success)s).pid;			
 			DisnixThread thread = pids.remove(pid);
-			thread.setSource(s);
-			thread.resume();
+			
+			if(thread != null)
+			{
+				thread.setSource(s);
+				thread.resume();
+			}
 		}
 		else if(s instanceof Disnix.failure)
 		{
 			System.out.println("Caught failure signal!");
 			String pid = ((Disnix.failure)s).pid;			
 			DisnixThread thread = pids.remove(pid);
-			thread.setSource(s);
-			thread.resume();
+			
+			if(thread != null)
+			{
+				thread.setSource(s);
+				thread.resume();
+			}
 		}
 	}
 }
