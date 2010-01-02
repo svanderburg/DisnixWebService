@@ -36,12 +36,10 @@ public class DisnixSignalHandler implements DBusSigHandler
 	}
 	
 	public void handle(DBusSignal s)
-	{
-		System.out.println("Ontvang een signaal");
-		
+	{	
 		if(s instanceof Disnix.finish)
 		{
-			System.out.println("caught finish");
+			System.out.println("Caught finish signal!");
 			String pid = ((Disnix.finish)s).pid;			
 			DisnixThread thread = pids.remove(pid);
 			thread.setSource(s);
@@ -49,7 +47,7 @@ public class DisnixSignalHandler implements DBusSigHandler
 		}
 		else if(s instanceof Disnix.success)
 		{
-			System.out.println("caught success");
+			System.out.println("Caught success signal!");
 			String pid = ((Disnix.success)s).pid;			
 			DisnixThread thread = pids.remove(pid);
 			thread.setSource(s);
@@ -57,7 +55,7 @@ public class DisnixSignalHandler implements DBusSigHandler
 		}
 		else if(s instanceof Disnix.failure)
 		{
-			System.out.println("caught failure");
+			System.out.println("Caught failure signal!");
 			String pid = ((Disnix.failure)s).pid;			
 			DisnixThread thread = pids.remove(pid);
 			thread.setSource(s);

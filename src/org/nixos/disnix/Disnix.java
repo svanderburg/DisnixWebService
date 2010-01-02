@@ -22,26 +22,30 @@ import org.freedesktop.dbus.exceptions.*;
 
 public interface Disnix extends DBusInterface
 {
-	public String install(String file, String args, boolean isAttr);
-	
-	public String upgrade(String derivation);
-	
-	public String uninstall(String derivation);
-	
-	public String instantiate(String files, String attrPath);
-	
-	public String realise(String derivation);
-	
 	@DBusMemberName("import")
-	public String importm(String path);
+	public String importm(String[] derivation);
 	
-	public String print_invalid_paths(String path);
+	public String export(String[] derivation);
+	
+	public String print_invalid(String[] derivation);
+	
+	public String realise(String[] derivation);
+	
+	public String set(String profile, String derivation);
+	
+	public String query_installed(String profile);
+	
+	public String query_requisites(String[] derivation);
 	
 	public String collect_garbage(boolean delete_old);
 	
-	public String activate(String path, String type);
+	public String activate(String derivation, String type, String[] arguments);
 	
-	public String deactivate(String path, String type);
+	public String deactivate(String derivation, String type, String[] arguments);
+	
+	public String lock();
+	
+	public String unlock();
 	
 	public static class finish extends DBusSignal
 	{
@@ -58,13 +62,13 @@ public interface Disnix extends DBusInterface
 	{
 		public final String pid;
 		
-		public final String path;
+		public final String[] derivation;
 		
-		public success(String objectpath, String pid, String path) throws DBusException
+		public success(String objectpath, String pid, String[] derivation) throws DBusException
 		{
-			super(objectpath, pid, path);
+			super(objectpath, pid, derivation);
 			this.pid = pid;
-			this.path = path;
+			this.derivation = derivation;
 		}
 	}
 	

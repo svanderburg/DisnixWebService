@@ -24,6 +24,7 @@ import org.apache.axis2.client.*;
 import org.apache.axis2.addressing.*;
 import org.apache.axis2.transport.http.*;
 import javax.activation.*;
+import java.io.*;
 
 public class DisnixInterface
 {
@@ -52,81 +53,96 @@ public class DisnixInterface
 		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);		
 	}
 	
-	public void install(String file, String args, boolean isAttr) throws AxisFault
+	public void importm(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "install");
-		Object[] args_param = new Object[] { file, args, isAttr };
+		QName operation = new QName(NAME_SPACE, "importm");
+		Object[] args_param = { derivation };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void upgrade(String derivation) throws AxisFault
+	public void importLocalFile(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "upgrade");
-		Object[] args_param = new Object[] { derivation };
+		DataHandler[] dataHandler = new DataHandler[derivation.length];
+		
+		for(int i = 0; i < derivation.length; i++)
+			dataHandler[i] = new DataHandler(new FileDataSource(derivation[i]));
+		
+		QName operation = new QName(NAME_SPACE, "importLocalFile");
+		Object[] args_param = { dataHandler };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void uninstall(String derivation) throws AxisFault
+	public String export(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "uninstall");
-		Object[] args_param = new Object[] { derivation };
-		
-		serviceClient.invokeRobust(operation, args_param);
-	}
-	
-	public String[] instantiate(String files, String attrPath) throws AxisFault
-	{
-		QName operation = new QName(NAME_SPACE, "instantiate");
-		Object[] args_param = new Object[] { files, attrPath };
-		Class<?>[] returnTypes = new Class[] { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
-		return (String[])response[0];
-	}
-	
-	public String[] instantiateExpression(String file, String attrPath) throws AxisFault
-	{
-		DataHandler dataHandler = new DataHandler(new FileDataSource(file));
-		QName operation = new QName(NAME_SPACE, "instantiateExpression");
-		Object[] args_param = new Object[] { dataHandler, attrPath };
-		Class<?>[] returnTypes = new Class[] { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
-		return (String[])response[0];
-	}
-	
-	public String realise(String derivation) throws AxisFault
-	{
-		QName operation = new QName(NAME_SPACE, "realise");
-		Object[] args_param = new Object[] { derivation };
-		Class<?>[] returnTypes = new Class[] { String.class };
+		QName operation = new QName(NAME_SPACE, "export");
+		Object[] args_param = { derivation };
+		Class<?>[] returnTypes = { String[].class };
 		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
 		return (String)response[0];
 	}
 	
-	public void importm(String path) throws AxisFault
+	public void exportRemoteFile(String[] derivation) throws AxisFault, IOException
 	{
-		QName operation = new QName(NAME_SPACE, "importm");
-		Object[] args_param = new Object[] { path };
+		QName operation = new QName(NAME_SPACE, "exportRemoteFile");
+		Object[] args_param = { derivation };
+		Class<?>[] returnTypes = { DataHandler.class };
+		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
+		
+		/* Retrieve the data handler */
+		DataHandler dataHandler = (DataHandler)response[0];
+		
+		/* Generate temp file name */		
+		File tempFile = File.createTempFile("disnix_closure_", null);
+		
+		/* Save file on local filesystem */
+		FileOutputStream fos = new FileOutputStream(tempFile);
+		dataHandler.writeTo(fos);
+		fos.flush();
+		fos.close();
+	}
+	
+	public String[] printInvalid(String[] derivation) throws AxisFault
+	{
+		QName operation = new QName(NAME_SPACE, "printInvalid");
+		Object[] args_param = { derivation };
+		Class<?>[] returnTypes = { String[].class };
+		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
+		return (String[])response[0];
+	}
+	
+	public String[] realise(String[] derivation) throws AxisFault
+	{
+		QName operation = new QName(NAME_SPACE, "realise");
+		Object[] args_param = { derivation };
+		Class<?>[] returnTypes = { String[].class };
+		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
+		return (String[])response[0];
+	}
+	
+	public void set(String profile, String derivation) throws AxisFault
+	{
+		QName operation = new QName(NAME_SPACE, "set");
+		Object[] args_param = { profile, derivation };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void importClosure(String path) throws AxisFault
+	public String[] queryInstalled(String profile) throws AxisFault
 	{
-		DataHandler dataHandler = new DataHandler(new FileDataSource(path));
-		
-		QName operation = new QName(NAME_SPACE, "importClosure");
-		Object[] args_param = new Object[] { dataHandler };
-		
-		serviceClient.invokeRobust(operation, args_param);
+		QName operation = new QName(NAME_SPACE, "queryInstalled");
+		Object[] args_param = { profile };
+		Class<?>[] returnTypes = { String[].class };
+		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
+		return (String[])response[0];
 	}
 	
-	public String[] printInvalidPaths(String path) throws AxisFault
+	public String[] queryRequisites(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "printInvalidPaths");
-		Object[] args_param = new Object[] { path };
-		Class<?>[] returnTypes = new Class[] { String[].class };
+		QName operation = new QName(NAME_SPACE, "queryRequisites");
+		Object[] args_param = { derivation };
+		Class<?>[] returnTypes = { String[].class };
 		Object[] response = serviceClient.invokeBlocking(operation, args_param, returnTypes);
 		return (String[])response[0];
 	}
@@ -134,23 +150,23 @@ public class DisnixInterface
 	public void collectGarbage(boolean deleteOld) throws AxisFault
 	{
 		QName operation = new QName(NAME_SPACE, "collectGarbage");
-		Object[] args_param = new Object[] { deleteOld };
+		Object[] args_param = { deleteOld };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void activate(String path, String type) throws AxisFault
+	public void activate(String derivation, String type, String[] arguments) throws AxisFault
 	{
 		QName operation = new QName(NAME_SPACE, "activate");
-		Object[] args_param = new Object[] { path, type };
+		Object[] args_param = { derivation, type, arguments };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void deactivate(String path, String type) throws AxisFault
+	public void deactivate(String derivation, String type, String[] arguments) throws AxisFault
 	{
 		QName operation = new QName(NAME_SPACE, "deactivate");
-		Object[] args_param = new Object[] { path, type };
+		Object[] args_param = { derivation, type, arguments };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}

@@ -30,16 +30,16 @@ public class DisnixService
 	private DisnixSignalHandler handler;
 	
 	public DisnixService() throws DBusException
-	{
-		System.out.println("DisnixService constructor");
-		
+	{	
 		handler = new DisnixSignalHandler();
 		
-		System.out.println("connecting to session bus");
-		//DBusConnection con = DBusConnection.getConnection(DBusConnection.SESSION);
+		System.out.println("Connecting to system bus");
 		DBusConnection con = DBusConnection.getConnection(DBusConnection.SYSTEM);
 		
-		System.out.println("register signal handlers");
+		//System.out.println("Connecting to session bus");
+		//DBusConnection con = DBusConnection.getConnection(DBusConnection.SESSION);
+		
+		System.out.println("Register signal handlers");
 		con.addSigHandler(Disnix.finish.class, handler);			
 		con.addSigHandler(Disnix.success.class, handler);
 		con.addSigHandler(Disnix.failure.class, handler);
@@ -48,7 +48,7 @@ public class DisnixService
 		disnixInterface = (Disnix)con.getRemoteObject("org.nixos.disnix.Disnix", "/org/nixos/disnix/Disnix", Disnix.class);
 	}
 	
-	public void install(final String file, final String args, final boolean isAttr) throws Exception
+	public void importm(final String[] derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -56,7 +56,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.install(file, args, isAttr);
+					String pid = disnixInterface.importm(derivation);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
@@ -72,123 +72,104 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
+			throw new Exception("Import failed!");
 	}
 	
-	public void upgrade(final String derivation) throws Exception
+	public void importLocalFile(DataHandler[] dataHandler) throws Exception
 	{
-		DisnixThread disnixThread = new DisnixThread()
-		{
-			public void run()
-			{
-				try
-				{
-					String pid = disnixInterface.upgrade(derivation);
-					handler.addPid(pid, this);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
-			}
-		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
+		String[] tempFileName = new String[dataHandler.length];
 		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
-	}
-	
-	public void uninstall(final String derivation) throws Exception
-	{
-		DisnixThread disnixThread = new DisnixThread()
+		for(int i = 0; i < dataHandler.length; i++)
 		{
-			public void run()
-			{
-				try
-				{
-					String pid = disnixInterface.uninstall(derivation);
-					handler.addPid(pid, this);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
-			}
-		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
-	}
-	
-	public String[] instantiate(final String files, final String attrPath) throws Exception
-	{
-		DisnixThread disnixThread = new DisnixThread()
-		{
-			public void run()
-			{
-				try
-				{
-					String pid = disnixInterface.instantiate(files, attrPath);
-					handler.addPid(pid, this);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
-			}
-		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-				
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
-		else if(disnixThread.getSource() instanceof Disnix.success)
-		{
-			String retPath = ((Disnix.success)disnixThread.getSource()).path;
-			StringTokenizer tokenizer = new StringTokenizer(retPath, "\n");
-			String[] ret = new String[tokenizer.countTokens()];
-			int count = 0;
+			/* Generate temp file name */		
+			File tempFile = File.createTempFile("disnix_closure_", null);
 			
-			while(tokenizer.hasMoreTokens())
-			{
-				ret[count] = tokenizer.nextToken();
-				count++;
-			}
+			/* Save file on local filesystem */
+			FileOutputStream fos = new FileOutputStream(tempFile);
+			dataHandler[i].writeTo(fos);
+			fos.flush();
+			fos.close();
 			
-			return ret;
+			/* Add temp file name to array */
+			tempFileName[i] = tempFile.toString();
 		}
+		
+		/* Import the closure */
+		importm(tempFileName);
+	}
+	
+	public String export(final String[] derivation) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.export(derivation);
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Realise failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation[0];
+		else
+			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+	}
+	
+	public DataHandler exportRemoteFile(final String[] derivation) throws Exception
+	{
+		/* First, export the closure */
+		String closurePath = export(derivation);
+		
+		/* Create and return a data handler pointing to the export */
+		return new DataHandler(new FileDataSource(closurePath));		
+	}
+	
+	public String[] printInvalid(final String[] derivation) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.print_invalid(derivation);
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Print invalid failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
 			throw new Exception("Unknown event caught!"+disnixThread.getSource()); 
 	}
 	
-	public String[] instantiateExpression(DataHandler dataHandler, String attrPath) throws Exception
-	{
-		/* Generate temp file name */		
-		File tempFile = File.createTempFile("disnix_nixexpr_", null);
-		
-		/* Save file on local filesystem */
-		FileOutputStream fos = new FileOutputStream(tempFile);
-		dataHandler.writeTo(fos);
-		fos.flush();
-		fos.close();
-		
-		/* Instantiate the expression */
-		return instantiate(tempFile.toString(), attrPath);
-	}
-	
-	public String realise(final String derivation) throws Exception
+	public String[] realise(final String[] derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -212,14 +193,14 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
+			throw new Exception("Realise failed!");
 		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).path;
+			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource()); 
+			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
-	public void importm(final String path) throws Exception
+	public void set(final String profile, final String derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -227,7 +208,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.importm(path);
+					String pid = disnixInterface.set(profile, derivation);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
@@ -243,25 +224,10 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
+			throw new Exception("Set failed!");
 	}
 	
-	public void importClosure(DataHandler dataHandler) throws Exception
-	{		
-		/* Generate temp file name */		
-		File tempFile = File.createTempFile("disnix_closure_", null);
-		
-		/* Save file on local filesystem */
-		FileOutputStream fos = new FileOutputStream(tempFile);
-		dataHandler.writeTo(fos);
-		fos.flush();
-		fos.close();
-		
-		/* Import the closure */
-		importm(tempFile.toString());
-	}
-	
-	public String[] printInvalidPaths(final String path) throws Exception
+	public String[] queryInstalled(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -269,7 +235,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.print_invalid_paths(path);
+					String pid = disnixInterface.query_installed(profile);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
@@ -285,24 +251,42 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
+			throw new Exception("Query installed failed!");
 		else if(disnixThread.getSource() instanceof Disnix.success)
-		{
-			String retPath = ((Disnix.success)disnixThread.getSource()).path;
-			StringTokenizer tokenizer = new StringTokenizer(retPath, "\n");
-			String[] ret = new String[tokenizer.countTokens()];
-			int count = 0;
-			
-			while(tokenizer.hasMoreTokens())
-			{
-				ret[count] = tokenizer.nextToken();
-				count++;
-			}
-			
-			return ret;
-		}
+			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource()); 
+			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+	}
+	
+	public String[] queryRequisites(final String[] derivation) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.query_requisites(derivation);
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Query requisites failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation;
+		else
+			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
 	public void collectGarbage(final boolean deleteOld) throws Exception
@@ -329,10 +313,10 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");
+			throw new Exception("Collect garbage failed!");
 	}
 	
-	public void activate(final String path, final String type) throws Exception
+	public void activate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -340,7 +324,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.activate(path, type);
+					String pid = disnixInterface.activate(derivation, type, arguments);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
@@ -356,10 +340,10 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");		
+			throw new Exception("Activation failed!");		
 	}
 	
-	public void deactivate(final String path, final String type) throws Exception
+	public void deactivate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -367,7 +351,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.deactivate(path, type);
+					String pid = disnixInterface.deactivate(derivation, type, arguments);
 					handler.addPid(pid, this);
 					suspend();
 					waitForNotificationToResume();
@@ -383,6 +367,60 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Installation failed!");		
+			throw new Exception("Deactivation failed!");		
+	}
+	
+	public void lock() throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.lock();
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Lock failed!");		
+	}
+	
+	public void unlock() throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					String pid = disnixInterface.unlock();
+					handler.addPid(pid, this);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Unlock failed!");		
 	}
 }

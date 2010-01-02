@@ -18,214 +18,238 @@
  */
 package org.nixos.disnix.client;
 import jargs.gnu.*;
-import org.apache.axis2.*;
+import java.util.*;
 
 public class DisnixClient
 {
 	public static void printUsage()
 	{
 		System.out.println("Usage:\n"+
-						   "disnix-soap-client {-i | --install} [--remotefile filename] [-A attributePath] args targetEPR\n"+
-						   "disnix-soap-client {-u | --upgrade} derivation targetEPR\n"+
-						   "disnix-soap-client {-e | --uninstall} derivation targetEPR\n"+
-						   "disnix-soap-client --instantiate {--remotefile filename | --localfile filename} {-A attributePath | --attr attributePath} targetEPR\n"+
-						   "disnix-soap-client {-r | --realise } pathname targetEPR\n"+
-						   "disnix-soap-client --import {--remotefile filename | --localfile filename} targetEPR\n"+
-						   "disnix-soap-client --print-invalid-paths path targetEPR\n"+
-						   "disnix-soap-client --collect-garbage [-d | --delete-old]\n"+
-						   "disnix-soap-client --type type --activate path\n"+
-						   "disnix-soap-client --type type --deactivate path\n"+
+				           "disnix-soap-client --import {--remotefile filename | --localfile filename} derivation\n"+
+				           "disnix-soap-client --export {--remotefile filename | --localfile filename} derivation\n"+
+				           "disnix-soap-client --print-invalid derivations\n"+
+						   "disnix-soap-client {-r | --realise } derivations\n"+
+						   "disnix-soap-client --set [{-p | --profile} profile] derivation\n"+
+						   "disnix-soap-client {-q | --query-installed} [{-p | --profile} profile]\n"+
+						   "disnix-soap-client --query-requisites derivations\n"+
+						   "disnix-soap-client --collect-garbage {-d | --delete-old}\n"+
+						   "disnix-soap-client --activate --type type --arguments arguments derivation\n"+
+						   "disnix-soap-client --deactivate --type type --arguments arguments derivation\n"+
+						   "disnix-soap-client --lock\n"+
+						   "disnix-soap-client --unlock\n"+
 						   "disnix-soap-client {-h | --help}");
 	}
 		
 	public static void main(String[] args)
 	{
 		/* Create command line option parser */
-		
 		CmdLineParser parser = new CmdLineParser();
-		CmdLineParser.Option opt_install = parser.addBooleanOption('i', "install");
-		CmdLineParser.Option opt_upgrade = parser.addStringOption('u', "upgrade");
-		CmdLineParser.Option opt_uninstall = parser.addStringOption('e', "uninstall");
-		CmdLineParser.Option opt_instantiate = parser.addBooleanOption("instantiate");
-		CmdLineParser.Option opt_realise = parser.addStringOption('r', "realise");
+		
+		/* Operations */
 		CmdLineParser.Option opt_import = parser.addBooleanOption("import");
-		CmdLineParser.Option opt_print_invalid_paths = parser.addStringOption("print-invalid-paths");
+		CmdLineParser.Option opt_export = parser.addBooleanOption("export");
+		CmdLineParser.Option opt_print_invalid = parser.addBooleanOption("print-invalid");
+		CmdLineParser.Option opt_realise = parser.addBooleanOption('r', "realise");
+		CmdLineParser.Option opt_set = parser.addBooleanOption("set");
+		CmdLineParser.Option opt_query_installed = parser.addBooleanOption('q', "query-installed");
+		CmdLineParser.Option opt_query_requisites = parser.addBooleanOption("query-requisites");
 		CmdLineParser.Option opt_collect_garbage = parser.addBooleanOption("collect-garbage");
-		CmdLineParser.Option opt_activate = parser.addStringOption("activate");
-		CmdLineParser.Option opt_deactivate = parser.addStringOption("deactivate");
-		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");		
-		CmdLineParser.Option opt_remotefile = parser.addStringOption("remotefile");
-		CmdLineParser.Option opt_localfile = parser.addStringOption("localfile");
-		CmdLineParser.Option opt_attribute = parser.addStringOption('A', "attr");		
+		CmdLineParser.Option opt_activate = parser.addBooleanOption("activate");
+		CmdLineParser.Option opt_deactivate = parser.addBooleanOption("deactivate");
+		CmdLineParser.Option opt_lock = parser.addBooleanOption("lock");
+		CmdLineParser.Option opt_unlock = parser.addBooleanOption("unlock");
+		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");
+		
+		/* Other attributes */
+		CmdLineParser.Option opt_target = parser.addStringOption('t', "target");
+		CmdLineParser.Option opt_localfile = parser.addBooleanOption("localfile");
+		CmdLineParser.Option opt_remotefile = parser.addBooleanOption("remotefile");
+		CmdLineParser.Option opt_profile = parser.addStringOption('p', "profile");
 		CmdLineParser.Option opt_delete_old = parser.addBooleanOption('d', "delete-old");
 		CmdLineParser.Option opt_type = parser.addStringOption("type");
+		CmdLineParser.Option opt_arguments = parser.addStringOption("arguments");
 		
 		try
 		{
 			/* Parse command line options */
 			parser.parse(args);
 			
+			/* Retrieve option values */
+			Boolean value_import = (Boolean)parser.getOptionValue(opt_import);
+			Boolean value_export = (Boolean)parser.getOptionValue(opt_export);
+			Boolean value_print_invalid = (Boolean)parser.getOptionValue(opt_print_invalid);
+			Boolean value_realise = (Boolean)parser.getOptionValue(opt_realise);
+			Boolean value_set = (Boolean)parser.getOptionValue(opt_set);
+			Boolean value_query_installed = (Boolean)parser.getOptionValue(opt_query_installed);
+			Boolean value_query_requisites = (Boolean)parser.getOptionValue(opt_query_requisites);
+			Boolean value_collect_garbage = (Boolean)parser.getOptionValue(opt_collect_garbage);
+			Boolean value_activate = (Boolean)parser.getOptionValue(opt_activate);
+			Boolean value_deactivate = (Boolean)parser.getOptionValue(opt_deactivate);
+			Boolean value_lock = (Boolean)parser.getOptionValue(opt_lock);
+			Boolean value_unlock = (Boolean)parser.getOptionValue(opt_unlock);
+			Boolean value_help = (Boolean)parser.getOptionValue(opt_help); 
+			
+			String value_target = (String)parser.getOptionValue(opt_target);
+			Boolean value_localfile = (Boolean)parser.getOptionValue(opt_localfile);
+			Boolean value_remotefile = (Boolean)parser.getOptionValue(opt_remotefile);
+			String value_profile = (String)parser.getOptionValue(opt_profile);
+			Boolean value_delete_old = (Boolean)parser.getOptionValue(opt_delete_old);
+			String value_type = (String)parser.getOptionValue(opt_type);
+			String value_arguments = (String)parser.getOptionValue(opt_arguments);
+			
+			String[] derivation = parser.getRemainingArgs();
+			
+			/* Validate command line options */
+			
+			if(value_target == null)
+			{
+				System.err.println("ERROR: A targetEPR must be specified!");
+				System.exit(1);
+			}
+			
 			/* Display usage if requested */
 			
-			Boolean value_help = (Boolean)parser.getOptionValue(opt_help); 
 			if(value_help != null)
 			{
 				printUsage();
 				System.exit(0);
 			}
 			
-			/* Determine targetEPR URL */
-			String[] otherArgs = parser.getRemainingArgs();			
-			String targetEPR = otherArgs[otherArgs.length - 1];
-			
 			/* Create SOAP connection interface */
 			
-			System.out.println("Connecting to target endpoint reference: "+targetEPR);
-			DisnixInterface disnixInterface = new DisnixInterface(targetEPR);
+			System.err.println("Connecting to target endpoint reference: "+value_target);
+			DisnixInterface disnixInterface = new DisnixInterface(value_target);
 			
 			/* Execute operation */
 			
-			Boolean value_install = (Boolean)parser.getOptionValue(opt_install);
-			String value_upgrade = (String)parser.getOptionValue(opt_upgrade);
-			String value_uninstall = (String)parser.getOptionValue(opt_uninstall);
-			Boolean value_instantiate = (Boolean)parser.getOptionValue(opt_instantiate);
-			String value_realise = (String)parser.getOptionValue(opt_realise); 
-			Boolean value_import = (Boolean)parser.getOptionValue(opt_import);
-			String value_print_invalid_paths = (String)parser.getOptionValue(opt_print_invalid_paths);
-			Boolean value_collect_garbage = (Boolean)parser.getOptionValue(opt_collect_garbage);
-			String value_activate = (String)parser.getOptionValue(opt_activate);
-			String value_deactivate = (String)parser.getOptionValue(opt_deactivate);
-			
-			if(value_install != null)
+			if(value_import != null)
 			{
-				String value_remotefile = (String)parser.getOptionValue(opt_remotefile);
-				String value_attribute = (String)parser.getOptionValue(opt_attribute);
-				String install_args = "";
-				boolean isAttr;
-				
-				if(value_remotefile != null)
-					System.out.println("Using remote file: "+value_remotefile);
-				else
-					value_remotefile = "";
-				
-				if(value_attribute != null)
-				{
-					isAttr = true;
-					install_args = value_attribute;
-					System.out.println("Install attribute: "+install_args);
-				}
-				else
-				{
-					isAttr = false;
-					for(int i = 0; i < otherArgs.length - 1; i++)
-						install_args += " "+ otherArgs[i];
-					
-					System.out.println("Install derivation: "+install_args);
-				}
-				
-				disnixInterface.install(value_remotefile, install_args, isAttr);
-			}
-			else if(value_upgrade != null)
-			{
-				System.out.println("Upgrading derivation: "+value_upgrade);
-				disnixInterface.upgrade(value_upgrade);
-			}
-			else if(value_uninstall != null)
-			{
-				System.out.println("Uninstalling derivation: "+value_uninstall);
-				disnixInterface.uninstall(value_uninstall);
-			}
-			else if(value_instantiate != null)
-			{
-				String value_remotefile = (String)parser.getOptionValue(opt_remotefile);
-				String value_localfile = (String)parser.getOptionValue(opt_localfile);
-				String value_attribute = (String)parser.getOptionValue(opt_attribute);
-				
-				if(value_attribute == null)
-					value_attribute = "";
-				
 				if(value_remotefile != null)
 				{
-					System.out.println("Instantiate remote file: "+value_remotefile+" and attribute path: "+value_attribute);
-					String[] ret = disnixInterface.instantiate(value_remotefile, value_attribute);
-					for(int i=0; i<ret.length; i++)
-						System.out.println(ret[i]);
+					System.err.println("Importing remote derivation: "+derivation);
+					disnixInterface.importm(derivation);
 				}
 				else if(value_localfile != null)
 				{
-					System.out.println("Instantiate local file: "+value_localfile+" and attribute path: "+value_attribute);
-					String ret[] = disnixInterface.instantiateExpression(value_localfile, value_attribute);
-					for(int i=0; i<ret.length; i++)
-						System.out.println(ret[i]);
+					System.err.println("Import local derivation: "+derivation);
+					disnixInterface.importLocalFile(derivation);
 				}
 				else
 				{
-					System.err.println("Either a remote or local file must be specified!");
-					printUsage();
+					System.err.println("ERROR: Either --localfile or --remotefile should be specified!");
 					System.exit(1);
 				}
+			}
+			else if(value_export != null)
+			{
+				if(value_remotefile != null)
+				{
+					System.err.println("Exporting remote derivation: "+derivation);
+					disnixInterface.exportRemoteFile(derivation);
+				}
+				else if(value_localfile != null)
+				{
+					System.err.println("Exporting local derivation: "+derivation);
+					String result = disnixInterface.export(derivation);
+					System.out.println(result);
+				}
+				else
+				{
+					System.err.println("ERROR: Either --localfile or --remotefile should be specified!");
+					System.exit(1);
+				}
+			}
+			else if(value_print_invalid != null)
+			{
+				System.err.println("Print invalid: "+derivation);
+				String[] result = disnixInterface.printInvalid(derivation);
+				System.out.println(result);
 			}
 			else if(value_realise != null)
 			{
-				System.out.println("Realise path: "+value_realise);
-				disnixInterface.realise(value_realise);
+				System.err.println("Realise: "+derivation);
+				String[] result = disnixInterface.realise(derivation);
+				System.out.println(result);
 			}
-			else if(value_import != null)
+			else if(value_set != null)
 			{
-				String value_remotefile = (String)parser.getOptionValue(opt_remotefile);
-				String value_localfile = (String)parser.getOptionValue(opt_localfile);
+				String profile;
 				
-				if(value_remotefile != null)
-				{
-					System.out.println("Import remote closure: "+value_remotefile);					
-					disnixInterface.importm(value_remotefile);
-				}
-				else if(value_localfile != null)
-				{
-					System.out.println("Import local closure: "+value_localfile);
-					disnixInterface.importClosure(value_localfile);
-				}				
+				if(value_profile == null)
+					profile = "default";
 				else
-				{
-					System.err.println("Either a remote or local file must be specified!");
-					printUsage();
-					System.exit(1);
-				}
+					profile = value_profile;
+				
+				System.err.println("Set profile: "+profile+" derivation: "+derivation);
+				
+				disnixInterface.set(profile, derivation[0]);
 			}
-			else if(value_print_invalid_paths != null)
+			else if(value_query_installed != null)
 			{
-				System.out.println("Print invalid paths of: "+value_print_invalid_paths);
-				String[] ret = disnixInterface.printInvalidPaths(value_print_invalid_paths);
-				for(int i=0; i<ret.length; i++)
-					System.out.println(ret[i]);
+				String profile;
+				
+				if(value_profile == null)
+					profile = "default";
+				else
+					profile = value_profile;
+				
+				System.err.println("Query installed: "+profile);
+				
+				String[] result = disnixInterface.queryInstalled(profile);
+				System.out.println(result);
+			}
+			else if(value_query_requisites != null)
+			{
+				System.err.println("Query requisites: "+derivation);
+				String[] result = disnixInterface.queryRequisites(derivation);
+				System.out.println(result);
 			}
 			else if(value_collect_garbage != null)
 			{
-				Boolean value_delete_old = (Boolean)parser.getOptionValue(opt_delete_old);
-				if(value_delete_old == null)
-					value_delete_old = false;
+				boolean deleteOld;
 				
-				System.out.println("Collect garbage. Delete old generations: "+value_delete_old);
-				disnixInterface.collectGarbage(value_delete_old);
+				if(value_delete_old == null)
+					deleteOld = false;
+				else
+					deleteOld = value_delete_old;
+				
+				System.err.println("Collect garbage. Delete old: "+deleteOld);
+				
+				disnixInterface.collectGarbage(deleteOld);
 			}
 			else if(value_activate != null)
 			{
-				String value_type = (String)parser.getOptionValue(opt_type);
+				/* Create arguments string */
+				StringTokenizer st = new StringTokenizer(value_arguments);
+				String[] arguments = new String[st.countTokens()];
 				
-				System.out.println("Activating: "+value_activate);
-				disnixInterface.activate(value_activate, value_type);
+				for(int i = 0; i < st.countTokens(); i++)
+					arguments[i] = st.nextToken();
+				
+				/* Invoke operation */
+				disnixInterface.activate(derivation[0], value_type, arguments);
 			}
 			else if(value_deactivate != null)
 			{
-				String value_type = (String)parser.getOptionValue(opt_type);
+				/* Create arguments string */
+				StringTokenizer st = new StringTokenizer(value_arguments);
+				String[] arguments = new String[st.countTokens()];
 				
-				System.out.println("Deactivating: "+value_deactivate);
-				disnixInterface.deactivate(value_deactivate, value_type);
+				for(int i = 0; i < st.countTokens(); i++)
+					arguments[i] = st.nextToken();
+				
+				/* Invoke operation */
+				disnixInterface.deactivate(derivation[0], value_type, arguments);
+			}
+			else if(value_lock != null)
+			{
+			}
+			else if(value_unlock != null)
+			{
 			}
 			else
 			{
-				System.err.println("You must specify an operation!");
-				printUsage();
+				System.err.println("ERROR: An operation must be specified!");
 				System.exit(1);
 			}
 		}
@@ -234,11 +258,9 @@ public class DisnixClient
 			printUsage();
 			ex.printStackTrace();
 		}
-		catch(AxisFault ex)
+		catch(Exception ex)
 		{
 			ex.printStackTrace();
 		}
-		
-		System.out.println("Operation finished!");
 	}
 }
