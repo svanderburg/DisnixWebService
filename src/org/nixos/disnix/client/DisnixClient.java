@@ -19,10 +19,11 @@
 package org.nixos.disnix.client;
 import jargs.gnu.*;
 import java.util.*;
+import java.io.*;
 
 public class DisnixClient
 {
-	public static void printUsage()
+	private static void printUsage()
 	{
 		System.out.println("Usage:\n"+
 				           "disnix-soap-client --import {--remotefile filename | --localfile filename} derivation\n"+
@@ -39,7 +40,13 @@ public class DisnixClient
 						   "disnix-soap-client --unlock\n"+
 						   "disnix-soap-client {-h | --help}");
 	}
-		
+	
+	private static void printStringArray(String[] string, PrintStream printStream)
+	{
+		for(int i = 0; i < string.length; i++)
+			printStream.println(string[i]);
+	}
+	
 	public static void main(String[] args)
 	{
 		/* Create command line option parser */
@@ -97,15 +104,7 @@ public class DisnixClient
 			String value_type = (String)parser.getOptionValue(opt_type);
 			String value_arguments = (String)parser.getOptionValue(opt_arguments);
 			
-			String[] derivation = parser.getRemainingArgs();
-			
-			/* Validate command line options */
-			
-			if(value_target == null)
-			{
-				System.err.println("ERROR: A targetEPR must be specified!");
-				System.exit(1);
-			}
+			String[] derivation = parser.getRemainingArgs();						
 			
 			/* Display usage if requested */
 			
@@ -113,6 +112,14 @@ public class DisnixClient
 			{
 				printUsage();
 				System.exit(0);
+			}
+			
+			/* Validate command line options */
+			
+			if(value_target == null)
+			{
+				System.err.println("ERROR: A targetEPR must be specified!");
+				System.exit(1);
 			}
 			
 			/* Create SOAP connection interface */
@@ -161,15 +168,19 @@ public class DisnixClient
 			}
 			else if(value_print_invalid != null)
 			{
-				System.err.println("Print invalid: "+derivation);
+				System.err.println("Print invalid: ");
+				printStringArray(derivation, System.err);
+				System.err.println("Returns:");
 				String[] result = disnixInterface.printInvalid(derivation);
-				System.out.println(result);
+				printStringArray(result, System.out);
 			}
 			else if(value_realise != null)
 			{
-				System.err.println("Realise: "+derivation);
+				System.err.println("Realise: ");
+				printStringArray(derivation, System.err);
+				System.err.println("Returns:");
 				String[] result = disnixInterface.realise(derivation);
-				System.out.println(result);
+				printStringArray(result, System.out);
 			}
 			else if(value_set != null)
 			{
@@ -196,13 +207,16 @@ public class DisnixClient
 				System.err.println("Query installed: "+profile);
 				
 				String[] result = disnixInterface.queryInstalled(profile);
-				System.out.println(result);
+				printStringArray(result, System.out);
 			}
 			else if(value_query_requisites != null)
 			{
-				System.err.println("Query requisites: "+derivation);
+				System.err.println("Query requisites: ");
+				printStringArray(derivation, System.err);
+				System.err.println("Returns:");
+				
 				String[] result = disnixInterface.queryRequisites(derivation);
-				System.out.println(result);
+				printStringArray(result, System.out);
 			}
 			else if(value_collect_garbage != null)
 			{
