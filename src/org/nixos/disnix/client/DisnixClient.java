@@ -26,8 +26,8 @@ public class DisnixClient
 	private static void printUsage()
 	{
 		System.out.println("Usage:\n"+
-				           "disnix-soap-client --import {--remotefile filename | --localfile filename} derivation\n"+
-				           "disnix-soap-client --export {--remotefile filename | --localfile filename} derivation\n"+
+				           "disnix-soap-client --import {--remotefile | --localfile } derivation\n"+
+				           "disnix-soap-client --export {--remotefile | --localfile } derivation\n"+
 				           "disnix-soap-client --print-invalid derivations\n"+
 						   "disnix-soap-client {-r | --realise } derivations\n"+
 						   "disnix-soap-client --set [{-p | --profile} profile] derivation\n"+
@@ -277,6 +277,7 @@ public class DisnixClient
 		catch(Exception ex)
 		{
 			ex.printStackTrace();
+			System.exit(1);
 		}
 	}
 }
