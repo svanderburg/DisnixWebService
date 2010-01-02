@@ -191,7 +191,7 @@ public class DisnixClient
 				else
 					profile = value_profile;
 				
-				System.err.println("Set profile: "+profile+" derivation: "+derivation);
+				System.err.println("Set profile: "+profile+" derivation: "+derivation[0]);
 				
 				disnixInterface.set(profile, derivation[0]);
 			}
@@ -232,7 +232,7 @@ public class DisnixClient
 				disnixInterface.collectGarbage(deleteOld);
 			}
 			else if(value_activate != null)
-			{
+			{		
 				/* Create arguments string */
 				StringTokenizer st = new StringTokenizer(value_arguments);
 				String[] arguments = new String[st.countTokens()];
@@ -241,6 +241,7 @@ public class DisnixClient
 					arguments[i] = st.nextToken();
 				
 				/* Invoke operation */
+				System.err.println("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
 				disnixInterface.activate(derivation[0], value_type, arguments);
 			}
 			else if(value_deactivate != null)
@@ -253,6 +254,7 @@ public class DisnixClient
 					arguments[i] = st.nextToken();
 				
 				/* Invoke operation */
+				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
 				disnixInterface.deactivate(derivation[0], value_type, arguments);
 			}
 			else if(value_lock != null)
