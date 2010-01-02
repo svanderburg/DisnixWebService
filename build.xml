@@ -7,6 +7,10 @@
 		<isset property="env.AXIS2_LIB"/>
 	</condition>
 	
+	<condition property="DBUS_JAVA_LIB" value="${env.DBUS_JAVA_LIB}">
+		<isset property="env.DBUS_JAVA_LIB"/>
+	</condition>
+	
 	<condition property="PREFIX" value="${env.PREFIX}" else="/usr/local/DisnixService">
 		<isset property="env.PREFIX"/>
 	</condition>
@@ -16,8 +20,11 @@
 			<include name="*.jar" />
 		</fileset>
 		<fileset dir="${AXIS2_LIB}">
-    		<include name="*.jar"/>
+    		<include name="*.jar" />
     	</fileset>
+		<fileset dir="${DBUS_JAVA_LIB}">
+			<include name="dbus.jar" />
+		</fileset>
 	</path>
 
 	<target name="compile">
@@ -68,12 +75,12 @@
 	
 	<target name="install.service" depends="generate.library.jar, generate.service.aar">
 		<mkdir dir="${PREFIX}/webapps/axis2/WEB-INF/services" />
-		<mkdir dir="${PREFIX}/shared/lib" />
+		<mkdir dir="${PREFIX}/share/java" />
 		
 		<copy toDir="${PREFIX}/webapps/axis2/WEB-INF/services" >
 			<fileset dir="${basedir}" includes="DisnixService.aar" />
 		</copy>
-		<copy toDir="${PREFIX}/shared/lib">
+		<copy toDir="${PREFIX}/share/java">
 			<fileset dir="${basedir}" includes="DisnixConnection.jar" />
 		</copy>
 	</target>
