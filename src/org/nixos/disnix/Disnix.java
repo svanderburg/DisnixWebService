@@ -22,6 +22,8 @@ import org.freedesktop.dbus.exceptions.*;
 
 public interface Disnix extends DBusInterface
 {
+	public void acknowledge(String pid);
+	
 	@DBusMemberName("import")
 	public String importm(String[] derivation);
 	

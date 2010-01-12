@@ -69,5 +69,12 @@
 	<classpathentry kind="lib" path="/home/sander/axis2-1.5/lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/home/sander/axis2-1.5/lib/xml-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="/home/sander/axis2-1.5/lib/XmlSchema-1.4.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/libs"/>
+	<classpathentry kind="lib" path="/home/sander/workspace/libs/dbus.jar"/>
+	<classpathentry kind="lib" path="/home/sander/workspace/libs/dbus-2.7.jar"/>
+	<classpathentry kind="lib" path="/home/sander/workspace/libs/dbus-bin.jar"/>
+	<classpathentry kind="lib" path="/home/sander/workspace/libs/dbus-bin-2.7.jar"/>
+	<classpathentry kind="lib" path="/home/sander/workspace/libs/dbus-viewer.jar"/>
+	<classpathentry kind="lib" path="/home/sander/workspace/libs/dbus-viewer-2.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
