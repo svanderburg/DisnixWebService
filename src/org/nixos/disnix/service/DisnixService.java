@@ -48,7 +48,7 @@ public class DisnixService
 		disnixInterface = (Disnix)con.getRemoteObject("org.nixos.disnix.Disnix", "/org/nixos/disnix/Disnix", Disnix.class);
 	}
 	
-	public void importm(final String closure) throws Exception
+	public /*void*/ int importm(final String closure) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -74,9 +74,11 @@ public class DisnixService
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
 			throw new Exception("Import failed!");
+		
+		return 0;
 	}
 	
-	public void importLocalFile(DataHandler dataHandler) throws Exception
+	public /*void*/ int importLocalFile(DataHandler dataHandler) throws Exception
 	{
 		/* Generate temp file name */		
 		File tempFile = File.createTempFile("disnix_closure_", null);
@@ -89,6 +91,8 @@ public class DisnixService
 		
 		/* Import the closure */
 		importm(tempFile.toString());
+		
+		return 0;
 	}
 	
 	public String export(final String[] derivation) throws Exception
@@ -196,7 +200,7 @@ public class DisnixService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
-	public void set(final String profile, final String derivation) throws Exception
+	public /*void*/ int set(final String profile, final String derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -222,6 +226,8 @@ public class DisnixService
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
 			throw new Exception("Set failed!");
+		
+		return 0;
 	}
 	
 	public String[] queryInstalled(final String profile) throws Exception
@@ -288,7 +294,7 @@ public class DisnixService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
-	public void collectGarbage(final boolean deleteOld) throws Exception
+	public /*void*/ int collectGarbage(final boolean deleteOld) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -314,9 +320,11 @@ public class DisnixService
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
 			throw new Exception("Collect garbage failed!");
+		
+		return 0;
 	}
 	
-	public void activate(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int activate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -341,10 +349,12 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Activation failed!");		
+			throw new Exception("Activation failed!");
+		
+		return 0;
 	}
 	
-	public void deactivate(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int deactivate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -369,7 +379,9 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Deactivation failed!");		
+			throw new Exception("Deactivation failed!");
+		
+		return 0;
 	}
 	
 	public void lock() throws Exception
