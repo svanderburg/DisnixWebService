@@ -133,13 +133,13 @@ public class DisnixClient
 			{
 				if(value_remotefile != null)
 				{
-					System.err.println("Importing remote derivation: "+derivation);
-					disnixInterface.importm(derivation);
+					System.err.println("Importing remote closure: "+derivation[0]);
+					disnixInterface.importm(derivation[0]);
 				}
 				else if(value_localfile != null)
 				{
-					System.err.println("Import local derivation: "+derivation);
-					disnixInterface.importLocalFile(derivation);
+					System.err.println("Import local closure: "+derivation[0]);
+					disnixInterface.importLocalFile(derivation[0]);
 				}
 				else
 				{

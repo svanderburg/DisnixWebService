@@ -25,7 +25,7 @@ public interface Disnix extends DBusInterface
 	public void acknowledge(String pid);
 	
 	@DBusMemberName("import")
-	public String importm(String[] derivation);
+	public String importm(String closure);
 	
 	public String export(String[] derivation);
 	

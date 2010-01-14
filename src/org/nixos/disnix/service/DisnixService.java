@@ -48,7 +48,7 @@ public class DisnixService
 		disnixInterface = (Disnix)con.getRemoteObject("org.nixos.disnix.Disnix", "/org/nixos/disnix/Disnix", Disnix.class);
 	}
 	
-	public void importm(final String[] derivation) throws Exception
+	public void importm(final String closure) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -56,7 +56,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.importm(derivation);
+					String pid = disnixInterface.importm(closure);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -76,27 +76,19 @@ public class DisnixService
 			throw new Exception("Import failed!");
 	}
 	
-	public void importLocalFile(DataHandler[] dataHandler) throws Exception
+	public void importLocalFile(DataHandler dataHandler) throws Exception
 	{
-		String[] tempFileName = new String[dataHandler.length];
+		/* Generate temp file name */		
+		File tempFile = File.createTempFile("disnix_closure_", null);
 		
-		for(int i = 0; i < dataHandler.length; i++)
-		{
-			/* Generate temp file name */		
-			File tempFile = File.createTempFile("disnix_closure_", null);
-			
-			/* Save file on local filesystem */
-			FileOutputStream fos = new FileOutputStream(tempFile);
-			dataHandler[i].writeTo(fos);
-			fos.flush();
-			fos.close();
-			
-			/* Add temp file name to array */
-			tempFileName[i] = tempFile.toString();
-		}
+		/* Save file on local filesystem */
+		FileOutputStream fos = new FileOutputStream(tempFile);
+		dataHandler.writeTo(fos);
+		fos.flush();
+		fos.close();
 		
 		/* Import the closure */
-		importm(tempFileName);
+		importm(tempFile.toString());
 	}
 	
 	public String export(final String[] derivation) throws Exception

@@ -53,20 +53,17 @@ public class DisnixInterface
 		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);		
 	}
 	
-	public void importm(String[] derivation) throws AxisFault
+	public void importm(String closure) throws AxisFault
 	{
 		QName operation = new QName(NAME_SPACE, "importm");
-		Object[] args_param = { derivation };
+		Object[] args_param = { closure };
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
 	
-	public void importLocalFile(String[] derivation) throws AxisFault
+	public void importLocalFile(String closure) throws AxisFault
 	{
-		DataHandler[] dataHandler = new DataHandler[derivation.length];
-		
-		for(int i = 0; i < derivation.length; i++)
-			dataHandler[i] = new DataHandler(new FileDataSource(derivation[i]));
+		DataHandler	dataHandler = new DataHandler(new FileDataSource(closure));
 		
 		QName operation = new QName(NAME_SPACE, "importLocalFile");
 		Object[] args_param = { dataHandler };
