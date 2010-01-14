@@ -235,37 +235,45 @@ public class DisnixClient
 			{		
 				/* Create arguments string */
 				StringTokenizer st = new StringTokenizer(value_arguments);
-				ArrayList<String> arguments = new ArrayList<String>();
+				ArrayList<String> argumentsList = new ArrayList<String>();
 				
 				for(int i = 0; i < st.countTokens(); i++)
 				{
 					String token = st.nextToken();
 					
 					if(token != null)
-						arguments.add(token);
+						argumentsList.add(token);
 				}
 				
-				/* Invoke operation */
+				/* Convert arguments arraylist to array */
+				String[] arguments = new String[argumentsList.size()];
+				argumentsList.toArray(arguments);
+				
+				/* Invoke operation */				
 				System.err.println("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
-				disnixInterface.activate(derivation[0], value_type, (String[])arguments.toArray());
+				disnixInterface.activate(derivation[0], value_type, arguments);
 			}
 			else if(value_deactivate != null)
 			{
 				/* Create arguments string */
 				StringTokenizer st = new StringTokenizer(value_arguments);
-				ArrayList<String> arguments = new ArrayList<String>();
+				ArrayList<String> argumentsList = new ArrayList<String>();
 				
 				for(int i = 0; i < st.countTokens(); i++)
 				{
 					String token = st.nextToken();
 					
 					if(token != null)
-						arguments.add(token);
+						argumentsList.add(token);
 				}
+				
+				/* Convert arguments arraylist to array */
+				String[] arguments = new String[argumentsList.size()];
+				argumentsList.toArray(arguments);
 				
 				/* Invoke operation */
 				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
-				disnixInterface.deactivate(derivation[0], value_type, (String[])arguments.toArray());
+				disnixInterface.deactivate(derivation[0], value_type, arguments);
 			}
 			else if(value_lock != null)
 			{
