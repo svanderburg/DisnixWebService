@@ -22,38 +22,38 @@ import org.freedesktop.dbus.exceptions.*;
 
 public interface Disnix extends DBusInterface
 {
-	public void acknowledge(String pid);
+	public void acknowledge(int pid);
 	
 	@DBusMemberName("import")
-	public String importm(String closure);
+	public int importm(String closure);
 	
-	public String export(String[] derivation);
+	public int export(String[] derivation);
 	
-	public String print_invalid(String[] derivation);
+	public int print_invalid(String[] derivation);
 	
-	public String realise(String[] derivation);
+	public int realise(String[] derivation);
 	
-	public String set(String profile, String derivation);
+	public int set(String profile, String derivation);
 	
-	public String query_installed(String profile);
+	public int query_installed(String profile);
 	
-	public String query_requisites(String[] derivation);
+	public int query_requisites(String[] derivation);
 	
-	public String collect_garbage(boolean delete_old);
+	public int collect_garbage(boolean delete_old);
 	
-	public String activate(String derivation, String type, String[] arguments);
+	public int activate(String derivation, String type, String[] arguments);
 	
-	public String deactivate(String derivation, String type, String[] arguments);
+	public int deactivate(String derivation, String type, String[] arguments);
 	
-	public String lock();
+	public int lock();
 	
-	public String unlock();
+	public int unlock();
 	
 	public static class finish extends DBusSignal
 	{
-		public final String pid;
+		public final int pid;
 		
-		public finish(String objectpath, String pid) throws DBusException
+		public finish(String objectpath, int pid) throws DBusException
 		{
 			super(objectpath, pid);
 			this.pid = pid;
@@ -62,11 +62,11 @@ public interface Disnix extends DBusInterface
 	
 	public static class success extends DBusSignal
 	{
-		public final String pid;
+		public final int pid;
 		
 		public final String[] derivation;
 		
-		public success(String objectpath, String pid, String[] derivation) throws DBusException
+		public success(String objectpath, int pid, String[] derivation) throws DBusException
 		{
 			super(objectpath, pid, derivation);
 			this.pid = pid;
@@ -76,9 +76,9 @@ public interface Disnix extends DBusInterface
 	
 	public static class failure extends DBusSignal
 	{
-		public final String pid;
+		public final int pid;
 		
-		public failure(String objectpath, String pid) throws DBusException
+		public failure(String objectpath, int pid) throws DBusException
 		{
 			super(objectpath, pid);
 			this.pid = pid;

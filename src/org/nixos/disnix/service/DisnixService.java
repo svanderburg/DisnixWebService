@@ -56,7 +56,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.importm(closure);
+					int pid = disnixInterface.importm(closure);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -103,7 +103,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.export(derivation);
+					int pid = disnixInterface.export(derivation);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -144,7 +144,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.print_invalid(derivation);
+					int pid = disnixInterface.print_invalid(derivation);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -176,7 +176,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.realise(derivation);
+					int pid = disnixInterface.realise(derivation);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -208,7 +208,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.set(profile, derivation);
+					int pid = disnixInterface.set(profile, derivation);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -238,7 +238,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.query_installed(profile);
+					int pid = disnixInterface.query_installed(profile);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -270,7 +270,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.query_requisites(derivation);
+					int pid = disnixInterface.query_requisites(derivation);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -302,7 +302,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.collect_garbage(deleteOld);
+					int pid = disnixInterface.collect_garbage(deleteOld);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -332,7 +332,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.activate(derivation, type, arguments);
+					int pid = disnixInterface.activate(derivation, type, arguments);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -362,7 +362,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.deactivate(derivation, type, arguments);
+					int pid = disnixInterface.deactivate(derivation, type, arguments);
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -392,7 +392,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.lock();
+					int pid = disnixInterface.lock();
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();
@@ -420,7 +420,7 @@ public class DisnixService
 			{
 				try
 				{
-					String pid = disnixInterface.unlock();
+					int pid = disnixInterface.unlock();
 					handler.addPid(pid, this);
 					disnixInterface.acknowledge(pid);
 					suspend();

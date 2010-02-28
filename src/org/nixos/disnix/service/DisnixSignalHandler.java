@@ -23,14 +23,14 @@ import org.nixos.disnix.Disnix;
 
 public class DisnixSignalHandler implements DBusSigHandler
 {
-	private Hashtable<String, DisnixThread> pids;
+	private Hashtable<Integer, DisnixThread> pids;
 	
 	public DisnixSignalHandler()
 	{
-		pids = new Hashtable<String, DisnixThread>();
+		pids = new Hashtable<Integer, DisnixThread>();
 	}
 	
-	public void addPid(String pid, DisnixThread thread)
+	public void addPid(int pid, DisnixThread thread)
 	{
 		pids.put(pid, thread);
 	}
@@ -40,7 +40,7 @@ public class DisnixSignalHandler implements DBusSigHandler
 		if(s instanceof Disnix.finish)
 		{
 			System.out.println("Caught finish signal!");
-			String pid = ((Disnix.finish)s).pid;			
+			int pid = ((Disnix.finish)s).pid;			
 			DisnixThread thread = pids.remove(pid);
 			
 			if(thread != null)
@@ -52,7 +52,7 @@ public class DisnixSignalHandler implements DBusSigHandler
 		else if(s instanceof Disnix.success)
 		{
 			System.out.println("Caught success signal!");
-			String pid = ((Disnix.success)s).pid;			
+			int pid = ((Disnix.success)s).pid;			
 			DisnixThread thread = pids.remove(pid);
 			
 			if(thread != null)
@@ -64,7 +64,7 @@ public class DisnixSignalHandler implements DBusSigHandler
 		else if(s instanceof Disnix.failure)
 		{
 			System.out.println("Caught failure signal!");
-			String pid = ((Disnix.failure)s).pid;			
+			int pid = ((Disnix.failure)s).pid;			
 			DisnixThread thread = pids.remove(pid);
 			
 			if(thread != null)
