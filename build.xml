@@ -7,6 +7,10 @@
 		<isset property="env.AXIS2_LIB"/>
 	</condition>
 	
+	<condition property="AXIS2_WEBAPP" value="${env.AXIS2_WEBAPP}">
+		<isset property="env.AXIS2_WEBAPP"/>
+	</condition>
+	
 	<condition property="DBUS_JAVA_LIB" value="${env.DBUS_JAVA_LIB}">
 		<isset property="env.DBUS_JAVA_LIB"/>
 	</condition>
@@ -43,9 +47,40 @@
 			<fileset dir="META-INF" includes="*" />			
 		</copy>
 		
-		<jar destfile="DisnixService.aar">			
+		<mkdir dir="${deploybuild.dir}/META-INF/services" />
+		<jar destfile="${deploybuild.dir}/WEB-INF/services/DisnixService.aar">			
 			<fileset dir="${deploybuild.dir}" includes="META-INF/* org/nixos/disnix/service/*" />
 		</jar>
+	</target>
+	
+	<target name="generate.war" depends="generate.service.aar">
+		<mkdir dir="${deploybuild.dir}/WEB-INF/conf" />
+		<copy file="${AXIS2_WEBAPP}/WEB-INF/conf/axis2.xml" tofile="${deploybuild.dir}/WEB-INF/conf/axis2.xml" />
+		
+		<!-- Change some settings in the axis2 configuration file -->
+		<replace file="${deploybuild.dir}/WEB-INF/conf/axis2.xml">
+			<replacefilter>
+				<replacetoken><![CDATA[<parameter name="enableMTOM">false</parameter>]]></replacetoken>
+				<replacevalue><![CDATA[<parameter name="enableMTOM">true</parameter>]]></replacevalue>
+			</replacefilter>
+			<replacefilter>
+				<replacetoken><![CDATA[<!--parameter name="cacheAttachments">]]></replacetoken>
+				<replacevalue><![CDATA[<parameter name="cacheAttachments">]]></replacevalue>
+			</replacefilter>
+			<replacefilter>
+				<replacetoken><![CDATA[<parameter name="attachmentDIR"></parameter>]]></replacetoken>
+				<replacevalue><![CDATA[<parameter name="attachmentDIR">/tmp</parameter>]]></replacevalue>
+			</replacefilter>
+			<replacefilter>
+				<replacetoken><![CDATA[4000</parameter-->]]></replacetoken>
+				<replacevalue><![CDATA[4000</parameter>]]></replacevalue>
+			</replacefilter>
+		</replace>
+		
+		<war destfile="DisnixService.war" needxmlfile="false">
+			<fileset dir="${AXIS2_WEBAPP}" excludes="WEB-INF/conf/axis2.xml" />
+			<fileset dir="${deploybuild.dir}" includes="WEB-INF/services/DisnixService.aar WEB-INF/conf/axis2.xml" />			
+		</war>
 	</target>
 
 	<target name="generate.library.jar" depends="compile">
@@ -73,12 +108,12 @@
 		</copy>
 	</target>
 	
-	<target name="install.service" depends="generate.library.jar, generate.service.aar">
-		<mkdir dir="${PREFIX}/webapps/axis2/WEB-INF/services" />
+	<target name="install.service" depends="generate.library.jar, generate.war">
+		<mkdir dir="${PREFIX}/webapps" />
 		<mkdir dir="${PREFIX}/share/java" />
 		
-		<copy toDir="${PREFIX}/webapps/axis2/WEB-INF/services" >
-			<fileset dir="${basedir}" includes="DisnixService.aar" />
+		<copy toDir="${PREFIX}/webapps" >
+			<fileset dir="${basedir}" includes="DisnixService.war" />
 		</copy>
 		<copy toDir="${PREFIX}/share/java">
 			<fileset dir="${basedir}" includes="DisnixConnection.jar" />
@@ -89,7 +124,7 @@
 	
 	<target name="clean">
 		<delete file="DisnixConnection.jar" />
-		<delete file="DisnixService.aar" />
+		<delete file="DisnixService.war" />
 		<delete file="DisnixClient.jar" />
 		<delete dir="${deploybuild.dir}" />
 	</target>
