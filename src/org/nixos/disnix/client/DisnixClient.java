@@ -102,7 +102,7 @@ public class DisnixClient
 			String value_profile = (String)parser.getOptionValue(opt_profile);
 			Boolean value_delete_old = (Boolean)parser.getOptionValue(opt_delete_old);
 			String value_type = (String)parser.getOptionValue(opt_type);
-			String value_arguments = (String)parser.getOptionValue(opt_arguments);
+			Vector<String> value_arguments = parser.getOptionValues(opt_arguments);
 			
 			String[] derivation = parser.getRemainingArgs();						
 			
@@ -233,43 +233,19 @@ public class DisnixClient
 			}
 			else if(value_activate != null)
 			{		
-				/* Create arguments string */
-				StringTokenizer st = new StringTokenizer(value_arguments);
-				ArrayList<String> argumentsList = new ArrayList<String>();
-				
-				for(int i = 0; i < st.countTokens(); i++)
-				{
-					String token = st.nextToken();
-					
-					if(token != null)
-						argumentsList.add(token);
-				}
-				
-				/* Convert arguments arraylist to array */
-				String[] arguments = new String[argumentsList.size()];
-				argumentsList.toArray(arguments);
+				/* Convert arguments vector to array */
+				String[] arguments = new String[value_arguments.size()];
+				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */				
 				System.err.println("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
 				disnixInterface.activate(derivation[0], value_type, arguments);
 			}
 			else if(value_deactivate != null)
-			{
-				/* Create arguments string */
-				StringTokenizer st = new StringTokenizer(value_arguments);
-				ArrayList<String> argumentsList = new ArrayList<String>();
-				
-				for(int i = 0; i < st.countTokens(); i++)
-				{
-					String token = st.nextToken();
-					
-					if(token != null)
-						argumentsList.add(token);
-				}
-				
-				/* Convert arguments arraylist to array */
-				String[] arguments = new String[argumentsList.size()];
-				argumentsList.toArray(arguments);
+			{				
+				/* Convert arguments vector to array */
+				String[] arguments = new String[value_arguments.size()];
+				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */
 				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
