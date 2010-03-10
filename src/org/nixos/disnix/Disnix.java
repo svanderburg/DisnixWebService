@@ -22,32 +22,32 @@ import org.freedesktop.dbus.exceptions.*;
 
 public interface Disnix extends DBusInterface
 {
-	public void acknowledge(int pid);
+	public int get_job_id();
 	
 	@DBusMemberName("import")
-	public int importm(String closure);
+	public void importm(int pid, String closure);
 	
-	public int export(String[] derivation);
+	public void export(int pid, String[] derivation);
 	
-	public int print_invalid(String[] derivation);
+	public void print_invalid(int pid, String[] derivation);
 	
-	public int realise(String[] derivation);
+	public void realise(int pid, String[] derivation);
 	
-	public int set(String profile, String derivation);
+	public void set(int pid, String profile, String derivation);
 	
-	public int query_installed(String profile);
+	public void query_installed(int pid, String profile);
 	
-	public int query_requisites(String[] derivation);
+	public void query_requisites(int pid, String[] derivation);
 	
-	public int collect_garbage(boolean delete_old);
+	public void collect_garbage(int pid, boolean delete_old);
 	
-	public int activate(String derivation, String type, String[] arguments);
+	public void activate(int pid, String derivation, String type, String[] arguments);
 	
-	public int deactivate(String derivation, String type, String[] arguments);
+	public void deactivate(int pid, String derivation, String type, String[] arguments);
 	
-	public int lock();
+	public int lock(int pid);
 	
-	public int unlock();
+	public int unlock(int pid);
 	
 	public static class finish extends DBusSignal
 	{

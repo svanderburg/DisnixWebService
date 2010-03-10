@@ -56,9 +56,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.importm(closure);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.importm(pid, closure);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -103,9 +103,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.export(derivation);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.export(pid, derivation);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -144,9 +144,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.print_invalid(derivation);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.print_invalid(pid, derivation);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -176,9 +176,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.realise(derivation);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.realise(pid, derivation);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -208,9 +208,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.set(profile, derivation);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.set(pid, profile, derivation);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -238,9 +238,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.query_installed(profile);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.query_installed(pid, profile);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -270,9 +270,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.query_requisites(derivation);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.query_requisites(pid, derivation);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -302,9 +302,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.collect_garbage(deleteOld);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.collect_garbage(pid, deleteOld);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -332,9 +332,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.activate(derivation, type, arguments);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.activate(pid, derivation, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -362,9 +362,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.deactivate(derivation, type, arguments);
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.deactivate(pid, derivation, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -392,9 +392,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.lock();
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.lock(pid);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -420,9 +420,9 @@ public class DisnixService
 			{
 				try
 				{
-					int pid = disnixInterface.unlock();
+					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.acknowledge(pid);
+					disnixInterface.unlock(pid);
 					suspend();
 					waitForNotificationToResume();
 				}
