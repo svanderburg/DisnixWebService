@@ -44,7 +44,7 @@ public class DisnixClient
 	private static void printStringArray(String[] string, PrintStream printStream)
 	{
 		for(int i = 0; i < string.length; i++)
-			printStream.println(string[i]);
+			printStream.print(string[i]);
 	}
 	
 	public static void main(String[] args)
