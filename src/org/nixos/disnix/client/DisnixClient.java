@@ -36,8 +36,8 @@ public class DisnixClient
 						   "disnix-soap-client --collect-garbage {-d | --delete-old}\n"+
 						   "disnix-soap-client --activate --type type --arguments arguments derivation\n"+
 						   "disnix-soap-client --deactivate --type type --arguments arguments derivation\n"+
-						   "disnix-soap-client --lock\n"+
-						   "disnix-soap-client --unlock\n"+
+						   "disnix-soap-client --lock [{-p | --profile} profile]\n"+
+						   "disnix-soap-client --unlock [{-p | --profile} profile]\n"+
 						   "disnix-soap-client {-h | --help}");
 	}
 	
@@ -253,9 +253,27 @@ public class DisnixClient
 			}
 			else if(value_lock != null)
 			{
+				String profile;
+				
+				if(value_profile == null)
+					profile = "default";
+				else
+					profile = value_profile;
+				
+				System.err.println("Acquiring lock on profile: "+profile);
+				disnixInterface.lock(profile);
 			}
 			else if(value_unlock != null)
 			{
+				String profile;
+				
+				if(value_profile == null)
+					profile = "default";
+				else
+					profile = value_profile;
+				
+				System.err.println("Releasing lock on profile: "+profile);
+				disnixInterface.unlock(profile);
 			}
 			else
 			{

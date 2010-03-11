@@ -384,7 +384,7 @@ public class DisnixService
 		return 0;
 	}
 	
-	public void lock() throws Exception
+	public void lock(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -394,7 +394,7 @@ public class DisnixService
 				{
 					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.lock(pid);
+					disnixInterface.lock(pid, profile);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -412,7 +412,7 @@ public class DisnixService
 			throw new Exception("Lock failed!");		
 	}
 	
-	public void unlock() throws Exception
+	public void unlock(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -422,7 +422,7 @@ public class DisnixService
 				{
 					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
-					disnixInterface.unlock(pid);
+					disnixInterface.unlock(pid, profile);
 					suspend();
 					waitForNotificationToResume();
 				}

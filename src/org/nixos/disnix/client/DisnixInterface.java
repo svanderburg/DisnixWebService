@@ -167,4 +167,20 @@ public class DisnixInterface
 		
 		serviceClient.invokeRobust(operation, args_param);
 	}
+	
+	public void lock(String profile) throws AxisFault
+	{
+		QName operation = new QName(NAME_SPACE, "lock");
+		Object[] args_param = { profile };
+		
+		serviceClient.invokeRobust(operation, args_param);
+	}
+	
+	public void unlock(String profile) throws AxisFault
+	{
+		QName operation = new QName(NAME_SPACE, "unlock");
+		Object[] args_param = { profile };
+		
+		serviceClient.invokeRobust(operation, args_param);
+	}
 }
