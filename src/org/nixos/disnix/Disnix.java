@@ -45,9 +45,9 @@ public interface Disnix extends DBusInterface
 	
 	public void deactivate(int pid, String derivation, String type, String[] arguments);
 	
-	public int lock(int pid, String profile);
+	public void lock(int pid, String profile);
 	
-	public int unlock(int pid, String profile);
+	public void unlock(int pid, String profile);
 	
 	public static class finish extends DBusSignal
 	{
