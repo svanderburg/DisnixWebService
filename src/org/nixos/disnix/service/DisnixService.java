@@ -384,7 +384,7 @@ public class DisnixService
 		return 0;
 	}
 	
-	public void lock(final String profile) throws Exception
+	public /*void*/ int lock(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -409,10 +409,12 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Lock failed!");		
+			throw new Exception("Lock failed!");
+		
+		return 0;
 	}
 	
-	public void unlock(final String profile) throws Exception
+	public /*void*/ int unlock(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
 		{
@@ -437,6 +439,8 @@ public class DisnixService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Unlock failed!");		
+			throw new Exception("Unlock failed!");
+		
+		return 0;
 	}
 }
