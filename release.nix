@@ -102,6 +102,10 @@ let
                       '';
 	           };
 
+		ids.gids = { disnix = 200; };
+		users.extraGroups = [ { gid = 200; name = "disnix"; } ];
+                users.extraUsers = [ { name = "tomcat"; group = "tomcat"; description = "Tomcat user"; extraGroups = [ "disnix" ]; } ];
+
 	        services.tomcat.enable = true;
 		services.tomcat.javaOpts = "-Djava.library.path=${pkgs.libmatthew_java}/lib/jni";
                 services.tomcat.catalinaOpts = "-Xms64m -Xmx256m";
