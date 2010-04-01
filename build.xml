@@ -47,7 +47,7 @@
 			<fileset dir="META-INF" includes="*" />			
 		</copy>
 		
-		<mkdir dir="${deploybuild.dir}/META-INF/services" />
+		<mkdir dir="${deploybuild.dir}/WEB-INF/services" />
 		<jar destfile="${deploybuild.dir}/WEB-INF/services/DisnixService.aar">			
 			<fileset dir="${deploybuild.dir}" includes="META-INF/* org/nixos/disnix/service/*" />
 		</jar>
