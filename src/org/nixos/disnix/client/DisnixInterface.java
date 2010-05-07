@@ -70,132 +70,300 @@ public class DisnixInterface
 	
 	public void importm(String closure) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "importm");
-		Object[] args = { closure };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "importm");
+			Object[] args = { closure };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void importLocalFile(String closure) throws AxisFault
 	{
-		DataHandler	dataHandler = new DataHandler(new FileDataSource(closure));
-		
-		QName operation = new QName(NAME_SPACE, "importLocalFile");
-		Object[] args = { dataHandler };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			DataHandler	dataHandler = new DataHandler(new FileDataSource(closure));
+			
+			QName operation = new QName(NAME_SPACE, "importLocalFile");
+			Object[] args = { dataHandler };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public String export(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "export");
-		Object[] args = { derivation };
-		Class<?>[] returnTypes = { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
-		return (String)response[0];
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "export");
+			Object[] args = { derivation };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String)response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void exportRemoteFile(String[] derivation) throws AxisFault, IOException
 	{
-		QName operation = new QName(NAME_SPACE, "exportRemoteFile");
-		Object[] args = { derivation };
-		Class<?>[] returnTypes = { DataHandler.class };
-		Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
-		
-		/* Retrieve the data handler */
-		DataHandler dataHandler = (DataHandler)response[0];
-		
-		/* Generate temp file name */		
-		File tempFile = File.createTempFile("disnix_closure_", null);
-		
-		/* Save file on local filesystem */
-		FileOutputStream fos = new FileOutputStream(tempFile);
-		dataHandler.writeTo(fos);
-		fos.flush();
-		fos.close();
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "exportRemoteFile");
+			Object[] args = { derivation };
+			Class<?>[] returnTypes = { DataHandler.class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			
+			/* Retrieve the data handler */
+			DataHandler dataHandler = (DataHandler)response[0];
+			
+			/* Generate temp file name */		
+			File tempFile = File.createTempFile("disnix_closure_", null);
+			
+			/* Save file on local filesystem */
+			FileOutputStream fos = new FileOutputStream(tempFile);
+			dataHandler.writeTo(fos);
+			fos.flush();
+			fos.close();
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public String[] printInvalid(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "printInvalid");
-		Object[] args = { derivation };
-		Class<?>[] returnTypes = { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
-		return (String[])response[0];
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "printInvalid");
+			Object[] args = { derivation };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public String[] realise(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "realise");
-		Object[] args = { derivation };
-		Class<?>[] returnTypes = { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
-		return (String[])response[0];
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "realise");
+			Object[] args = { derivation };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void set(String profile, String derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "set");
-		Object[] args = { profile, derivation };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "set");
+			Object[] args = { profile, derivation };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public String[] queryInstalled(String profile) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "queryInstalled");
-		Object[] args = { profile };
-		Class<?>[] returnTypes = { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
-		return (String[])response[0];
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "queryInstalled");
+			Object[] args = { profile };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public String[] queryRequisites(String[] derivation) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "queryRequisites");
-		Object[] args = { derivation };
-		Class<?>[] returnTypes = { String[].class };
-		Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
-		return (String[])response[0];
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "queryRequisites");
+			Object[] args = { derivation };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void collectGarbage(boolean deleteOld) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "collectGarbage");
-		Object[] args = { deleteOld };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "collectGarbage");
+			Object[] args = { deleteOld };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void activate(String derivation, String type, String[] arguments) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "activate");
-		Object[] args = { derivation, type, arguments };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "activate");
+			Object[] args = { derivation, type, arguments };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void deactivate(String derivation, String type, String[] arguments) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "deactivate");
-		Object[] args = { derivation, type, arguments };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "deactivate");
+			Object[] args = { derivation, type, arguments };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void lock(String profile) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "lock");
-		Object[] args = { profile };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "lock");
+			Object[] args = { profile };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 	
 	public void unlock(String profile) throws AxisFault
 	{
-		QName operation = new QName(NAME_SPACE, "unlock");
-		Object[] args = { profile };
-		
-		serviceClient.invokeRobust(operation, args);
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "unlock");
+			Object[] args = { profile };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
 	}
 }
