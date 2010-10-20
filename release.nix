@@ -53,7 +53,7 @@ let
     tests = 
       { nixos ? /etc/nixos/nixos
       , disnix ? (import ../../disnix/trunk/release.nix {}).build {}
-      , disnix_activation_scripts ? (import ../../disnix-activation-scripts-nixos/trunk/release.nix {}).build {}
+      , disnix_activation_scripts ? (import ../../disnix-activation-scripts/trunk/release.nix {}).build {}
       }:
       
       let
@@ -69,22 +69,8 @@ let
 	      {pkgs, config, ...}:
 	      
 	      {
-	        # Make the Nix store in this VM writable using AUFS.  Use Linux
-                # 2.6.27 because 2.6.32 doesn't work (probably we need AUFS2).
-                # This should probably be moved to qemu-vm.nix.
-
-                boot.kernelPackages = (if pkgs ? linuxPackages then
-                  pkgs.linuxPackages_2_6_27 else pkgs.kernelPackages_2_6_27);
-                boot.extraModulePackages = [ config.boot.kernelPackages.aufs ];
-                boot.initrd.availableKernelModules = [ "aufs" ];
-	      
-                boot.initrd.postMountCommands =
-                  ''
-                    mkdir /mnt-store-tmpfs
-                    mount -t tmpfs -o "mode=755" none /mnt-store-tmpfs
-                    mount -t aufs -o dirs=/mnt-store-tmpfs=rw:$targetRoot/nix/store=rr none $targetRoot/nix/store
-                  '';
-
+	        virtualisation.writableStore = true;
+		
                 services.dbus.enable = true;
                 services.dbus.packages = [ disnix ];
 	    
@@ -118,22 +104,7 @@ let
 	      {pkgs, config, ...}:
 	      
 	      {
-	        # Make the Nix store in this VM writable using AUFS.  Use Linux
-                # 2.6.27 because 2.6.32 doesn't work (probably we need AUFS2).
-                # This should probably be moved to qemu-vm.nix.
-
-                boot.kernelPackages = (if pkgs ? linuxPackages then
-                  pkgs.linuxPackages_2_6_27 else pkgs.kernelPackages_2_6_27);
-                boot.extraModulePackages = [ config.boot.kernelPackages.aufs ];
-                boot.initrd.availableKernelModules = [ "aufs" ];
-	      
-                boot.initrd.postMountCommands =
-                  ''
-                    mkdir /mnt-store-tmpfs
-                    mount -t tmpfs -o "mode=755" none /mnt-store-tmpfs
-                    mount -t aufs -o dirs=/mnt-store-tmpfs=rw:$targetRoot/nix/store=rr none $targetRoot/nix/store
-                  '';
-		  
+	        virtualisation.writableStore = true;	  
 	        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
 	      };
 	  };	    
