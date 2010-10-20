@@ -1,6 +1,6 @@
-<service name="DisnixService" scope="application">
+<service name="DisnixWebService" scope="application">
 	<description>
-		Disnix Service
+		Disnix Web Service
 	</description>
 	<messageReceivers>
 		<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only"
@@ -9,6 +9,6 @@
 				 class="org.apache.axis2.rpc.receivers.RPCInOutAsyncMessageReceiver"/>
 	</messageReceivers>
 	<parameter name="ServiceClass">
-		org.nixos.disnix.service.DisnixService
+		org.nixos.disnix.service.DisnixWebService
 	</parameter>
 </service>

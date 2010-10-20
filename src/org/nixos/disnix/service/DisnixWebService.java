@@ -29,7 +29,7 @@ import java.io.*;
 /**
  * Provides a SOAP interface to operations of the core Disnix service
  */
-public class DisnixService
+public class DisnixWebService
 {
 	/** Interface used to communicate to the core D-Bus service */
 	private Disnix disnixInterface;
@@ -42,7 +42,7 @@ public class DisnixService
 	 * 
 	 * @throws DBusException If the connection with the D-Bus service fails
 	 */
-	public DisnixService() throws DBusException
+	public DisnixWebService() throws DBusException
 	{	
 		handler = new DisnixSignalHandler();
 		

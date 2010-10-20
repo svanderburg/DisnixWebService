@@ -3,24 +3,24 @@
 let
   jobs = rec {
     tarball =
-      { DisnixService ? {outPath = ./.; rev = 1234;}
+      { DisnixWebService ? {outPath = ./.; rev = 1234;}
       , officialRelease ? false
       }:
 
       with import nixpkgs {};
 
       releaseTools.sourceTarball {
-        name = "DisnixService-tarball";
+        name = "DisnixWebService-tarball";
         version = builtins.readFile ./version;
-        src = DisnixService;
+        src = DisnixWebService;
         inherit officialRelease;
 	distPhase =
 	''
-	  mkdir -p ../bin/DisnixService-$version
-	  cp -av * ../bin/DisnixService-$version
+	  mkdir -p ../bin/DisnixWebService-$version
+	  cp -av * ../bin/DisnixWebService-$version
 	  cd ../bin
 	  ensureDir $out/tarballs
-	  tar cfvj $out/tarballs/DisnixService-$version.tar.bz2 DisnixService-$version
+	  tar cfvj $out/tarballs/DisnixWebService-$version.tar.bz2 DisnixWebService-$version
 	'';
       };
 
@@ -32,7 +32,7 @@ let
       with import nixpkgs { inherit system; };
 
       releaseTools.nixBuild {
-        name = "disnix";
+        name = "DisnixWebService";
         src = tarball;
 	PREFIX = ''''${env.out}'';
         AXIS2_LIB = "${axis2}/lib";
@@ -57,7 +57,7 @@ let
       }:
       
       let
-        DisnixService = build { system = "x86_64-linux"; };
+        DisnixWebService = build { system = "x86_64-linux"; };
 	tests = ./tests;
       in
       with import "${nixos}/lib/testing.nix" { inherit nixpkgs; system = "x86_64-linux"; services = null; };
@@ -109,9 +109,9 @@ let
 	        services.tomcat.enable = true;
 		services.tomcat.javaOpts = "-Djava.library.path=${pkgs.libmatthew_java}/lib/jni";
                 services.tomcat.catalinaOpts = "-Xms64m -Xmx256m";
-                services.tomcat.sharedLibs = [ "${DisnixService}/share/java/DisnixConnection.jar"
+                services.tomcat.sharedLibs = [ "${DisnixWebService}/share/java/DisnixConnection.jar"
                                                "${pkgs.dbus_java}/share/java/dbus.jar" ];
-                services.tomcat.webapps = [ DisnixService ];
+                services.tomcat.webapps = [ DisnixWebService ];
 	      };
 	      
 	    client =
@@ -134,20 +134,20 @@ let
                     mount -t aufs -o dirs=/mnt-store-tmpfs=rw:$targetRoot/nix/store=rr none $targetRoot/nix/store
                   '';
 		  
-	        environment.systemPackages = [ disnix DisnixService pkgs.stdenv ];
+	        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
 	      };
 	  };	    
 	  testScript = 
 	    ''
 	      startAll;
 	      
-	      # Wait until tomcat is started and the DisnixService is activated
+	      # Wait until tomcat is started and the DisnixWebService is activated
               $server->waitForJob("tomcat");
-	      $server->waitForFile("/var/tomcat/webapps/DisnixService");
+	      $server->waitForFile("/var/tomcat/webapps/DisnixWebService");
 	      	      
 	      # Run test-cases
 	      
-	      my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --print-invalid /nix/store/invalid");
+	      my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-invalid /nix/store/invalid");
 	      
 	      if($result =~ /\/nix\/store\/invalid/) {
 	          print "/nix/store/invalid is invalid\n";
@@ -155,20 +155,20 @@ let
 	          die "/nix/store/invalid should be invalid\n";
 	      }
 	      
-	      #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --lock");
-	      #$client->mustFail("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --lock");
-	      #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --unlock");
-	      #$client->mustFail("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --unlock");
+	      #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
+	      #$client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
+	      #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
+	      #$client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
 	      	      
 	      #### Test copy closure
 	      
 	      my $testService = $client->mustSucceed("NIXPKGS_ALL=${nixpkgs}/pkgs/top-level/all-packages.nix nix-build ${tests}/testservice.nix");
 	      $server->mustFail("nix-store --check-validity $testService");
-	      $client->mustSucceed("disnix-copy-closure --interface disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --to $testService");
+	      $client->mustSucceed("disnix-copy-closure --interface disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --to $testService");
 	      $server->mustSucceed("nix-store --check-validity $testService");
 	      
-	      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --activate --arguments foo=foo --arguments bar=bar --type echo $testService");
-	      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixService/services/DisnixService --deactivate --arguments foo=foo --arguments bar=bar --type echo $testService");
+	      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --activate --arguments foo=foo --arguments bar=bar --type echo $testService");
+	      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --deactivate --arguments foo=foo --arguments bar=bar --type echo $testService");
 	    '';
 	};
       };

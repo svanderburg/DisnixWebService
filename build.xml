@@ -1,4 +1,4 @@
-<project name="DisnixService" basedir="." default="compile">
+<project name="DisnixWebService" basedir="." default="compile">
 	<property name="deploybuild.dir" value="bin" />
 	
 	<property environment="env"/>
@@ -15,7 +15,7 @@
 		<isset property="env.DBUS_JAVA_LIB"/>
 	</condition>
 	
-	<condition property="PREFIX" value="${env.PREFIX}" else="/usr/local/DisnixService">
+	<condition property="PREFIX" value="${env.PREFIX}" else="/usr/local/DisnixWebService">
 		<isset property="env.PREFIX"/>
 	</condition>
 	
@@ -48,7 +48,7 @@
 		</copy>
 		
 		<mkdir dir="${deploybuild.dir}/WEB-INF/services" />
-		<jar destfile="${deploybuild.dir}/WEB-INF/services/DisnixService.aar">			
+		<jar destfile="${deploybuild.dir}/WEB-INF/services/DisnixWebService.aar">			
 			<fileset dir="${deploybuild.dir}" includes="META-INF/* org/nixos/disnix/service/*" />
 		</jar>
 	</target>
@@ -77,9 +77,9 @@
 			</replacefilter>
 		</replace>
 		
-		<war destfile="DisnixService.war" needxmlfile="false">
+		<war destfile="DisnixWebService.war" needxmlfile="false">
 			<fileset dir="${AXIS2_WEBAPP}" excludes="WEB-INF/conf/axis2.xml" />
-			<fileset dir="${deploybuild.dir}" includes="WEB-INF/services/DisnixService.aar WEB-INF/conf/axis2.xml" />			
+			<fileset dir="${deploybuild.dir}" includes="WEB-INF/services/DisnixWebService.aar WEB-INF/conf/axis2.xml" />			
 		</war>
 	</target>
 
@@ -113,7 +113,7 @@
 		<mkdir dir="${PREFIX}/share/java" />
 		
 		<copy toDir="${PREFIX}/webapps" >
-			<fileset dir="${basedir}" includes="DisnixService.war" />
+			<fileset dir="${basedir}" includes="DisnixWebService.war" />
 		</copy>
 		<copy toDir="${PREFIX}/share/java">
 			<fileset dir="${basedir}" includes="DisnixConnection.jar" />
@@ -124,7 +124,7 @@
 	
 	<target name="clean">
 		<delete file="DisnixConnection.jar" />
-		<delete file="DisnixService.war" />
+		<delete file="DisnixWebService.war" />
 		<delete file="DisnixClient.jar" />
 		<delete dir="${deploybuild.dir}" />
 	</target>
