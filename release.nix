@@ -33,6 +33,7 @@ let
 
       releaseTools.nixBuild {
         name = "DisnixWebService";
+	version = builtins.readFile ./version;
         src = tarball;
 	PREFIX = ''''${env.out}'';
         AXIS2_LIB = "${axis2}/lib";
