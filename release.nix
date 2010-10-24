@@ -205,17 +205,17 @@ let
 	      # Testcase disabled, as this is very expensive.
 	      # $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --collect-garbage");
 
-	      # Lock test. This test should succeed (BROKEN).
-	      #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
+	      # Lock test. This test should succeed.
+	      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
 	      
-	      # Lock test. This test should fail, since the service instance is already locked
-	      #$client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
+	      # Lock test. This test should fail, since the service instance is already locked.
+	      $client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
 	      
-	      # Unlock test. This test should succeed, so that we can release the lock
-	      #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
+	      # Unlock test. This test should succeed, so that we can release the lock.
+	      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
 	      
-	      # Unlock test. This test should fail as the lock has already been released (BROKEN)
-	      #$client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
+	      # Unlock test. This test should fail as the lock has already been released.
+	      $client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
 	      
 	      # Use the echo type to activate a service.
 	      # We use the testService1 service defined in the manifest.
