@@ -45,10 +45,13 @@ public class DisnixClient
 						   "disnix-soap-client {-h | --help}");
 	}
 	
-	private static void printStringArray(String[] string, PrintStream printStream)
+	private static void printStringArray(String[] string, PrintStream printStream, String separator)
 	{
 		for(int i = 0; i < string.length; i++)
+		{
 			printStream.print(string[i]);
+			printStream.print(separator);
+		}
 	}
 	
 	public static void main(String[] args)
@@ -173,18 +176,20 @@ public class DisnixClient
 			else if(value_print_invalid != null)
 			{
 				System.err.println("Print invalid: ");
-				printStringArray(derivation, System.err);
-				System.err.println("Returns:");
+				printStringArray(derivation, System.err, "");
+				System.err.println("\nReturns:");
 				String[] result = disnixInterface.printInvalid(derivation);
-				printStringArray(result, System.out);
+				printStringArray(result, System.out, "");
+				System.out.println();
 			}
 			else if(value_realise != null)
 			{
 				System.err.println("Realise: ");
-				printStringArray(derivation, System.err);
-				System.err.println("Returns:");
+				printStringArray(derivation, System.err,"");
+				System.err.println("\nReturns:");
 				String[] result = disnixInterface.realise(derivation);
-				printStringArray(result, System.out);
+				printStringArray(result, System.out, "");
+				System.out.println();
 			}
 			else if(value_set != null)
 			{
@@ -211,16 +216,18 @@ public class DisnixClient
 				System.err.println("Query installed: "+profile);
 				
 				String[] result = disnixInterface.queryInstalled(profile);
-				printStringArray(result, System.out);
+				printStringArray(result, System.out, "");
+				System.out.println();
 			}
 			else if(value_query_requisites != null)
 			{
 				System.err.println("Query requisites: ");
-				printStringArray(derivation, System.err);
-				System.err.println("Returns:");
+				printStringArray(derivation, System.err, "");				
+				System.err.println("\nReturns:");
 				
 				String[] result = disnixInterface.queryRequisites(derivation);
-				printStringArray(result, System.out);
+				printStringArray(result, System.out, "");
+				System.out.println();
 			}
 			else if(value_collect_garbage != null)
 			{
@@ -242,17 +249,23 @@ public class DisnixClient
 				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */				
-				System.err.println("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
+				System.err.print("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: ");
+				printStringArray(arguments, System.err, " ");
+				System.err.println();
+				
 				disnixInterface.activate(derivation[0], value_type, arguments);
 			}
 			else if(value_deactivate != null)
-			{				
+			{		
 				/* Convert arguments vector to array */
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */
-				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: "+arguments);
+				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: ");
+				printStringArray(arguments, System.err, " ");
+				System.err.println();
+				
 				disnixInterface.deactivate(derivation[0], value_type, arguments);
 			}
 			else if(value_lock != null)
