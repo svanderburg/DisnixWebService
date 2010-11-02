@@ -23,7 +23,7 @@ let
 	  make docbookrng=${docbook5}/xml/rng/docbook docbookxsl=${docbook5_xsl}/xml/xsl/docbook
 	  cd ..
 	  ant install.doc
-	  echo "doc manual $out/share/doc/disnix/manual" >> $out/nix-support/hydra-build-products
+	  echo "doc manual $out/share/doc/DisnixWebService" >> $out/nix-support/hydra-build-products
 	  mkdir -p ../bin/DisnixWebService-$version
 	  cp -av * ../bin/DisnixWebService-$version
 	  cd ../bin
