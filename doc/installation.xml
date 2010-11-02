@@ -1,0 +1,227 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:id="chap-installation">
+
+	<title>Installation</title>
+
+	<para>
+		This chapter explains how the <filename>DisnixWebService</filename> can be installed.
+		Firstly, the basic
+		<link xlink:href="http://nixos.org/disnix">Disnix</link>
+		toolset must be installed. Installation instructions
+		can be found in the Disnix manual.
+		Moreover, a Java servlet container capable of running
+		<link xlink:href="http://nixos.org">Apache Axis2</link>
+		is required
+		for this. The <filename>DisnixWebService</filename> can be installed on
+		<link xlink:href="http://nixos.org">NixOS</link>, which only takes little
+		configuration effort, or manually on other operating systems which
+		require you to perform more configuration steps.
+	</para>
+	
+	<section>
+		<title>Installing the <filename>DisnixWebService</filename> on NixOS</title>
+		
+		<para>
+			The <filename>DisnixWebService</filename> can be enabled by
+			setting the following property in your
+			<filename>/etc/nixos/configuration.nix</filename> configuration
+			file:
+		</para>
+		
+<screen>
+services.disnix.useWebServiceInterface = true;
+</screen>
+
+		<para>
+			By enabling this option the Apache Tomcat service is automatically 
+			enabled, running the <filename>DisnixWebService</filename> web application
+			and configured with the right properties and permissions so that
+			the deployment operations of the core Disnix service can be accessed.
+		</para>
+	</section>
+	
+	<section>
+		<title>Installing the <filename>DisnixWebService</filename> manually</title>
+		
+		<section>
+			<title>Prerequisites</title>
+			
+			<para>
+				In order to build the <filename>DisnixWebService</filename> the following
+				dependencies are required. The tooling is implemented in Java
+				and thus a Java Development Kit (at least version 1.5) is required and
+				<link xlink:href="http://ant.apache.org">Apache Ant</link> to
+				perform the build.
+				<link xlink:href="http://ws.apache.org/axis2">Apache Axis2</link>
+				is used to implement the client interface and as hosting environment
+				for the web service front-end.
+				The web service requires the 
+				<link xlink:href="http://dbus.freedesktop.org/doc/dbus-java">D-Bus Java</link>
+				library (which requires
+				<link xlink:href="http://www.matthew.ath.cx/projects/java">libmatthew-java</link>)
+				to connect to the core Disnix service.
+			</para>
+		</section>
+		
+		<section>
+			<title>Compiling from source code</title>
+			
+			<para>
+				After unpacking or checking out the Disnix sources, it can be
+				compiled by executing the following commands:
+			</para>
+			
+<screen>
+ant
+ant install
+</screen>
+		</section>
+		
+		<section>
+			<title>Deploying the web service interface on Apache Tomcat</title>
+			
+			<para>
+				In principle, any Java servlet container or application server
+				compatible with Apache Axis2 should be able to host the web service interface.
+				In this section we explain how the web service interface can be deployed on Apache Tomcat.
+				For other Java servlet containers or application servers you should
+				consult the documentation included with your application server.
+			</para>
+			
+			<section>
+				<title>Configuring permissions</title>
+				
+				<para>
+					As explained in the Disnix manual, to access operations of the Disnix
+					core service either root permissions are required or a specific user
+					must be a member of the <code>disnix</code> user group. On most distributions
+					Apache Tomcat runs as an unprivileged user (such as the <code>tomcat</code> user).
+					To grant Apache Tomcat access to the core Disnix service you have to make
+					the <code>tomcat</code> user part of the <code>disnix</code> group.
+					This can be done by typing:
+				</para>
+				
+<screen>
+$ usermod -G disnix tomcat
+</screen>
+
+				<para>
+					Check your distribution's configuration to see under which user
+					Apache Tomcat runs.
+				</para>
+			</section>
+			
+			<section>
+				<title>Installing shared libraries</title>
+				
+				<para>
+					The Disnix web service interface uses the D-Bus system bus to
+					connect to the core Disnix service. This connection is performed by
+					Unix domain sockets, which requires access to native libraries.
+					Native libraries can only be invoked by the servlet container itself
+					(not from web application directly) and therefore
+					it requires you the install some libraries as shared libraries
+					which can be used by both the servlet container and the 
+					web applications.
+				</para>
+				
+				<para>
+					The first step is to create a shared libs directory inside the 
+					Apache Tomcat directory:
+				</para>
+				
+<screen>
+$ mkdir -p shared/lib
+</screen>
+				
+				<para>
+					Then the <filename>DisnixConnection.jar</filename> library from the
+					<filename>DisnixWebService</filename> distribution and the 
+					<filename>dbus.jar</filename> from the <filename>dbus-java</filename>
+					package must be copied into the <filename>shared/lib</filename>
+					folder.
+				</para>
+				
+				<para>
+					The next step is to edit the Apache Tomcat configuration file to
+					enable the shared library loader and to use the 
+					<filename>shared/lib</filename> folder.
+					This can be done by editing the 
+					<filename>conf/catalina.properties</filename> configuration
+					file in your Apache Tomcat distribution and replace the
+					line containing: <code>shared.loader</code> with the following line:
+				</para>
+				
+<screen>
+shared.loader=${catalina.base}/shared/lib/*.jar
+</screen>
+			</section>
+			
+			<section>
+				<title>Configuring native library access</title>
+				
+				<para>
+					As mentioned earlier, the web service interface use the D-Bus system bus,
+					to access the core Disnix service which requires access to native libraries
+					communicating through Unix domain sockets. The following environment variable
+					must be configured to specify where Apache Tomcat can find native libraries:
+				</para>
+				
+<screen>
+$ export JAVA_OPTS="-Djava.library.path=/path/to/libmatthew-java/lib/jni"
+</screen>
+
+				<para>
+					The path above must be replace to the location where <filename>libmatthew-java</filename>
+					has been installed.
+				</para>
+			</section>
+			
+			<section>
+				<title>Deploying the web service interface</title>
+				
+				<para>
+					Finally, the web service front-end itself must be deployed. This can be done
+					by copying the <filename>DisnixWebService.war</filename> file of the
+					<filename>DisnixWebService</filename> distribution into the
+					<filename>webapps/</filename> folder of Apache Tomcat.
+				</para>
+			</section>
+		</section>
+	</section>
+	
+	<section>
+		<title>Configuring the Disnix toolset</title>
+		
+		<para>
+			In order to make this extension work with basic toolset two things need to be configured.
+			Firstly, the toolset must be configured to use the <command>disnix-soap-client</command>.
+			Secondly, a target property must be configured. By default Disnix uses the
+			<varname>hostname</varname> attribute in the infrastructure model to connect to the
+			target interface. This property does not work with the <filename>DisnixWebService</filename>,
+			because a complete URL is required in order to connect to the web service.
+		</para>
+		
+		<para>
+			To let Disnix use the <command>disnix-soap-client</command> to communicate with the web service
+			interface, the following environment variable must be configured: 
+		  
+<screen>
+$ export DISNIX_CLIENT_INTERFACE=disnix-soap-client
+</screen>
+		</para>
+		
+		<para>
+			To let Disnix use a different target property from the infrastructure model the following
+			environment variable must be configured:
+			
+<screen>
+$ export DISNIX_TARGET_PROPERTY=targetEPR
+</screen>
+
+			By setting this variable, the <varname>targetEPR</varname> attribute is used (which is a convention we use for web services).
+			Alternatively, you can use a different attribute name.
+		</para>
+	</section>
+</chapter>

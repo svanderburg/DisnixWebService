@@ -14,8 +14,18 @@ let
         version = builtins.readFile ./version;
         src = DisnixWebService;
         inherit officialRelease;
+	buildInputs = [ libxml2 libxslt ];
+	
+	preDist =
+	''
+	  echo "doc manual $out/share/doc/disnix/manual" >> $out/nix-support/hydra-build-products
+	'';
+	
 	distPhase =
 	''
+	  cd doc
+	  make docbookrng=${docbook5}/xml/rng/docbook docbookxsl=${docbook5_xsl}/xml/xsl/docbook
+	  cd ..
 	  mkdir -p ../bin/DisnixWebService-$version
 	  cp -av * ../bin/DisnixWebService-$version
 	  cd ../bin

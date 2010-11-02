@@ -1,0 +1,30 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xml:id="chap-introduction">
+
+	<title>Introduction</title>
+
+	<para>
+		Disnix is a toolset used to perform distributed deployment tasks
+		and is built on top of Nix; a package manager which has some distinct
+		features compared to conventional package
+		managers to make deployment safe and reliable.
+	</para>
+
+	<para>
+		Disnix contains an interface which exposes remote deployment operations
+		to the client tooling and developers. Disnix is designed to support
+		multiple protocols by implementing a thin protocol wrapper around
+		the core Disnix service. For example a SSH interface is included
+		in the main Disnix distribution.
+	</para>
+	
+	<para>
+		This package contains the <filename>DisnixWebService</filename> protocol
+		wrapper and the <command>disnix-soap-client</command> tool to connect
+		to the server. These tools can be combined with the basic Disnix toolset
+		to use the SOAP protocol to perform deployment operations. The main
+		purpose of this package is to show how a custom protocol wrapper can
+		be implemented.
+	</para>
+</chapter>

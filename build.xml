@@ -112,7 +112,7 @@
 		<mkdir dir="${PREFIX}/webapps" />
 		<mkdir dir="${PREFIX}/share/java" />
 		
-		<copy toDir="${PREFIX}/webapps" >
+		<copy toDir="${PREFIX}/webapps">
 			<fileset dir="${basedir}" includes="DisnixWebService.war" />
 		</copy>
 		<copy toDir="${PREFIX}/share/java">
@@ -120,7 +120,15 @@
 		</copy>
 	</target>
 	
-	<target name="install" depends="install.service, install.client" />
+	<target name="install.doc">
+		<mkdir dir="${PREFIX}/share/doc/DisnixWebService" />
+		
+		<copy toDir="${PREFIX}/share/doc/DisnixWebService">
+			<fileset dir="${basedir}/doc" includes="*.html *.css" />
+		</copy>
+	</target>
+	
+	<target name="install" depends="install.service, install.client, install.doc" />
 	
 	<target name="clean">
 		<delete file="DisnixConnection.jar" />
