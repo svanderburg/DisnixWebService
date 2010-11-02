@@ -10,13 +10,19 @@ XSLTPROC = xsltproc \
  --param callout.graphics.extension \'.gif\' \
  --param contrib.inline.enabled 0
 
+dblatex = dblatex
+
+dblatex_opts = \
+ -P doc.collab.show=0 \
+ -P latex.output.revhistory=0
+
 VERSION = $(shell cat ../version)
 
 MANUAL_SRCS = index.xml introduction.xml
 
 MANS = disnix-soap-client.1
 
-all: index.html man
+all: index.html index.pdf man
 
 version.txt:
 	echo -n $(VERSION) > version.txt
@@ -31,3 +37,11 @@ man $(MANS): $(MANUAL_SRCS) manual.is-valid
 index.html: $(MANUAL_SRCS) manual.is-valid
 	$(XSLTPROC) --nonet --xinclude --output index.html \
 	  $(docbookxsl)/html/docbook.xsl index.xml
+
+index.pdf: $(MANUAL_SRCS) manual.is-valid
+	if test "$(dblatex)" != ""; then \
+		$(dblatex) $(dblatex_opts) index.xml; \
+	else \
+		echo "Please install dblatex and rerun configure."; \
+		exit 1; \
+	fi
