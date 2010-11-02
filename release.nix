@@ -17,8 +17,12 @@ let
 	buildInputs = [ libxml2 libxslt dblatex tetex apacheAnt ];
 	PREFIX = ''''${env.out}'';
 	
-	distPhase =
-	''
+	preConfigure = ''
+	  # TeX needs a writable font cache.
+          export VARTEXFONTS=$TMPDIR/texfonts
+	'';
+
+	distPhase = ''
 	  cd doc
 	  make docbookrng=${docbook5}/xml/rng/docbook docbookxsl=${docbook5_xsl}/xml/xsl/docbook
 	  cp index.pdf $out
