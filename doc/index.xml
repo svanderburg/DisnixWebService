@@ -2,7 +2,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <info>
-    <title>Disnix WebService User's Guide</title>
+    <title>Disnix Web Service User's Guide</title>
 
     <subtitle>Draft (Version <xi:include href="version.txt" parse="text" />)</subtitle>
 
@@ -31,7 +31,7 @@
   <xi:include href="introduction.xml" />
   <xi:include href="installation.xml" />
   
-  <!-- <appendix>
+  <appendix>
     <title>Command Reference</title>
     
     <section>
@@ -39,6 +39,6 @@
       
       <xi:include href="disnix-soap-client.xml" />
     </section>
-  </appendix> -->
+  </appendix>
 
 </book>

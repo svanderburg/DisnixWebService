@@ -128,7 +128,15 @@
 		</copy>
 	</target>
 	
-	<target name="install" depends="install.service, install.client, install.doc" />
+	<target name="install.man">
+		<mkdir dir="${PREFIX}/share/man/man1" />
+		
+		<copy toDir="${PREFIX}/share/man/man1">
+			<fileset dir="${basedir}/doc" includes="*.1" />
+		</copy>
+	</target>
+	
+	<target name="install" depends="install.service, install.client, install.doc, install.man" />
 	
 	<target name="clean">
 		<delete file="DisnixConnection.jar" />

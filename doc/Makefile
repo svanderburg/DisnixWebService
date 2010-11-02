@@ -14,7 +14,9 @@ VERSION = $(shell cat ../version)
 
 MANUAL_SRCS = index.xml introduction.xml
 
-all: index.html
+MANS = disnix-soap-client.1
+
+all: index.html man
 
 version.txt:
 	echo -n $(VERSION) > version.txt
@@ -22,6 +24,9 @@ version.txt:
 manual.is-valid: $(MANUAL_SRCS) version.txt
 	$(XMLLINT) --noout --nonet --xinclude --noxincludenode --relaxng $(docbookrng)/docbook.rng $<
 	touch $@
+
+man $(MANS): $(MANUAL_SRCS) manual.is-valid
+	$(XSLTPROC) --nonet --xinclude $(docbookxsl)/manpages/docbook.xsl index.xml
 
 index.html: $(MANUAL_SRCS) manual.is-valid
 	$(XSLTPROC) --nonet --xinclude --output index.html \
