@@ -34,7 +34,7 @@ let
 	  
 	  echo "doc manual $out/share/doc/DisnixWebService" >> $out/nix-support/hydra-build-products
 	  echo "doc-pdf manual $out/index.pdf" >> $out/nix-support/hydra-build-products
-	  echo "doc api $out/share/doc/javadoc/index.html" >> $out/nix-support/hydra-build-products
+	  echo "doc api $out/share/doc/javadoc" >> $out/nix-support/hydra-build-products
 	  
 	  mkdir -p ../bin/DisnixWebService-$version
 	  rm -Rf `find . -name .svn`
