@@ -54,11 +54,17 @@ public abstract class DisnixThread implements Runnable
 		return source;
 	}
 	
+	/**
+	 * Indicates that this thread should be suspended.
+	 */
 	public synchronized void suspend()
 	{		
 		suspended = true;
 	}
 	
+	/**
+	 * Resumes the thread if it has been suspended.
+	 */
 	public synchronized void resume()
 	{
 		if(suspended)

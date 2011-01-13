@@ -24,6 +24,12 @@ package org.nixos.disnix;
 import org.freedesktop.dbus.*;
 import org.freedesktop.dbus.exceptions.*;
 
+/**
+ * An interface used to communicate with the core Disnix services through
+ * the D-Bus session or system bus.
+ * 
+ * This interface is generated from the D-Bus interface definition of Disnix.
+ */
 public interface Disnix extends DBusInterface
 {
 	public int get_job_id();

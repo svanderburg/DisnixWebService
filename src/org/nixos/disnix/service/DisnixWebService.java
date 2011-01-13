@@ -43,14 +43,11 @@ public class DisnixWebService
 	 * @throws DBusException If the connection with the D-Bus service fails
 	 */
 	public DisnixWebService() throws DBusException
-	{	
+	{
 		handler = new DisnixSignalHandler();
 		
 		System.out.println("Connecting to system bus");
 		DBusConnection con = DBusConnection.getConnection(DBusConnection.SYSTEM);
-		
-		//System.out.println("Connecting to session bus");
-		//DBusConnection con = DBusConnection.getConnection(DBusConnection.SESSION);
 		
 		System.out.println("Register signal handlers");
 		con.addSigHandler(Disnix.finish.class, handler);			
@@ -61,6 +58,9 @@ public class DisnixWebService
 		disnixInterface = (Disnix)con.getRemoteObject("org.nixos.disnix.Disnix", "/org/nixos/disnix/Disnix", Disnix.class);
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#importm(String)
+	 */
 	public /*void*/ int importm(final String closure) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -91,6 +91,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#importLocalFile(String) 
+	 */
 	public /*void*/ int importLocalFile(DataHandler dataHandler) throws Exception
 	{
 		/* Generate temp file name */		
@@ -108,6 +111,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#export(String[])
+	 */
 	public String export(final String[] derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -140,6 +146,9 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#exportRemoteFile(String[])
+	 */
 	public DataHandler exportRemoteFile(final String[] derivation) throws Exception
 	{
 		/* First, export the closure */
@@ -149,6 +158,9 @@ public class DisnixWebService
 		return new DataHandler(new FileDataSource(closurePath));		
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#printInvalid(String[])
+	 */
 	public String[] printInvalid(final String[] derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -181,6 +193,9 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource()); 
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#realise(String[])
+	 */
 	public String[] realise(final String[] derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -213,6 +228,9 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#set(String, String)
+	 */
 	public /*void*/ int set(final String profile, final String derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -243,6 +261,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#queryInstalled(String)
+	 */
 	public String[] queryInstalled(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -275,6 +296,9 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#queryRequisites(String[])
+	 */
 	public String[] queryRequisites(final String[] derivation) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -307,6 +331,9 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#collectGarbage(boolean)
+	 */
 	public /*void*/ int collectGarbage(final boolean deleteOld) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -337,6 +364,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#activate(String, String, String[])
+	 */
 	public /*void*/ int activate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -367,6 +397,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#deactivate(String, String, String[])
+	 */
 	public /*void*/ int deactivate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -397,6 +430,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#lock(String)
+	 */
 	public /*void*/ int lock(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -427,6 +463,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#unlock(String)
+	 */
 	public /*void*/ int unlock(final String profile) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()

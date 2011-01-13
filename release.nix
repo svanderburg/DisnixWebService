@@ -16,6 +16,8 @@ let
         inherit officialRelease;
 	buildInputs = [ libxml2 libxslt dblatex tetex apacheAnt ];
 	PREFIX = ''''${env.out}'';
+	AXIS2_LIB = "${axis2}/lib";
+	DBUS_JAVA_LIB = "${dbus_java}/share/java";
 	
 	preConfigure = ''
 	  # TeX needs a writable font cache.
@@ -28,8 +30,12 @@ let
 	  cp index.pdf $out
 	  cd ..
 	  ant install.doc
+	  ant install.javadoc
+	  
 	  echo "doc manual $out/share/doc/DisnixWebService" >> $out/nix-support/hydra-build-products
 	  echo "doc-pdf manual $out/index.pdf" >> $out/nix-support/hydra-build-products
+	  echo "doc-api api $out/share/doc/javadoc/index.html" >> $out/nix-support/hydra-build-products
+	  
 	  mkdir -p ../bin/DisnixWebService-$version
 	  rm -Rf `find . -name .svn`
 	  mv * ../bin/DisnixWebService-$version

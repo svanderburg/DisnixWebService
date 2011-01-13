@@ -95,6 +95,13 @@
 		</jar>
 	</target>
 	
+	<target name="generate.javadoc">
+		<javadoc sourcepath="${basedir}/src"
+		 classpathref="service.classpath"
+		 destdir="${deploybuild.dir}/javadoc"
+		 access="private" />
+	</target>
+	
 	<target name="install.client" depends="generate.client.jar">
 		<mkdir dir="${PREFIX}/bin" />
 		<mkdir dir="${PREFIX}/share/java" />
@@ -125,6 +132,14 @@
 		
 		<copy toDir="${PREFIX}/share/doc/DisnixWebService">
 			<fileset dir="${basedir}/doc" includes="*.html *.css" />
+		</copy>
+	</target>
+	
+	<target name="install.javadoc" depends="generate.javadoc">
+		<mkdir dir="${PREFIX}/share/doc/javadoc" />
+		
+		<copy toDir="${PREFIX}/share/doc/javadoc">
+			<fileset dir="${deploybuild.dir}/javadoc" includes="**/*" />
 		</copy>
 	</target>
 	

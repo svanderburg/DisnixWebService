@@ -25,8 +25,14 @@ import jargs.gnu.*;
 import java.util.*;
 import java.io.*;
 
+/**
+ * Command line interface which connects to a DisnixWebService instance.
+ */
 public class DisnixClient
 {
+	/**
+	 * Prints the usage of the command-line tool.
+	 */
 	private static void printUsage()
 	{
 		System.out.println("Usage:\n"+
@@ -45,6 +51,14 @@ public class DisnixClient
 						   "disnix-soap-client {-h | --help}");
 	}
 	
+	/**
+	 * Prints the given string array through the given print stream using a
+	 * specific separator.
+	 * 
+	 * @param string Array of strings
+	 * @param printStream Print stream, such as the standard output or standard error
+	 * @param separator Separator between strings, such as a line feed
+	 */
 	private static void printStringArray(String[] string, PrintStream printStream, String separator)
 	{
 		for(int i = 0; i < string.length; i++)
@@ -54,6 +68,11 @@ public class DisnixClient
 		}
 	}
 	
+	/**
+	 * Main method, which executed when invoking this tool from the command line.
+	 * 
+	 * @param args Array of command-line parameters
+	 */
 	public static void main(String[] args)
 	{
 		/* Create command line option parser */

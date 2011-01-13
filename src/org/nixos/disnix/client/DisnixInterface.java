@@ -68,6 +68,12 @@ public class DisnixInterface
 		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);		
 	}
 	
+	/**
+	 * Imports a closure into the the Nix store
+	 * 
+	 * @param closure Path on the server to a file containing the closure
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void importm(String closure) throws AxisFault
 	{
 		try
@@ -88,6 +94,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * First transfers a closure from the client to the service
+	 * and then imports the closure into the Nix store.
+	 * 
+	 * @param closure Path on the client to a file containing the closure
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void importLocalFile(String closure) throws AxisFault
 	{
 		try
@@ -110,6 +123,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Exports derivations into a file containing the closure
+	 * 
+	 * @param derivation Path to the Nix store component om the server
+	 * @return Path to the file containing the closure
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String export(String[] derivation) throws AxisFault
 	{
 		try
@@ -131,6 +151,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Exports derivations into a file containing the closure and downloads
+	 * it from the client.
+	 * 
+	 * @param derivation Path to the Nix store component on the server
+	 * @throws AxisFault If an error occurs with the transport
+	 * @throws IOException If an error occurs with downloading the file
+	 */
 	public void exportRemoteFile(String[] derivation) throws AxisFault, IOException
 	{
 		try
@@ -163,6 +191,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Returns the Nix store paths which are not valid.
+	 * 
+	 * @param derivation Array of Nix store paths
+	 * @return Array of paths which are invalid
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] printInvalid(String[] derivation) throws AxisFault
 	{
 		try
@@ -184,6 +219,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Realises the given Nix store derivations.
+	 * 
+	 * @param derivation An array of Nix store paths to store derivations
+	 * @return Array of paths containing the build results
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] realise(String[] derivation) throws AxisFault
 	{
 		try
@@ -205,6 +247,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Sets the profile containing the given derivation.
+	 * 
+	 * @param profile Name of the profile
+	 * @param derivation Path to a derivation
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void set(String profile, String derivation) throws AxisFault
 	{
 		try
@@ -225,6 +274,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Queries the Nix store paths of the installed components in
+	 * the given profile.
+	 * 
+	 * @param profile Name of the profile
+	 * @return Array of Nix store components
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] queryInstalled(String profile) throws AxisFault
 	{
 		try
@@ -246,6 +303,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Queries the requisites of the given derivations.
+	 * 
+	 * @param derivation Array of Nix store components
+	 * @return Array of requisites of the given Nix store components
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] queryRequisites(String[] derivation) throws AxisFault
 	{
 		try
@@ -267,6 +331,12 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Removes obsolete Nix components.
+	 * 
+	 * @param deleteOld Inidicated whether to delete old generation profiles
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void collectGarbage(boolean deleteOld) throws AxisFault
 	{
 		try
@@ -287,6 +357,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Activates a given service.
+	 * 
+	 * @param derivation Nix store path of the service
+	 * @param type Type identifier of the service
+	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void activate(String derivation, String type, String[] arguments) throws AxisFault
 	{
 		try
@@ -307,6 +385,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Deactivates a given service.
+	 * 
+	 * @param derivation Nix store path of the service
+	 * @param type Type identifier of the service
+	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void deactivate(String derivation, String type, String[] arguments) throws AxisFault
 	{
 		try
@@ -327,6 +413,12 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Acquires a lock on the given profile
+	 * 
+	 * @param profile Name of the profile
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void lock(String profile) throws AxisFault
 	{
 		try
@@ -347,6 +439,12 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Releases the lock on the given profile
+	 * 
+	 * @param profile Name of the profile
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void unlock(String profile) throws AxisFault
 	{
 		try
