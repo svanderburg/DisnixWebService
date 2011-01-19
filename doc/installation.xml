@@ -11,7 +11,7 @@
 		toolset must be installed. Installation instructions
 		can be found in the Disnix manual.
 		Moreover, a Java servlet container capable of running
-		<link xlink:href="http://nixos.org">Apache Axis2</link>
+		<link xlink:href="http://axis.apache.org">Apache Axis2</link>
 		is required
 		for this. The <filename>DisnixWebService</filename> can be installed on
 		<link xlink:href="http://nixos.org">NixOS</link>, which only takes little
