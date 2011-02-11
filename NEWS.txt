@@ -1,0 +1,8 @@
+Version 0.2
+===========
+- Renamed from DisnixService
+
+- Larger test suite
+
+- Cleanups and Javadoc API
+
