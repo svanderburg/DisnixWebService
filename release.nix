@@ -82,7 +82,7 @@ let
         DisnixWebService = build { system = "x86_64-linux"; };
 	tests = ./tests;
       in
-      with import "${nixos}/lib/testing.nix" { inherit nixpkgs; system = "x86_64-linux"; services = null; };
+      with import "${nixos}/lib/testing.nix" { inherit nixpkgs; system = "x86_64-linux"; };
       
       {
         install = simpleTest {
