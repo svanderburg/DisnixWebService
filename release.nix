@@ -185,7 +185,7 @@ let
 	      # closure into the Nix store of the server. This test should
 	      # succeed.
 	      
-	      my $result = $client->mustSucceed("NIXPKGS_ALL=${nixpkgs} disnix-manifest --target-property targetEPR -s ${tests}/services.nix -i ${tests}/infrastructure.nix -d ${tests}/distribution.nix");
+	      my $result = $client->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' disnix-manifest --target-property targetEPR -s ${tests}/services.nix -i ${tests}/infrastructure.nix -d ${tests}/distribution.nix");
 	      my @manifestClosure = split('\n', $client->mustSucceed("nix-store -qR $result"));
 	      my @target2Profile = grep(/\-testTarget2/, @manifestClosure);
 	      
