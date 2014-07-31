@@ -1,23 +1,25 @@
-{ nixpkgs ? <nixpkgs> }:
+{ nixpkgs ? <nixpkgs>
+, DisnixWebService ? {outPath = ./.; rev = 1234;}
+, officialRelease ? false
+, systems ? [ "i686-linux" "x86_64-linux" ]
+, disnixJobset ? import ../disnix/release.nix { inherit nixpkgs systems officialRelease; }
+, dysnomiaJobset ? import ../disnix/release.nix { inherit nixpkgs systems officialRelease; }
+}:
 
 let
+  pkgs = import nixpkgs {};
+  
   jobs = rec {
     tarball =
-      { DisnixWebService ? {outPath = ./.; rev = 1234;}
-      , officialRelease ? false
-      }:
-
-      with import nixpkgs {};
-
-      releaseTools.sourceTarball {
+      pkgs.releaseTools.sourceTarball {
         name = "DisnixWebService-tarball";
         version = builtins.readFile ./version;
         src = DisnixWebService;
         inherit officialRelease;
-        buildInputs = [ libxml2 libxslt dblatex tetex apacheAnt ];
+        buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.dblatex pkgs.tetex pkgs.apacheAnt pkgs.jdk ];
         PREFIX = ''''${env.out}'';
-        AXIS2_LIB = "${axis2}/lib";
-        DBUS_JAVA_LIB = "${dbus_java}/share/java";
+        AXIS2_LIB = "${pkgs.axis2}/lib";
+        DBUS_JAVA_LIB = "${pkgs.dbus_java}/share/java";
         
         preConfigure = ''
           # TeX needs a writable font cache.
@@ -26,7 +28,7 @@ let
 
         distPhase = ''
           cd doc
-          make docbookrng=${docbook5}/xml/rng/docbook docbookxsl=${docbook5_xsl}/xml/xsl/docbook
+          make docbookrng=${pkgs.docbook5}/xml/rng/docbook docbookxsl=${pkgs.docbook5_xsl}/xml/xsl/docbook
           cp index.pdf $out
           cd ..
           ant install.doc
@@ -37,7 +39,7 @@ let
           echo "doc api $out/share/doc/javadoc" >> $out/nix-support/hydra-build-products
           
           mkdir -p ../bin/DisnixWebService-$version
-          rm -Rf `find . -name .svn`
+          rm -Rf `find . -name .git`
           mv * ../bin/DisnixWebService-$version
           cd ../bin
           ensureDir $out/tarballs
@@ -46,43 +48,38 @@ let
       };
 
     build =
-      { tarball ? jobs.tarball {}
-      , system ? builtins.currentSystem
-      }:
+      pkgs.lib.genAttrs systems (system:
+        with import nixpkgs { inherit system; };
 
-      with import nixpkgs { inherit system; };
-
-      releaseTools.nixBuild {
-        name = "DisnixWebService";
-        version = builtins.readFile ./version;
-        src = tarball;
-        PREFIX = ''''${env.out}'';
-        AXIS2_LIB = "${axis2}/lib";
-        AXIS2_WEBAPP = "${axis2}/webapps/axis2";
-        DBUS_JAVA_LIB = "${dbus_java}/share/java";
-        patchPhase =
-        ''
-          sed -i -e "s|#JAVA_HOME=|JAVA_HOME=${jdk}|" \
-                 -e "s|#AXIS2_LIB=|AXIS2_LIB=${axis2}/lib|" \
-              scripts/disnix-soap-client
-        '';
-        buildPhase = "ant generate.war";
-        installPhase = "ant install";
-        checkPhase = "echo hello";
-        buildInputs = [ apacheAnt ];
-      };
+        releaseTools.nixBuild {
+          name = "DisnixWebService";
+          version = builtins.readFile ./version;
+          src = tarball;
+          PREFIX = ''''${env.out}'';
+          AXIS2_LIB = "${axis2}/lib";
+          AXIS2_WEBAPP = "${axis2}/webapps/axis2";
+          DBUS_JAVA_LIB = "${dbus_java}/share/java";
+          patchPhase =
+          ''
+            sed -i -e "s|#JAVA_HOME=|JAVA_HOME=${jdk}|" \
+                   -e "s|#AXIS2_LIB=|AXIS2_LIB=${axis2}/lib|" \
+                scripts/disnix-soap-client
+          '';
+          buildPhase = "ant generate.war";
+          installPhase = "ant install";
+          checkPhase = "echo hello";
+          buildInputs = [ apacheAnt jdk ];
+      });
       
     tests = 
-      { nixos ? <nixos>
-      , disnix ? (import ../../disnix/trunk/release.nix {}).build {}
-      , disnix_activation_scripts ? (import ../../disnix-activation-scripts/trunk/release.nix {}).build {}
-      }:
-      
       let
-        DisnixWebService = build { system = "x86_64-linux"; };
+        disnix = builtins.getAttr (builtins.currentSystem) (disnixJobset.build);
+        dysnomia = builtins.getAttr (builtins.currentSystem) (dysnomiaJobset.build);
+        DisnixWebService = builtins.getAttr (builtins.currentSystem) build;
+        
         tests = ./tests;
       in
-      with import "${nixos}/lib/testing.nix" { system = "x86_64-linux"; };
+      with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem; };
       
       {
         install = simpleTest {
@@ -93,22 +90,24 @@ let
               {
                 virtualisation.writableStore = true;
                 
+                networking.firewall.allowedTCPPorts = [ 22 8080 ];
+                
                 services.dbus.enable = true;
                 services.dbus.packages = [ disnix ];
             
                 jobs.disnix =
                   { description = "Disnix server";
 
-                    startOn = "started dbus";
+                    wantedBy = [ "multi-user.target" ];
+                    after = [ "dbus.service" ];
+                
+                    path = [ pkgs.nix pkgs.getopt disnix dysnomia ];
+                    environment = {
+                      HOME = "/root";
+                    };
 
-                    script =
-                      ''
-                        export PATH=/var/run/current-system/sw/bin:/var/run/current-system/sw/sbin
-                        export HOME=/root
-                        
-                        ${disnix}/bin/disnix-service --activation-modules-dir=${disnix_activation_scripts}/libexec/disnix/activation-scripts
-                      '';
-                   };
+                    exec = "disnix-service";
+                  };
 
                 ids.gids = { disnix = 200; };
                 users.extraGroups = [ { gid = 200; name = "disnix"; } ];
@@ -126,10 +125,10 @@ let
               {pkgs, config, ...}:
               
               {
-                virtualisation.writableStore = true;      
+                virtualisation.writableStore = true;
                 environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
               };
-          };        
+          };
           testScript = 
             ''
               startAll;
@@ -137,7 +136,7 @@ let
               # Wait until tomcat is started and the DisnixWebService is activated
               $server->waitForJob("tomcat");
               $server->waitForFile("/var/tomcat/webapps/DisnixWebService");
-                      
+              
               # Check invalid path. We query an invalid path from the service
               # which should return the path we have given.
               # This test should succeed.
