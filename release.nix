@@ -3,7 +3,7 @@
 , officialRelease ? false
 , systems ? [ "i686-linux" "x86_64-linux" ]
 , disnixJobset ? import ../disnix/release.nix { inherit nixpkgs systems officialRelease; }
-, dysnomiaJobset ? import ../disnix/release.nix { inherit nixpkgs systems officialRelease; }
+, dysnomiaJobset ? import ../dysnomia/release.nix { inherit nixpkgs systems officialRelease; }
 }:
 
 let
@@ -94,7 +94,7 @@ let
                 
                 services.dbus.enable = true;
                 services.dbus.packages = [ disnix ];
-            
+                
                 jobs.disnix =
                   { description = "Disnix server";
 
@@ -119,6 +119,8 @@ let
                 services.tomcat.sharedLibs = [ "${DisnixWebService}/share/java/DisnixConnection.jar"
                                                "${pkgs.dbus_java}/share/java/dbus.jar" ];
                 services.tomcat.webapps = [ DisnixWebService ];
+                
+                environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
               };
               
             client =
@@ -126,7 +128,7 @@ let
               
               {
                 virtualisation.writableStore = true;
-                environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
+                environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
               };
           };
           testScript = 
@@ -136,6 +138,7 @@ let
               # Wait until tomcat is started and the DisnixWebService is activated
               $server->waitForJob("tomcat");
               $server->waitForFile("/var/tomcat/webapps/DisnixWebService");
+              $server->mustSucceed("sleep 10");
               
               # Check invalid path. We query an invalid path from the service
               # which should return the path we have given.
@@ -153,13 +156,13 @@ let
               # which should return nothing in this case.
               # This test should succeed.
               
-              my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-invalid ${pkgs.bash}");
+              $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-invalid ${pkgs.bash}");
               
               # Query requisites test. Queries the requisites of the bash shell
               # and checks whether it is part of the closure.
               # This test should succeed.
               
-              my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --query-requisites ${pkgs.bash}");
+              $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --query-requisites ${pkgs.bash}");
               
               if($result =~ /bash/) {
                   print "${pkgs.bash} is in the closure\n";
@@ -170,13 +173,13 @@ let
               # Realise test. First a bash derivation file is instantiated,
               # then it is realised. This test should succeed.
               
-              my $result = $server->mustSucceed("nix-instantiate ${nixpkgs} -A bash");
+              $result = $server->mustSucceed("nix-instantiate ${nixpkgs} -A bash");
               $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --realise $result");
               
               # Export test. Exports the closure of the bash shell on the server
               # and then imports it on the client. This test should succeed (BROKEN).
               
-              #my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --export --remotefile ${pkgs.bash}");
+              #$result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --export --remotefile ${pkgs.bash}");
               #$client->mustSucceed("nix-store --import < $result");
               
               # Import test. First we create a manifest, then we take the
@@ -184,7 +187,7 @@ let
               # closure into the Nix store of the server. This test should
               # succeed.
               
-              my $result = $client->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' disnix-manifest --target-property targetEPR -s ${tests}/services.nix -i ${tests}/infrastructure.nix -d ${tests}/distribution.nix");
+              $result = $client->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' disnix-manifest --target-property targetEPR -s ${tests}/services.nix -i ${tests}/infrastructure.nix -d ${tests}/distribution.nix");
               my @manifestClosure = split('\n', $client->mustSucceed("nix-store -qR $result"));
               my @target2Profile = grep(/\-testTarget2/, @manifestClosure);
               
@@ -202,28 +205,28 @@ let
               my @defaultProfileClosure = split('\n', $server->mustSucceed("nix-store -qR /nix/var/nix/profiles/disnix/default"));
               my @closure = grep("@target2Profile", @defaultProfileClosure);
               
-              if("@closure" == "") {
-                  print "@target2Profile is part of the closure\n";
-              } else {
+              if("@closure" eq "") {
                   die "@target2Profile should be part of the closure\n";
+              } else {
+                  print "@target2Profile is part of the closure\n";
               }
               
               # Query installed test. Queries the installed services in the 
               # profile, which has been set in the previous testcase.
               # testService2 should be in there. This test should succeed.
               
-              my @closure = split('\n', $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --query-installed --profile default"));
+              @closure = split('\n', $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --query-installed --profile default"));
               my @service = grep(/\-testService2/, @closure);
               
-              if("@service" == "") {
-                  print "@service is installed in the default profile\n";
-              } else {
+              if("@service" eq "") {
                   die "@service should be installed in the default profile\n";
+              } else {
+                  print "@service is installed in the default profile\n";
               }
               
               # Collect garbage test. This test should succeed.
               # Testcase disabled, as this is very expensive.
-              # $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --collect-garbage");
+              #$client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --collect-garbage");
 
               # Lock test. This test should succeed.
               $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --lock");
@@ -237,11 +240,14 @@ let
               # Unlock test. This test should fail as the lock has already been released.
               $client->mustFail("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --unlock");
               
+              # Copy the closure of testService1 from the client to the server.
+              # This test should succeed.
+              my @testService1 = grep(/\-testService1/, @manifestClosure);
+              $client->mustSucceed("disnix-copy-closure --to --target http://server:8080/DisnixWebService/services/DisnixWebService --interface disnix-soap-client @testService1");
+              
               # Use the echo type to activate a service.
               # We use the testService1 service defined in the manifest.
               # This test should succeed.
-              
-              my @testService1 = grep(/\-testService1/, @manifestClosure);
               $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --activate --arguments foo=foo --arguments bar=bar --type echo @testService1");
               
               # Deactivate the same service using the echo type. This test should succeed.
