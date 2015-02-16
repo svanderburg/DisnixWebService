@@ -254,6 +254,112 @@ let
               $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --deactivate --arguments foo=foo --arguments bar=bar --type echo @testService1");
             '';
         };
+        
+        multiproto = let tests = ./tests; in simpleTest {
+          nodes = {
+            testTarget1 =
+              {pkgs, config, ...}:
+              
+              {
+                virtualisation.writableStore = true;
+                
+                networking.firewall.allowedTCPPorts = [ 22 8080 ];
+                
+                services.dbus.enable = true;
+                services.dbus.packages = [ disnix ];
+                
+                jobs.disnix =
+                  { description = "Disnix server";
+
+                    wantedBy = [ "multi-user.target" ];
+                    after = [ "dbus.service" ];
+                
+                    path = [ pkgs.nix pkgs.getopt disnix dysnomia ];
+                    environment = {
+                      HOME = "/root";
+                    };
+
+                    exec = "disnix-service";
+                  };
+
+                ids.gids = { disnix = 200; };
+                users.extraGroups = [ { gid = 200; name = "disnix"; } ];
+
+                services.tomcat.enable = true;
+                services.tomcat.extraGroups = [ "disnix" ];
+                services.tomcat.javaOpts = "-Djava.library.path=${pkgs.libmatthew_java}/lib/jni";
+                services.tomcat.catalinaOpts = "-Xms64m -Xmx256m";
+                services.tomcat.sharedLibs = [ "${DisnixWebService}/share/java/DisnixConnection.jar"
+                                               "${pkgs.dbus_java}/share/java/dbus.jar" ];
+                services.tomcat.webapps = [ DisnixWebService ];
+                
+                environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+              };
+            
+            testTarget2 = 
+              {pkgs, config, ...}:
+              
+              {
+                virtualisation.writableStore = true;
+                
+                services.dbus.enable = true;
+                services.dbus.packages = [ disnix ];
+                services.openssh.enable = true;
+                
+                jobs.disnix =
+                  { description = "Disnix server";
+
+                    wantedBy = [ "multi-user.target" ];
+                    after = [ "dbus.service" ];
+                
+                    path = [ pkgs.nix pkgs.getopt disnix dysnomia ];
+                    environment = {
+                      HOME = "/root";
+                    };
+
+                    exec = "disnix-service";
+                  };
+
+                ids.gids = { disnix = 200; };
+                users.extraGroups = [ { gid = 200; name = "disnix"; } ];
+                
+                environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc disnix ];
+              };
+            
+            coordinator =
+              {pkgs, config, ...}:
+              
+              {
+                virtualisation.writableStore = true;
+                environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+              };
+          };
+          testScript = 
+            ''
+              startAll;
+              
+              # Wait until tomcat is started and the DisnixWebService is activated
+              $testTarget1->waitForJob("tomcat");
+              $testTarget1->waitForFile("/var/tomcat/webapps/DisnixWebService");
+              $testTarget1->mustSucceed("sleep 10");
+              
+              # Wait until SSH is running
+              $testTarget2->waitForJob("sshd");
+              
+              # Initialise ssh stuff by creating a key pair for communication
+              my $key=`${pkgs.openssh}/bin/ssh-keygen -t dsa -f key -N ""`;
+        
+              $testTarget2->mustSucceed("mkdir -m 700 /root/.ssh");
+              $testTarget2->copyFileFromHost("key.pub", "/root/.ssh/authorized_keys");
+        
+              $coordinator->mustSucceed("mkdir -m 700 /root/.ssh");
+              $coordinator->copyFileFromHost("key", "/root/.ssh/id_dsa");
+              $coordinator->mustSucceed("chmod 600 /root/.ssh/id_dsa");
+              
+              # Deploy the test configuration
+              $coordinator->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' disnix-env -s ${tests}/services.nix -i ${tests}/infrastructure-multiproto.nix -d ${tests}/distribution.nix"); # --build-on-targets
+            '';
+        };
       };
   };
 in jobs

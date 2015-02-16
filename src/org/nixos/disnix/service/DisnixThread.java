@@ -58,7 +58,7 @@ public abstract class DisnixThread implements Runnable
 	 * Indicates that this thread should be suspended.
 	 */
 	public synchronized void suspend()
-	{		
+	{
 		suspended = true;
 	}
 	

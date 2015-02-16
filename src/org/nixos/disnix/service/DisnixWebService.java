@@ -50,7 +50,7 @@ public class DisnixWebService
 		DBusConnection con = DBusConnection.getConnection(DBusConnection.SYSTEM);
 		
 		System.out.println("Register signal handlers");
-		con.addSigHandler(Disnix.finish.class, handler);			
+		con.addSigHandler(Disnix.finish.class, handler);
 		con.addSigHandler(Disnix.success.class, handler);
 		con.addSigHandler(Disnix.failure.class, handler);
 		
@@ -96,7 +96,7 @@ public class DisnixWebService
 	 */
 	public /*void*/ int importLocalFile(DataHandler dataHandler) throws Exception
 	{
-		/* Generate temp file name */		
+		/* Generate temp file name */
 		File tempFile = File.createTempFile("disnix_closure_", null);
 		
 		/* Save file on local filesystem */
@@ -139,7 +139,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Realise failed!");
+			throw new Exception("Export failed!");
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation[0];
 		else
@@ -155,7 +155,7 @@ public class DisnixWebService
 		String closurePath = export(derivation);
 		
 		/* Create and return a data handler pointing to the export */
-		return new DataHandler(new FileDataSource(closurePath));		
+		return new DataHandler(new FileDataSource(closurePath));
 	}
 	
 	/**

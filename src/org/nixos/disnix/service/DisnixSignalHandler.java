@@ -58,33 +58,40 @@ public class DisnixSignalHandler implements DBusSigHandler
 	 */
 	public void handle(DBusSignal s)
 	{	
-		DisnixThread thread = null;
+		DisnixThread thread;
+		int pid = -1;
 		
 		/* Only handle signals that we expect */
 		if(s instanceof Disnix.finish)
 		{
-			System.out.println("Caught finish signal!");
-			int pid = ((Disnix.finish)s).pid;			
-			thread = pids.remove(pid);
+			pid = ((Disnix.finish)s).pid;
+			System.err.println("Caught finish signal from pid: "+pid);
 		}
 		else if(s instanceof Disnix.success)
 		{
-			System.out.println("Caught success signal!");
-			int pid = ((Disnix.success)s).pid;			
-			thread = pids.remove(pid);
+			pid = ((Disnix.success)s).pid;
+			System.err.println("Caught success signal from pid: "+pid);
 		}
 		else if(s instanceof Disnix.failure)
 		{
-			System.out.println("Caught failure signal!");
-			int pid = ((Disnix.failure)s).pid;			
-			thread = pids.remove(pid);
+			pid = ((Disnix.failure)s).pid;
+			System.err.println("Caught failure signal from pid: "+pid);
+		}
+		else
+		{
+			System.err.println("Caught unknown signal: " + s);
+			return;
 		}
 		
-		/* Resume the thread attached to the received PID */
-		if(thread != null)
+		/* Get the corresponding pid from the table, or wait until it has been added */
+		do
 		{
-			thread.setSource(s);
-			thread.resume();
+			thread = pids.remove(pid);
 		}
+		while(thread == null);
+		
+		/* Resume the thread attached to the received PID */
+		thread.setSource(s);
+		thread.resume();
 	}
 }
