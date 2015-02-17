@@ -177,10 +177,10 @@ let
               $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --realise $result");
               
               # Export test. Exports the closure of the bash shell on the server
-              # and then imports it on the client. This test should succeed (BROKEN).
+              # and then imports it on the client. This test should succeed.
               
-              #$result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --export --remotefile ${pkgs.bash}");
-              #$client->mustSucceed("nix-store --import < $result");
+              $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --export --remotefile ${pkgs.bash}");
+              $client->mustSucceed("nix-store --import < $result");
               
               # Import test. First we create a manifest, then we take the
               # closure of the target2Profile on the client. Then it imports the
@@ -356,8 +356,40 @@ let
               $coordinator->copyFileFromHost("key", "/root/.ssh/id_dsa");
               $coordinator->mustSucceed("chmod 600 /root/.ssh/id_dsa");
               
-              # Deploy the test configuration
-              $coordinator->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' disnix-env -s ${tests}/services.nix -i ${tests}/infrastructure-multiproto.nix -d ${tests}/distribution.nix"); # --build-on-targets
+              # Deploy the test configuration.
+              # This test should succeed.
+              $coordinator->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' disnix-env --build-on-targets -s ${tests}/services.nix -i ${tests}/infrastructure-multiproto.nix -d ${tests}/distribution.nix");
+              
+              # Query the installed services per machine and check if the
+              # expected services are there.
+              # This test should succeed.
+              my @lines = split('\n', $coordinator->mustSucceed("SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' disnix-query ${tests}/infrastructure-multiproto.nix"));
+              
+              if($lines[1] ne "Services on: http://testTarget1:8080/DisnixWebService/services/DisnixWebService") {
+                  die "disnix-query output line 1 does not match what we expect!\n";
+              }
+        
+              if($lines[3] =~ /\-testService1/) {
+                  print "Found testService1 on disnix-query output line 3\n";
+              } else {
+                  die "disnix-query output line 3 does not contain testService1!\n";
+              }
+              
+              if($lines[6] ne "Services on: testTarget2") {
+                  die "disnix-query output line 6 does not match what we expect $lines[6]!\n";
+              }
+              
+              if($lines[8] =~ /\-testService2/) {
+                  print "Found testService2 on disnix-query output line 8\n";
+              } else {
+                  die "disnix-query output line 7 does not contain testService2!\n";
+              }
+              
+              if($lines[9] =~ /\-testService3/) {
+                  print "Found testService3 on disnix-query output line 9\n";
+              } else {
+                  die "disnix-query output line 9 does not contain testService3!\n";
+              }
             '';
         };
       };

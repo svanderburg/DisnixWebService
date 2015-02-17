@@ -159,7 +159,7 @@ public class DisnixInterface
 	 * @throws AxisFault If an error occurs with the transport
 	 * @throws IOException If an error occurs with downloading the file
 	 */
-	public void exportRemoteFile(String[] derivation) throws AxisFault, IOException
+	public String exportRemoteFile(String[] derivation) throws AxisFault, IOException
 	{
 		try
 		{
@@ -171,7 +171,7 @@ public class DisnixInterface
 			/* Retrieve the data handler */
 			DataHandler dataHandler = (DataHandler)response[0];
 			
-			/* Generate temp file name */		
+			/* Generate temp file name */
 			File tempFile = File.createTempFile("disnix_closure_", null);
 			
 			/* Save file on local filesystem */
@@ -179,6 +179,8 @@ public class DisnixInterface
 			dataHandler.writeTo(fos);
 			fos.flush();
 			fos.close();
+			
+			return tempFile.getAbsolutePath();
 		}
 		catch(AxisFault ex)
 		{

@@ -130,7 +130,7 @@ public class DisnixClient
 			String value_type = (String)parser.getOptionValue(opt_type);
 			Vector<String> value_arguments = parser.getOptionValues(opt_arguments);
 			
-			String[] derivation = parser.getRemainingArgs();						
+			String[] derivation = parser.getRemainingArgs();
 			
 			/* Display usage if requested */
 			
@@ -177,12 +177,17 @@ public class DisnixClient
 			{
 				if(value_remotefile != null)
 				{
-					System.err.println("Exporting remote derivation: "+derivation);
-					disnixInterface.exportRemoteFile(derivation);
+					System.err.println("Exporting remote derivation: ");
+					printStringArray(derivation, System.err, " ");
+					System.err.println();
+					String result = disnixInterface.exportRemoteFile(derivation);
+					System.out.println(result);
 				}
 				else if(value_localfile != null)
 				{
-					System.err.println("Exporting local derivation: "+derivation);
+					System.err.println("Exporting local derivation: ");
+					printStringArray(derivation, System.err, " ");
+					System.err.println();
 					String result = disnixInterface.export(derivation);
 					System.out.println(result);
 				}
@@ -195,7 +200,7 @@ public class DisnixClient
 			else if(value_print_invalid != null)
 			{
 				System.err.println("Print invalid: ");
-				printStringArray(derivation, System.err, "");
+				printStringArray(derivation, System.err, " ");
 				System.err.println("\nReturns:");
 				String[] result = disnixInterface.printInvalid(derivation);
 				printStringArray(result, System.out, "");
@@ -241,7 +246,7 @@ public class DisnixClient
 			else if(value_query_requisites != null)
 			{
 				System.err.println("Query requisites: ");
-				printStringArray(derivation, System.err, "");				
+				printStringArray(derivation, System.err, "");
 				System.err.println("\nReturns:");
 				
 				String[] result = disnixInterface.queryRequisites(derivation);
@@ -267,7 +272,7 @@ public class DisnixClient
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
-				/* Invoke operation */				
+				/* Invoke operation */
 				System.err.print("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: ");
 				printStringArray(arguments, System.err, " ");
 				System.err.println();
