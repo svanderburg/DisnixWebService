@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008-2010 Sander van der Burg
+ * Copyright (c) 2008-2015 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -190,7 +190,7 @@ public class DisnixWebService
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource()); 
+			throw new Exception("Unknown event caught! "+disnixThread.getSource()); 
 	}
 	
 	/**
@@ -225,7 +225,7 @@ public class DisnixWebService
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
 	}
 	
 	/**
@@ -293,7 +293,7 @@ public class DisnixWebService
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
 	}
 	
 	/**
@@ -328,7 +328,7 @@ public class DisnixWebService
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
 	}
 	
 	/**

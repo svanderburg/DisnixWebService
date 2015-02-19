@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008-2010 Sander van der Burg
+ * Copyright (c) 2008-2015 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,19 +36,19 @@ public class DisnixClient
 	private static void printUsage()
 	{
 		System.out.println("Usage:\n"+
-				           "disnix-soap-client --import {--remotefile | --localfile } derivation\n"+
-				           "disnix-soap-client --export {--remotefile | --localfile } derivation\n"+
-				           "disnix-soap-client --print-invalid derivations\n"+
-						   "disnix-soap-client {-r | --realise } derivations\n"+
-						   "disnix-soap-client --set [{-p | --profile} profile] derivation\n"+
-						   "disnix-soap-client {-q | --query-installed} [{-p | --profile} profile]\n"+
-						   "disnix-soap-client --query-requisites derivations\n"+
-						   "disnix-soap-client --collect-garbage {-d | --delete-old}\n"+
-						   "disnix-soap-client --activate --type type --arguments arguments derivation\n"+
-						   "disnix-soap-client --deactivate --type type --arguments arguments derivation\n"+
-						   "disnix-soap-client --lock [{-p | --profile} profile]\n"+
-						   "disnix-soap-client --unlock [{-p | --profile} profile]\n"+
-						   "disnix-soap-client {-h | --help}");
+			"disnix-soap-client --import {--remotefile | --localfile } derivation\n"+
+			"disnix-soap-client --export {--remotefile | --localfile } derivation\n"+
+			"disnix-soap-client --print-invalid derivations\n"+
+			"disnix-soap-client {-r | --realise } derivations\n"+
+			"disnix-soap-client --set [{-p | --profile} profile] derivation\n"+
+			"disnix-soap-client {-q | --query-installed} [{-p | --profile} profile]\n"+
+			"disnix-soap-client --query-requisites derivations\n"+
+			"disnix-soap-client --collect-garbage {-d | --delete-old}\n"+
+			"disnix-soap-client --activate --type type --arguments arguments derivation\n"+
+			"disnix-soap-client --deactivate --type type --arguments arguments derivation\n"+
+			"disnix-soap-client --lock [{-p | --profile} profile]\n"+
+			"disnix-soap-client --unlock [{-p | --profile} profile]\n"+
+			"disnix-soap-client {-h | --help}");
 	}
 	
 	/**
