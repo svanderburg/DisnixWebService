@@ -25,9 +25,9 @@ To run the package the following packages must be installed:
 Installation
 ============
 Besides a working Disnix installation, you need a running Java servlet container,
-compile this package from source code with Apache Ant and install it in the
-servlet container. The manual provides for more details on how to this with
-Apache Tomcat.
+compile this package from source code with Apache Ant and install the
+corresponding WAR file in the servlet container. The manual of this package
+provides for more details on how to this with Apache Tomcat.
 
 Usage
 =====
@@ -54,7 +54,7 @@ By setting the following environment variable, Disnix is instructed to use
 By setting the following environment variable, Disnix uses the
 `disnix-soap-client` interface to establish the remote connection:
 
-    $ export DISNIX_CLIENT_INTERFACE
+    $ export DISNIX_CLIENT_INTERFACE=disnix-soap-client
 
 Manual
 ======
