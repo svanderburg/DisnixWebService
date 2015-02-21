@@ -6,3 +6,6 @@ Version 0.2
 
 - Cleanups and Javadoc API
 
+- Fix receival of closures
+
+- Added basic HTTP authentication support

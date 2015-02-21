@@ -69,7 +69,7 @@ public class DisnixClient
 	}
 	
 	/**
-	 * Main method, which executed when invoking this tool from the command line.
+	 * Main method, which is executed when this tool is invoked from the command line.
 	 * 
 	 * @param args Array of command-line parameters
 	 */

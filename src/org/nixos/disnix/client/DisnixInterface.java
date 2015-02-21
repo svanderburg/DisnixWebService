@@ -65,7 +65,16 @@ public class DisnixInterface
 		/* Transport settings */
 		options.setTransportInProtocol(Constants.TRANSPORT_HTTP);
 		options.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
-		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);		
+		options.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+		
+		if(System.getenv("DISNIX_SOAP_CLIENT_USERNAME") != null)
+		{
+			/* Authentication settings */
+			HttpTransportProperties.Authenticator auth = new HttpTransportProperties.Authenticator();
+			auth.setUsername(System.getenv("DISNIX_SOAP_CLIENT_USERNAME"));
+			auth.setPassword(System.getenv("DISNIX_SOAP_CLIENT_PASSWORD"));
+			options.setProperty(HTTPConstants.AUTHENTICATE, auth);
+		}
 	}
 	
 	/**

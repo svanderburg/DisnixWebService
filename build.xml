@@ -41,14 +41,14 @@
 			   classpathref="service.classpath" />
 	</target>
 
-	<target name="generate.service.aar" depends="compile">		
+	<target name="generate.service.aar" depends="compile">
 		<mkdir dir="${deploybuild.dir}/META-INF" />
 		<copy toDir="${deploybuild.dir}/META-INF">
-			<fileset dir="META-INF" includes="*" />			
+			<fileset dir="META-INF" includes="*" />
 		</copy>
 		
 		<mkdir dir="${deploybuild.dir}/WEB-INF/services" />
-		<jar destfile="${deploybuild.dir}/WEB-INF/services/DisnixWebService.aar">			
+		<jar destfile="${deploybuild.dir}/WEB-INF/services/DisnixWebService.aar">
 			<fileset dir="${deploybuild.dir}" includes="META-INF/* org/nixos/disnix/service/*" />
 		</jar>
 	</target>
@@ -79,7 +79,7 @@
 		
 		<war destfile="DisnixWebService.war" needxmlfile="false">
 			<fileset dir="${AXIS2_WEBAPP}" excludes="WEB-INF/conf/axis2.xml" />
-			<fileset dir="${deploybuild.dir}" includes="WEB-INF/services/DisnixWebService.aar WEB-INF/conf/axis2.xml" />			
+			<fileset dir="${deploybuild.dir}" includes="WEB-INF/services/DisnixWebService.aar WEB-INF/conf/axis2.xml" />
 		</war>
 	</target>
 
@@ -111,7 +111,7 @@
 		<chmod file="${PREFIX}/bin/disnix-soap-client" perm="755" />
 		
 		<copy toDir="${PREFIX}/share/java">
-			<fileset dir="${basedir}" includes="DisnixClient.jar jargs.jar" />			
+			<fileset dir="${basedir}" includes="DisnixClient.jar jargs.jar" />
 		</copy>
 	</target>
 	

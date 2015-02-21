@@ -39,6 +39,40 @@ services.disnix.useWebServiceInterface = true;
 			and configured with the right properties and permissions so that
 			the deployment operations of the core Disnix service can be accessed.
 		</para>
+		
+		<para>
+			The web service itself does not have any security facilities whatsoever.
+			If authentication is required, you can put a HTTP reverse proxy in front of it
+			that does basic authentication. In NixOS (using Apache HTTP server) this can
+			be accomplished by adding the following snippet to the NixOS configuration:
+		</para>
+		
+<screen>
+services.httpd.enable = true;
+services.httpd.adminAddr = "admin@localhost";
+services.httpd.hostName = "localhost";
+services.httpd.extraConfig = ''
+  &lt;Proxy *&gt;
+    Order deny,allow
+    Allow from all
+    AuthType basic
+    AuthName "DisnixWebService"
+    AuthBasicProvider file
+    AuthUserFile ${./htpasswd}
+    Require user admin
+  &lt;/Proxy&gt;
+  
+  ProxyRequests     off
+  ProxyPreserveHost on
+  ProxyPass         /    http://localhost:8080/ retry=5 disablereuse=on
+  ProxyPassReverse  /    http://localhost:8080/
+</screen>
+		<para>
+			The <filename>htpasswd</filename> file (that contains one administrator user) can be generated as follows:
+		</para>
+<screen>
+$ htpasswd -c admin htpasswd
+</screen>
 	</section>
 	
 	<section>
@@ -188,6 +222,37 @@ $ export JAVA_OPTS="-Djava.library.path=/path/to/libmatthew-java/lib/jni"
 					<filename>webapps/</filename> folder of Apache Tomcat.
 				</para>
 			</section>
+			
+			<section>
+			  <title>Securing the web service interface</title>
+			  <para>
+				The web service interface has no security facilities whatsoever. To support basic HTTP authentication
+				a reverse proxy can be put in front of it taking care of it. For the Apache HTTP server you basically
+				need to integrate the following snippet in your configuration:
+			  </para>
+<screen>
+  &lt;Proxy *&gt;
+    Order deny,allow
+    Allow from all
+    AuthType basic
+    AuthName "DisnixWebService"
+    AuthBasicProvider file
+    AuthUserFile ./htpasswd
+    Require user admin
+  &lt;/Proxy&gt;
+  
+  ProxyRequests     off
+  ProxyPreserveHost on
+  ProxyPass         /    http://localhost:8080/ retry=5 disablereuse=on
+  ProxyPassReverse  /    http://localhost:8080/
+</screen>
+				<para>
+					The <filename>htpasswd</filename> file (that contains one administrator user) can be generated as follows:
+				</para>
+<screen>
+$ htpasswd -c admin htpasswd
+</screen>
+			</section>
 		</section>
 	</section>
 	
@@ -223,5 +288,13 @@ $ export DISNIX_TARGET_PROPERTY=targetEPR
 			By setting this variable, the <varname>targetEPR</varname> attribute is used (which is a convention we use for web services).
 			Alternatively, you can use a different attribute name.
 		</para>
+		<para>
+			If a reverse proxy taking care of authentication has been configured, the following environment variables
+			can be used to provide the credentials:
+		</para>
+<screen>
+$ export DISNIX_SOAP_CLIENT_USERNAME=admin
+$ export DISNIX_SOAP_CLIENT_PASSWORD=secret
+</screen>
 	</section>
 </chapter>
