@@ -1,7 +1,7 @@
 {distribution, system, pkgs}:
 
 let
-  customPkgs = import ./pkgs { inherit pkgs; };
+  customPkgs = import ../pkgs { inherit pkgs; };
 in
 rec {
   testService1 = {
