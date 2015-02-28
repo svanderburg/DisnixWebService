@@ -20,7 +20,7 @@
 	</para>
 	
 	<section>
-		<title>Installing the <filename>DisnixWebService</filename> on NixOS</title>
+		<title>Installing the <filename>DisnixWebService</filename> in NixOS</title>
 		
 		<para>
 			The <filename>DisnixWebService</filename> can be enabled by
@@ -118,7 +118,7 @@ ant install
 			<para>
 				In principle, any Java servlet container or application server
 				compatible with Apache Axis2 should be able to host the web service interface.
-				In this section we explain how the web service interface can be deployed on Apache Tomcat.
+				In this section we explain how the web service interface can be deployed to Apache Tomcat.
 				For other Java servlet containers or application servers you should
 				consult the documentation included with your application server.
 			</para>
@@ -151,8 +151,8 @@ $ usermod -G disnix tomcat
 				
 				<para>
 					The Disnix web service interface uses the D-Bus system bus to
-					connect to the core Disnix service. This connection is performed by
-					Unix domain sockets, which requires access to native libraries.
+					connect to the core Disnix service. This connection is performed through
+					Unix domain sockets, requiring the web service to use native libraries.
 					Native libraries can only be invoked by the servlet container itself
 					(not from web application directly) and therefore
 					it requires you the install some libraries as shared libraries
@@ -261,8 +261,8 @@ $ htpasswd -c admin htpasswd
 		
 		<para>
 			In order to make this extension work with basic toolset two things need to be configured.
-			Firstly, the toolset must be configured to use the <command>disnix-soap-client</command>.
-			Secondly, a target property must be configured. By default Disnix uses the
+			First, the toolset must be configured to use the <command>disnix-soap-client</command>.
+			Second, a target property must be configured. By default Disnix uses the
 			<varname>hostname</varname> attribute in the infrastructure model to connect to the
 			target interface. This property does not work with the <filename>DisnixWebService</filename>,
 			because a complete URL is required in order to connect to the web service.
@@ -289,7 +289,7 @@ $ export DISNIX_TARGET_PROPERTY=targetEPR
 			Alternatively, you can use a different attribute name.
 		</para>
 		<para>
-			If a reverse proxy taking care of authentication has been configured, the following environment variables
+			If a reverse proxy taking care of HTTP basic authentication has been configured, the following environment variables
 			can be used to provide the credentials:
 		</para>
 <screen>
