@@ -1,7 +1,5 @@
-Version 0.2
+Version 0.3
 ===========
-- Renamed from DisnixService
-
 - Larger test suite
 
 - Cleanups and Javadoc API
@@ -9,3 +7,7 @@ Version 0.2
 - Fix receival of closures
 
 - Added basic HTTP authentication support
+
+Version 0.2
+===========
+- Renamed from DisnixService
