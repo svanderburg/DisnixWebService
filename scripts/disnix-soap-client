@@ -37,5 +37,12 @@ then
     export PATH=$JAVA_HOME/bin:$PATH
 fi
 
+#### Add the CLASSPATH settings to the CLASSPATH
+
+if [ "$CLASSPATH" != "" ]
+then
+    classPathArgs=":$CLASSPATH"
+fi
+
 #### Execute Disnix SOAP client
-java $JAVA_VM_SETTINGS -cp $DISNIX_SOAP_HOME/share/java/jargs.jar:$AXIS2_CLASSPATH:$DISNIX_SOAP_HOME/share/java/DisnixClient.jar org.nixos.disnix.client.DisnixClient "$@"
+java $JAVA_VM_SETTINGS -cp $DISNIX_SOAP_HOME/share/java/jargs.jar:$AXIS2_CLASSPATH:$DISNIX_SOAP_HOME/share/java/DisnixClient.jar$classPathArgs org.nixos.disnix.client.DisnixClient "$@"

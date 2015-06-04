@@ -16,7 +16,7 @@ let
         version = builtins.readFile ./version;
         src = DisnixWebService;
         inherit officialRelease;
-        buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.dblatex pkgs.tetex pkgs.apacheAnt pkgs.jdk ];
+        buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.dblatex pkgs.tetex pkgs.apacheAnt pkgs.jdk pkgs.help2man pkgs.doclifter ];
         PREFIX = ''''${env.out}'';
         AXIS2_LIB = "${pkgs.axis2}/lib";
         DBUS_JAVA_LIB = "${pkgs.dbus_java}/share/java";

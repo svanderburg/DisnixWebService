@@ -1,0 +1,11 @@
+Updating the manual pages
+=========================
+If for some reason the help page of disnix-soap-client changes, run the
+following commands to update the man and docbook pages:
+
+    $ nix-shell release.nix -A tarball
+    $ ant
+    $ cd doc
+    $ rm disnix-soap-client.1 disnix-soap-client.1.xml
+    $ make disnix-soap-client.1
+    $ make disnix-soap-client.1.xml

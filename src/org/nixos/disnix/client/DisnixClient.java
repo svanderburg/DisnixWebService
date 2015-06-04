@@ -35,20 +35,116 @@ public class DisnixClient
 	 */
 	private static void printUsage()
 	{
-		System.out.println("Usage:\n"+
-			"disnix-soap-client --import {--remotefile | --localfile } derivation\n"+
-			"disnix-soap-client --export {--remotefile | --localfile } derivation\n"+
-			"disnix-soap-client --print-invalid derivations\n"+
-			"disnix-soap-client {-r | --realise } derivations\n"+
-			"disnix-soap-client --set [{-p | --profile} profile] derivation\n"+
-			"disnix-soap-client {-q | --query-installed} [{-p | --profile} profile]\n"+
-			"disnix-soap-client --query-requisites derivations\n"+
-			"disnix-soap-client --collect-garbage {-d | --delete-old}\n"+
-			"disnix-soap-client --activate --type type --arguments arguments derivation\n"+
-			"disnix-soap-client --deactivate --type type --arguments arguments derivation\n"+
-			"disnix-soap-client --lock [{-p | --profile} profile]\n"+
-			"disnix-soap-client --unlock [{-p | --profile} profile]\n"+
-			"disnix-soap-client {-h | --help}");
+		System.out.println("Usage: disnix-soap-client --target targetEPR operation [OPTION] paths\n"+
+			"\n"+
+			"The command `disnix-ssh-client' provides remote access to a `disnix-service'\n"+
+			"instance running on a machine in the network by using a SOAP/HTTP connection.\n"+
+			"This allows the user to perform remote deployment operations on a target machine\n"+
+			"through SOAP.\n"+
+			"\n"+
+			"In most cases this command is not used directly, but is used by specifying the\n"+
+			"--interface option for a Disnix command-line utility (such as `disnix-env') or\n"+
+			"by setting the `DISNIX_CLIENT_INTERFACE' environment variable. By using one of\n"+
+			"those properties, the Disnix tools will use the given interface instead of the\n"+
+			"standard `disnix-client' which only provides loopback access.\n"+
+			"\n"+
+			"Options:\n"+
+			"\n"+
+			"Operations:\n"+
+			"\n"+
+			"Operations:\n"+
+			"  --import                   Imports a given closure into the Nix store of the\n"+
+			"                             target machine. Optionally, transfers the closure\n"+
+			"                             from this machine to the target machine\n"+
+			"  --export                   Exports the closure of a given Nix store path of\n"+
+			"                             the target machine into a file, and optionally\n"+
+			"                             downloads it\n"+
+			"  --print-invalid            Prints all the paths that are not valid in the Nix\n"+
+			"                             store of the target machine\n"+
+			"  -r, --realise              Realises the given store derivation on the target\n"+
+			"                             machine\n"+
+			"  --set                      Creates a Disnix profile only containing the given\n"+
+			"                             derivation on the target machine\n"+
+			"  -q, --query-installed      Queries all the installed services on the given\n"+
+			"                             target machine\n"+
+			"  --query-requisites         Queries all the requisites (intra-dependencies) of\n"+
+			"                             the given services on the target machine\n"+
+			"  --collect-garbage          Collects garbage on the given target machine\n"+
+			"  --activate                 Activates the given service on the target machine\n"+
+			"  --deactivate               Deactivates the given service on the target machine\n"+
+			"  --lock                     Acquires a lock on a Disnix profile of the target\n"+
+			"                             machine\n"+
+			"  --unlock                   Release the lock on a Disnix profile of the target\n"+
+			"                             machine\n"+
+			"  --snapshot                 Snapshots the logical state of a component on the\n"+
+			"                             given target machine\n"+
+			"  --restore                  Restores the logical state of a component on the\n"+
+			"                             given target machine\n"+
+			"  --delete-state             Deletes the state of a component on the given\n"+
+			"                             machine\n"+
+			"  --query-all-snapshots      Queries all available snapshots of a component on\n"+
+			"                             the given target machine\n"+
+			"  --query-latest-snapshot    Queries the latest snapshot of a component on the\n"+
+			"                             given target machine\n"+
+			"  --print-missing-snapshots  Prints the paths of all snapshots not present on\n"+
+			"                             the given target machine\n"+
+			"  --import-snapshots         Imports the specified snapshots into the remote\n"+
+			"                             snapshot store\n"+
+			"  --export-snapshots         Exports the specified snapshot to the local\n"+
+			"                             snapshot store\n"+
+			"  --resolve-snapshots        Converts the relative paths to the snapshots to\n"+
+			"                             absolute paths\n"+
+			"  --clean-snapshots          Removes older snapshots from the snapshot store\n"+
+			"  --help                     Shows the usage of this command to the user\n"+
+			"  --version                  Shows the version of this command to the user\n"+
+			"\n"+
+			"General options:\n"+
+			"  -t, --target=TARGET        Specifies the hostname and optional port number of\n"+
+			"                             the SSH server used to connect to the target\n"+
+			"                             machine\n"+
+			"\n"+
+			"Import/Export/Import snapshots/Export snapshots options:\n"+
+			"  --localfile                Specifies that the given paths are stored locally\n"+
+			"                             and must be transferred to the remote machine if\n"+
+			"                             needed\n"+
+			"  --remotefile               Specifies that the given paths are stored remotely\n"+
+			"                             and must transferred from the remote machine if\n"+
+			"                             needed\n"+
+			"\n"+
+			"Set/Query installed/Lock/Unlock options:\n"+
+			"  -p, --profile=PROFILE      Name of the Disnix profile. Defaults to: default\n"+
+			"\n"+
+			"Collect garbage options:\n"+
+			"  -d, --delete-old           Indicates whether all older generations of Nix\n"+
+			"                             profiles must be removed as well\n"+
+			"\n"+
+			"Activation/Deactivation/Snapshot/Restore/Delete state options:\n"+
+			"  --type=TYPE                Specifies the activation module that should be\n"+
+			"                             used, such as echo or process.\n"+
+			"  --arguments=ARGUMENTS      Specifies the arguments passed to the Dysnomia\n"+
+			"                             module, which is a string with key=value pairs\n"+
+			"\n"+
+			"Query all snapshots/Query latest snapshot options:\n"+
+			"  -C, --container=CONTAINER  Name of the container in which the component is managed\n"+
+			"  -c, --component=COMPONENT  Name of the component hosted in a container\n"+
+			"\n"+
+			"Clean snapshots options:\n"+
+			"  --keep=NUM                 Amount of snapshot generations to keep. Defaults\n"+
+			"                             to: 1\n"+
+			"\n"+
+			"Environment:\n"+
+			"  DISNIX_PROFILE             Sets the name of the profile that stores the\n"+
+			"                             manifest on the coordinator machine and the\n"+
+			"                             deployed services per machine on each target\n"+
+			"                             (Defaults to: default)\n"+
+			"  DYSNOMIA_STATEDIR          Specifies where the snapshots must be stored on the\n"+
+			"                             coordinator machine (defaults to: /var/dysnomia)\n");
+	}
+
+	private static void printVersion()
+	{
+		System.out.println("disnix-soap-client (DisnixWebService 0.4)\n");     
+		System.out.println("Copyright (C) 2008-2015 Sander van der Burg");
 	}
 	
 	/**
@@ -92,7 +188,8 @@ public class DisnixClient
 		CmdLineParser.Option opt_lock = parser.addBooleanOption("lock");
 		CmdLineParser.Option opt_unlock = parser.addBooleanOption("unlock");
 		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");
-		
+		CmdLineParser.Option opt_version = parser.addBooleanOption('v', "version");
+
 		/* Other attributes */
 		CmdLineParser.Option opt_target = parser.addStringOption('t', "target");
 		CmdLineParser.Option opt_localfile = parser.addBooleanOption("localfile");
@@ -120,8 +217,9 @@ public class DisnixClient
 			Boolean value_deactivate = (Boolean)parser.getOptionValue(opt_deactivate);
 			Boolean value_lock = (Boolean)parser.getOptionValue(opt_lock);
 			Boolean value_unlock = (Boolean)parser.getOptionValue(opt_unlock);
-			Boolean value_help = (Boolean)parser.getOptionValue(opt_help); 
-			
+			Boolean value_help = (Boolean)parser.getOptionValue(opt_help);
+			Boolean value_version = (Boolean)parser.getOptionValue(opt_version); 
+
 			String value_target = (String)parser.getOptionValue(opt_target);
 			Boolean value_localfile = (Boolean)parser.getOptionValue(opt_localfile);
 			Boolean value_remotefile = (Boolean)parser.getOptionValue(opt_remotefile);
@@ -132,11 +230,16 @@ public class DisnixClient
 			
 			String[] derivation = parser.getRemainingArgs();
 			
-			/* Display usage if requested */
+			/* Display usage or version if requested */
 			
 			if(value_help != null)
 			{
 				printUsage();
+				System.exit(0);
+			}
+			else if(value_version != null)
+			{
+				printVersion();
 				System.exit(0);
 			}
 			

@@ -1,3 +1,13 @@
+all: index.html index.pdf
+
+disnix-soap-client.1: ../scripts/disnix-soap-client
+	env CLASSPATH=../bin:../jargs.jar help2man --output=$@ --no-info --name 'Provides access to the disnix-service through the SOAP protocol' --libtool "$(SHELL) ../scripts/disnix-soap-client"
+
+disnix-soap-client.1.xml: disnix-soap-client.1
+	doclifter -x $<
+	sed -i -e "s|xml:id='disnixsoapclient1'|sec-disnix-soap-client|" \
+	    -e "s|&copy;|(C)|" $<
+
 XMLLINT = xmllint
 XSLTPROC = xsltproc \
  --param section.autolabel 1 \
@@ -18,11 +28,7 @@ dblatex_opts = \
 
 VERSION = $(shell cat ../version)
 
-MANUAL_SRCS = index.xml introduction.xml
-
-MANS = disnix-soap-client.1
-
-all: index.html index.pdf man
+MANUAL_SRCS = index.xml introduction.xml disnix-soap-client.1.xml
 
 version.txt:
 	echo -n $(VERSION) > version.txt
@@ -30,9 +36,6 @@ version.txt:
 manual.is-valid: $(MANUAL_SRCS) version.txt
 	$(XMLLINT) --noout --nonet --xinclude --noxincludenode --relaxng $(docbookrng)/docbook.rng $<
 	touch $@
-
-man $(MANS): $(MANUAL_SRCS) manual.is-valid
-	$(XSLTPROC) --nonet --xinclude $(docbookxsl)/manpages/docbook.xsl index.xml
 
 index.html: $(MANUAL_SRCS) manual.is-valid
 	$(XSLTPROC) --nonet --xinclude --output index.html \
