@@ -5,8 +5,8 @@ disnix-soap-client.1: ../scripts/disnix-soap-client
 
 disnix-soap-client.1.xml: disnix-soap-client.1
 	doclifter -x $<
-	sed -i -e "s|xml:id='disnixsoapclient1'|sec-disnix-soap-client|" \
-	    -e "s|&copy;|(C)|" $<
+	sed -i -e "s|xml:id='disnixsoapclient1'|xml:id='sec-disnix-soap-client'|" \
+	    -e "s|&copy;|(C)|" $@
 
 XMLLINT = xmllint
 XSLTPROC = xsltproc \
