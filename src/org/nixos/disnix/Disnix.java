@@ -59,6 +59,24 @@ public interface Disnix extends DBusInterface
 	
 	public void unlock(int pid, String profile);
 	
+	public void delete_state(int pid, String derivation, String type, String[] arguments);
+	
+	public void snapshot(int pid, String derivation, String type, String[] arguments);
+	
+	public void restore(int pid, String derivation, String type, String[] arguments);
+
+	public void query_all_snapshots(int pid, String container, String component);
+	
+	public void query_latest_snapshot(int pid, String container, String component);
+	
+	public void print_missing_snapshots(int pid, String[] component);
+	
+	public void import_snapshots(int pid, String container, String component, String[] snapshots);
+	
+	public void resolve_snapshots(int pid, String[] snapshots);
+	
+	public void clean_snapshots(int pid, int keep);
+	
 	public static class finish extends DBusSignal
 	{
 		public final int pid;

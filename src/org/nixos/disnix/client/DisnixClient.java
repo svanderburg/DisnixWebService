@@ -187,6 +187,16 @@ public class DisnixClient
 		CmdLineParser.Option opt_deactivate = parser.addBooleanOption("deactivate");
 		CmdLineParser.Option opt_lock = parser.addBooleanOption("lock");
 		CmdLineParser.Option opt_unlock = parser.addBooleanOption("unlock");
+		CmdLineParser.Option opt_snapshot = parser.addBooleanOption("snapshot");
+		CmdLineParser.Option opt_restore = parser.addBooleanOption("restore");
+		CmdLineParser.Option opt_delete_state = parser.addBooleanOption("delete-state");
+		CmdLineParser.Option opt_query_all_snapshots = parser.addBooleanOption("query-all-snapshots");
+		CmdLineParser.Option opt_query_latest_snapshot = parser.addBooleanOption("query-latest-snapshot");
+		CmdLineParser.Option opt_print_missing_snapshots = parser.addBooleanOption("print-missing-snapshots");
+		CmdLineParser.Option opt_import_snapshots = parser.addBooleanOption("import-snapshots");
+		CmdLineParser.Option opt_export_snapshots = parser.addBooleanOption("export-snapshots");
+		CmdLineParser.Option opt_resolve_snapshots = parser.addBooleanOption("resolve-snapshots");
+		CmdLineParser.Option opt_clean_snapshots = parser.addBooleanOption("clean-snapshots");
 		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");
 		CmdLineParser.Option opt_version = parser.addBooleanOption('v', "version");
 
@@ -198,6 +208,9 @@ public class DisnixClient
 		CmdLineParser.Option opt_delete_old = parser.addBooleanOption('d', "delete-old");
 		CmdLineParser.Option opt_type = parser.addStringOption("type");
 		CmdLineParser.Option opt_arguments = parser.addStringOption("arguments");
+		CmdLineParser.Option opt_container = parser.addStringOption("container");
+		CmdLineParser.Option opt_component = parser.addStringOption("component");
+		CmdLineParser.Option opt_keep = parser.addIntegerOption("keep");
 		
 		try
 		{
@@ -217,8 +230,18 @@ public class DisnixClient
 			Boolean value_deactivate = (Boolean)parser.getOptionValue(opt_deactivate);
 			Boolean value_lock = (Boolean)parser.getOptionValue(opt_lock);
 			Boolean value_unlock = (Boolean)parser.getOptionValue(opt_unlock);
+			Boolean value_snapshot = (Boolean)parser.getOptionValue(opt_snapshot);
+			Boolean value_restore = (Boolean)parser.getOptionValue(opt_restore);
+			Boolean value_delete_state = (Boolean)parser.getOptionValue(opt_delete_state);
+			Boolean value_query_all_snapshots = (Boolean)parser.getOptionValue(opt_query_all_snapshots);
+			Boolean value_latest_snapshot = (Boolean)parser.getOptionValue(opt_query_latest_snapshot);
+			Boolean value_print_missing_snapshots = (Boolean)parser.getOptionValue(opt_print_missing_snapshots);
+			Boolean value_import_snapshots = (Boolean)parser.getOptionValue(opt_import_snapshots);
+			Boolean value_export_snapshots = (Boolean)parser.getOptionValue(opt_export_snapshots);
+			Boolean value_resolve_snapshots = (Boolean)parser.getOptionValue(opt_resolve_snapshots);
+			Boolean value_clean_snapshots = (Boolean)parser.getOptionValue(opt_clean_snapshots);
 			Boolean value_help = (Boolean)parser.getOptionValue(opt_help);
-			Boolean value_version = (Boolean)parser.getOptionValue(opt_version); 
+			Boolean value_version = (Boolean)parser.getOptionValue(opt_version);
 
 			String value_target = (String)parser.getOptionValue(opt_target);
 			Boolean value_localfile = (Boolean)parser.getOptionValue(opt_localfile);
@@ -227,6 +250,9 @@ public class DisnixClient
 			Boolean value_delete_old = (Boolean)parser.getOptionValue(opt_delete_old);
 			String value_type = (String)parser.getOptionValue(opt_type);
 			Vector<String> value_arguments = parser.getOptionValues(opt_arguments);
+			String value_component = (String)parser.getOptionValue(opt_component);
+			String value_container = (String)parser.getOptionValue(opt_container);
+			int keep = (Integer)parser.getOptionValue(opt_keep);
 			
 			String[] derivation = parser.getRemainingArgs();
 			

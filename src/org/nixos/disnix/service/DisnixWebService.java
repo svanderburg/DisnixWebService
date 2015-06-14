@@ -23,7 +23,9 @@ package org.nixos.disnix.service;
 import org.freedesktop.dbus.*;
 import org.freedesktop.dbus.exceptions.*;
 import org.nixos.disnix.Disnix;
+
 import javax.activation.*;
+
 import java.io.*;
 
 /**
@@ -492,6 +494,276 @@ public class DisnixWebService
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
 			throw new Exception("Unlock failed!");
+		
+		return 0;
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#delete_state(int, String, String, String[])
+	 */
+	public /*void*/ int deleteState(final String derivation, final String type, final String[] arguments) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.delete_state(pid, derivation, type, arguments);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Delete state failed!");
+		
+		return 0;
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#snapshot(int, String, String, String[])
+	 */
+	public /*void*/ int snapshot(final String derivation, final String type, final String[] arguments) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.snapshot(pid, derivation, type, arguments);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Snapshot failed!");
+		
+		return 0;
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#restore(int, String, String, String[])
+	 */
+	public /*void*/ int restore(final String derivation, final String type, final String[] arguments) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.restore(pid, derivation, type, arguments);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Restore failed!");
+		
+		return 0;
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#query_all_snapshots(int, String, String)
+	 */
+	public String[] queryAllSnapshots(final String container, final String component) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.query_all_snapshots(pid, container, component);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Query all snapshots failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation;
+		else
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#query_latest_snapshot(int, String, String)
+	 */
+	public String[] queryLatestSnapshot(final String container, final String component) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.query_latest_snapshot(pid, container, component);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Query latest snapshot failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation;
+		else
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#import_snapshots(int, String, String, String[])
+	 */
+	public int /*void*/ importSnapshots(final String container, final String component, final String[] snapshots) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.import_snapshots(pid, container, component, snapshots);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Import snapshots failed!");
+		
+		return 0;
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#resolve_snapshots(int, String[])
+	 */
+	public String[] resolveSnapshots(final String[] snapshots) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.resolve_snapshots(pid, snapshots);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Query latest snapshot failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation;
+		else
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#clean_snapshots(int, int)
+	 */
+	public int /*void*/ cleanSnapshots(final int keep) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.clean_snapshots(pid, keep);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Clean snapshots failed!");
 		
 		return 0;
 	}

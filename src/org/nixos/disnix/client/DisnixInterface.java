@@ -21,12 +21,15 @@
  */
 package org.nixos.disnix.client;
 import javax.xml.namespace.*;
+
 import org.apache.axis2.*;
 import org.apache.axis2.rpc.client.*;
 import org.apache.axis2.client.*;
 import org.apache.axis2.addressing.*;
 import org.apache.axis2.transport.http.*;
+
 import javax.activation.*;
+
 import java.io.*;
 
 /**
@@ -462,6 +465,169 @@ public class DisnixInterface
 		{
 			QName operation = new QName(NAME_SPACE, "unlock");
 			Object[] args = { profile };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public void deleteState(String derivation, String type, String[] arguments) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "deleteState");
+			Object[] args = { derivation, type, arguments };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public void snapshot(String derivation, String type, String[] arguments) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "snapshot");
+			Object[] args = { derivation, type, arguments };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public void restore(final String derivation, final String type, final String[] arguments) throws Exception
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "restore");
+			Object[] args = { derivation, type, arguments };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public String[] queryAllSnapshots(String container, String component) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "queryAllSnapshots");
+			Object[] args = { container, component };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public String[] queryLatestSnapshot(String container, String component) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "queryLatestSnapshot");
+			Object[] args = { container, component };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public void importSnapshots(String container, String component, String[] snapshots) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "importSnapshots");
+			Object[] args = { container, component, snapshots };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public String[] resolveSnapshots(String[] snapshots) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "resolveSnapshots");
+			Object[] args = { snapshots };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public void cleanSnapshots(int keep) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "cleanSnapshots");
+			Object[] args = { keep };
 			
 			serviceClient.invokeRobust(operation, args);
 		}
