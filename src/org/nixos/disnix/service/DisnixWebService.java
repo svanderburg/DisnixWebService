@@ -668,6 +668,42 @@ public class DisnixWebService
 	}
 	
 	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#print_missing_snapshots(int, String[])
+	 */
+	
+	public String[] printMissingSnapshots(final String[] component) throws Exception
+	{
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					int pid = disnixInterface.get_job_id();
+					handler.addPid(pid, this);
+					disnixInterface.print_missing_snapshots(pid, component);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw new Exception("Print missing snapshots failed!");
+		else if(disnixThread.getSource() instanceof Disnix.success)
+			return ((Disnix.success)disnixThread.getSource()).derivation;
+		else
+			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+	}
+	
+	/**
 	 * @see org.nixos.disnix.client.DisnixInterface#import_snapshots(int, String, String, String[])
 	 */
 	public int /*void*/ importSnapshots(final String container, final String component, final String[] snapshots) throws Exception

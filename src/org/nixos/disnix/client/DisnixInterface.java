@@ -581,6 +581,27 @@ public class DisnixInterface
 		}
 	}
 	
+	public String[] printMissingSnapshots(String[] component) throws AxisFault
+	{
+		try
+		{
+			QName operation = new QName(NAME_SPACE, "printMissingSnapshots");
+			Object[] args = { component };
+			Class<?>[] returnTypes = { String[].class };
+			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+			return (String[])response[0];
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
 	public void importSnapshots(String container, String component, String[] snapshots) throws AxisFault
 	{
 		try

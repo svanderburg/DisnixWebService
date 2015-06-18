@@ -89,6 +89,11 @@ let
         auth = import ./tests/auth.nix {
           inherit nixpkgs dysnomia disnix DisnixWebService;
         };
+        
+        snapshots = import ./tests/snapshots.nix {
+          inherit (pkgs) stdenv;
+          inherit nixpkgs dysnomia disnix DisnixWebService;
+        };
       };
   };
 in

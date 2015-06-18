@@ -234,7 +234,7 @@ public class DisnixClient
 			Boolean value_restore = (Boolean)parser.getOptionValue(opt_restore);
 			Boolean value_delete_state = (Boolean)parser.getOptionValue(opt_delete_state);
 			Boolean value_query_all_snapshots = (Boolean)parser.getOptionValue(opt_query_all_snapshots);
-			Boolean value_latest_snapshot = (Boolean)parser.getOptionValue(opt_query_latest_snapshot);
+			Boolean value_query_latest_snapshot = (Boolean)parser.getOptionValue(opt_query_latest_snapshot);
 			Boolean value_print_missing_snapshots = (Boolean)parser.getOptionValue(opt_print_missing_snapshots);
 			Boolean value_import_snapshots = (Boolean)parser.getOptionValue(opt_import_snapshots);
 			Boolean value_export_snapshots = (Boolean)parser.getOptionValue(opt_export_snapshots);
@@ -252,7 +252,7 @@ public class DisnixClient
 			Vector<String> value_arguments = parser.getOptionValues(opt_arguments);
 			String value_component = (String)parser.getOptionValue(opt_component);
 			String value_container = (String)parser.getOptionValue(opt_container);
-			int keep = (Integer)parser.getOptionValue(opt_keep);
+			Integer keep = (Integer)parser.getOptionValue(opt_keep);
 			
 			String[] derivation = parser.getRemainingArgs();
 			
@@ -444,6 +444,84 @@ public class DisnixClient
 				
 				System.err.println("Releasing lock on profile: "+profile);
 				disnixInterface.unlock(profile);
+			}
+			else if(value_snapshot != null)
+			{
+				/* Convert arguments vector to array */
+				String[] arguments = new String[value_arguments.size()];
+				value_arguments.toArray(arguments);
+				
+				disnixInterface.snapshot(derivation[0], value_type, arguments);
+			}
+			else if(value_restore != null)
+			{
+				/* Convert arguments vector to array */
+				String[] arguments = new String[value_arguments.size()];
+				value_arguments.toArray(arguments);
+				
+				disnixInterface.restore(derivation[0], value_type, arguments);
+			}
+			else if(value_delete_state != null)
+			{
+				/* Convert arguments vector to array */
+				String[] arguments = new String[value_arguments.size()];
+				value_arguments.toArray(arguments);
+				
+				disnixInterface.deleteState(derivation[0], value_type, arguments);
+			}
+			else if(value_query_all_snapshots != null)
+			{
+				String[] result = disnixInterface.queryAllSnapshots(value_container, value_component);
+				printStringArray(result, System.out, "");
+			}
+			else if(value_query_latest_snapshot != null)
+			{
+				String[] result = disnixInterface.queryLatestSnapshot(value_container, value_component);
+				printStringArray(result, System.out, "");
+			}
+			else if(value_print_missing_snapshots != null)
+			{
+				String[] result = disnixInterface.printMissingSnapshots(derivation);
+				printStringArray(result, System.out, "");
+			}
+			else if(value_resolve_snapshots != null)
+			{
+				String[] result = disnixInterface.resolveSnapshots(derivation);
+				printStringArray(result, System.out, "");
+			}
+			else if(value_import_snapshots != null)
+			{
+				if(value_remotefile != null)
+				{
+					System.err.println("Importing remote snapshots: ");
+					printStringArray(derivation, System.err, "");
+					disnixInterface.importSnapshots(value_container, value_component, derivation);
+				}
+				else if(value_localfile != null)
+				{
+					System.err.println("Import local snapshots: "+derivation);
+					printStringArray(derivation, System.err, "");
+					// TODO disnixInterface.importLocalSnapshots(value_container, value_component, derivation);
+				}
+				else
+				{
+					System.err.println("ERROR: Either --localfile or --remotefile should be specified!");
+					System.exit(1);
+				}
+			}
+			else if(value_export_snapshots != null)
+			{
+				System.err.println("Exporting remote derivation: ");
+				printStringArray(derivation, System.err, " ");
+				System.err.println();
+				// TODO implement disnixInterface.exportSnapshots(derivation);
+			}
+			else if(value_clean_snapshots != null)
+			{
+				if(keep == null)
+					keep = 1;
+				
+				disnixInterface.cleanSnapshots(keep);
 			}
 			else
 			{
