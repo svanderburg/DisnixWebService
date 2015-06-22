@@ -29,8 +29,8 @@ import org.apache.axis2.addressing.*;
 import org.apache.axis2.transport.http.*;
 
 import javax.activation.*;
-
 import java.io.*;
+import java.util.*;
 
 /**
  * Provides a SOAP client interface to the Disnix Service.
@@ -610,6 +610,106 @@ public class DisnixInterface
 			Object[] args = { container, component, snapshots };
 			
 			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	private void populatePathsVector(File[] paths, Vector<String> files)
+	{
+		for(File path : paths)
+		{
+			if(path.isDirectory())
+			{
+				File[] subPaths = path.listFiles();
+				populatePathsVector(subPaths, files);
+			}
+			else
+				files.add(path.getAbsolutePath());
+		}
+	}
+	
+	public void importLocalSnapshots(String container, String component, String snapshot) throws AxisFault
+	{
+		try
+		{	
+			Vector<String> pathsVector = new Vector<String>();
+			populatePathsVector(new File[] { new File(snapshot) }, pathsVector);
+			
+			DataHandler[] dataHandlers = new DataHandler[pathsVector.size()];
+			String[] paths = new String[pathsVector.size()];
+			pathsVector.toArray(paths);
+			
+			for(int i = 0; i < dataHandlers.length; i++)
+				dataHandlers[i] = new DataHandler(new FileDataSource(paths[i]));
+			
+			QName operation = new QName(NAME_SPACE, "importLocalSnapshots");
+			Object[] args = { container, component, snapshot, dataHandlers, paths };
+			
+			serviceClient.invokeRobust(operation, args);
+		}
+		catch(AxisFault ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			serviceClient.cleanup();
+			serviceClient.cleanupTransport();
+		}
+	}
+	
+	public String exportRemoteSnapshots(String[] snapshots) throws AxisFault, IOException, FileNotFoundException
+	{
+		try
+		{	
+			File tempDir = File.createTempFile("disnix_snapshot_", null);
+			tempDir.delete();
+			tempDir.mkdir();
+
+			for(int i = 0; i < snapshots.length; i++)
+			{
+				String[] paths;
+				
+				{
+					QName operation = new QName(NAME_SPACE, "exportRemoteSnapshotPaths");
+					Object[] args = { snapshots[i] };
+					Class<?>[] returnTypes = { String[].class };
+					Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+					paths = (String[])response[0];
+				}
+				
+				DataHandler[] dataHandlers;
+				
+				{
+					QName operation = new QName(NAME_SPACE, "exportRemoteSnapshots");
+					Object[] args = { snapshots[i] };
+					Class<?>[] returnTypes = { DataHandler[].class };
+					Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
+					dataHandlers = (DataHandler[])response[0];
+				}	
+			
+				String relativePath = paths[i].substring(snapshots[i].length());
+				String snapshotName = new File(snapshots[i]).getName();
+				File targetFile = new File(tempDir.getAbsolutePath() + File.separator + snapshotName + File.separator + relativePath);
+				
+				if(targetFile.getParentFile() != null) // If the file is part of a directory then create it first
+					targetFile.getParentFile().mkdirs();
+				
+				FileOutputStream fos = new FileOutputStream(targetFile);
+				dataHandlers[i].writeTo(fos);
+				fos.flush();
+				fos.close();
+			}
+			
+			return tempDir.getAbsolutePath();
 		}
 		catch(AxisFault ex)
 		{

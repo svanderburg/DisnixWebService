@@ -27,6 +27,8 @@ import org.nixos.disnix.Disnix;
 import javax.activation.*;
 
 import java.io.*;
+import java.util.*;
+
 
 /**
  * Provides a SOAP interface to operations of the core Disnix service
@@ -703,6 +705,62 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught! "+disnixThread.getSource());
 	}
 	
+	private void populatePathsVector(File[] paths, Vector<String> files)
+	{
+		for(File path : paths)
+		{
+			if(path.isDirectory())
+			{
+				File[] subPaths = path.listFiles();
+				populatePathsVector(subPaths, files);
+			}
+			else
+				files.add(path.getAbsolutePath());
+		}
+	}
+
+	public String[] exportRemoteSnapshotPaths(final String derivation)
+	{
+		File[] paths = { new File(derivation) };
+		
+		Vector<String> files = new Vector<String>();
+		populatePathsVector(paths, files);
+		
+		String[] result = new String[files.size()];
+		files.toArray(result);
+		return result;
+	}
+	
+	private void populateFilesVector(File[] paths, Vector<File> files)
+	{
+		for(File path : paths)
+		{
+			if(path.isDirectory())
+			{
+				File[] subPaths = path.listFiles();
+				populateFilesVector(subPaths, files);
+			}
+			else
+				files.add(path);
+		}
+	}
+	
+	public DataHandler[] exportRemoteSnapshots(final String derivation) throws Exception
+	{
+		File[] paths = { new File(derivation) };
+		
+		Vector<File> files = new Vector<File>();
+		populateFilesVector(paths, files);
+		
+		/* Compose data handler for each file */
+		DataHandler[] dataHandlers = new DataHandler[files.size()];
+		
+		for(int i = 0; i < files.size(); i++)
+			dataHandlers[i] = new DataHandler(new FileDataSource(files.elementAt(i)));
+		
+		return dataHandlers;
+	}
+	
 	/**
 	 * @see org.nixos.disnix.client.DisnixInterface#import_snapshots(int, String, String, String[])
 	 */
@@ -732,6 +790,38 @@ public class DisnixWebService
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
 			throw new Exception("Import snapshots failed!");
+		
+		return 0;
+	}
+	
+	public /*void*/ int importLocalSnapshots(final String container, final String component, String snapshot, DataHandler[] dataHandlers, String[] paths) throws Exception
+	{
+		/* Create temp directory */
+		File tempDir = File.createTempFile("disnix_closure_", null);
+		tempDir.delete();
+		tempDir.mkdir();
+		
+		String snapshotName = new File(snapshot).getName();
+		
+		for(int i = 0; i < dataHandlers.length; i++)
+		{
+			String relativePath = paths[i].substring(snapshot.length());
+			File targetFile = new File(tempDir.getAbsolutePath() + File.separator + snapshotName + File.separator + relativePath);
+			
+			if(targetFile.getParentFile() != null) // If the file is part of a directory then create it first
+				targetFile.getParentFile().mkdirs();
+			
+			/* Save file on local filesystem */
+			
+			FileOutputStream fos = new FileOutputStream(targetFile);
+			dataHandlers[i].writeTo(fos);
+			fos.flush();
+			fos.close();
+		}
+		
+		/* Import the closure */
+		String[] snapshots = { tempDir.getAbsolutePath() + File.separator + snapshotName };
+		importSnapshots(container, component, snapshots);
 		
 		return 0;
 	}

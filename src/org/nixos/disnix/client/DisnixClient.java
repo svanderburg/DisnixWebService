@@ -501,7 +501,7 @@ public class DisnixClient
 				{
 					System.err.println("Import local snapshots: "+derivation);
 					printStringArray(derivation, System.err, "");
-					// TODO disnixInterface.importLocalSnapshots(value_container, value_component, derivation);
+					disnixInterface.importLocalSnapshots(value_container, value_component, derivation[0]);
 				}
 				else
 				{
@@ -514,7 +514,8 @@ public class DisnixClient
 				System.err.println("Exporting remote derivation: ");
 				printStringArray(derivation, System.err, " ");
 				System.err.println();
-				// TODO implement disnixInterface.exportSnapshots(derivation);
+				String result = disnixInterface.exportRemoteSnapshots(derivation);
+				System.out.println(result);
 			}
 			else if(value_clean_snapshots != null)
 			{
