@@ -2,6 +2,8 @@ Version 0.4
 ===========
 - Manual page is generated now from the help page
 
+- Added snapshotting operations
+
 Version 0.3
 ===========
 - Larger test suite
