@@ -12,6 +12,7 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ];
         
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
         
@@ -45,7 +46,7 @@ simpleTest {
           ];
           services.tomcat.webapps = [ DisnixWebService ];
           
-          environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+          environment.systemPackages = [ pkgs.stdenv ];
       };
       
     client =
@@ -53,7 +54,9 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
-        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ];
+        
+        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
       };
   };
   testScript = 
@@ -107,6 +110,11 @@ simpleTest {
       $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --export --remotefile ${pkgs.bash}");
       $client->mustSucceed("nix-store --import < $result");
       
+      # Export local test. Exports the local closure of the bash shell on the
+      # server and then imports it on the client. This test should succeed.
+      $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --export --localfile ${pkgs.bash}");
+      $server->mustSucceed("nix-store --import < ".substr $result, 0, -1);
+      
       # Import test. First we create a manifest, then we take the
       # closure of the target2Profile on the client. Then it imports the
       # closure into the Nix store of the server. This test should
@@ -120,6 +128,11 @@ simpleTest {
       $client->mustSucceed("nix-store --export \$(nix-store -qR @target2Profile) > /root/target2Profile.closure");
       $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --import --localfile /root/target2Profile.closure");
       $server->mustSucceed("nix-store --check-validity @target2Profile");
+      
+      # Import remote test. Export the closure of bash and try to import it.
+      # This test should succeed.
+      $server->mustSucceed("nix-store --export \$(nix-store -qR /bin/sh) > /root/bash.closure");
+      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --import --remotefile /root/bash.closure");
       
       # Set test. Adds the testTarget2 profile as only derivation into 
       # the Disnix profile. We first set the profile, then we check

@@ -12,6 +12,7 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox pkgs.patchelf ];
         
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
         
@@ -45,7 +46,7 @@ simpleTest {
         ];
         services.tomcat.webapps = [ DisnixWebService ];
         
-        environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+        environment.systemPackages = [ pkgs.stdenv ];
       };
     
     testTarget2 = 
@@ -53,6 +54,7 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ];
         
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
@@ -75,7 +77,7 @@ simpleTest {
         ids.gids = { disnix = 200; };
         users.extraGroups = [ { gid = 200; name = "disnix"; } ];
         
-        environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc disnix ];
+        environment.systemPackages = [ pkgs.stdenv disnix ];
       };
     
     coordinator =
@@ -83,7 +85,9 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
-        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ];
+        
+        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
       };
   };
   testScript = 

@@ -148,7 +148,7 @@ public class DisnixInterface
 		{
 			QName operation = new QName(NAME_SPACE, "export");
 			Object[] args = { derivation };
-			Class<?>[] returnTypes = { String[].class };
+			Class<?>[] returnTypes = { String.class };
 			Object[] response = serviceClient.invokeBlocking(operation, args, returnTypes);
 			return (String)response[0];
 		}
