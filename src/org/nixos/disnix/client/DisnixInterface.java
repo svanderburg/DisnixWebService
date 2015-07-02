@@ -168,6 +168,7 @@ public class DisnixInterface
 	 * it from the client.
 	 * 
 	 * @param derivation Path to the Nix store component on the server
+	 * @return Path to the temp dir in which the downloaded snapshot is stored
 	 * @throws AxisFault If an error occurs with the transport
 	 * @throws IOException If an error occurs with downloading the file
 	 */
@@ -479,6 +480,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Deletes the state of a component.
+	 * 
+	 * @param derivation Nix store path to or name of the component
+	 * @param type Type identifier of the service
+	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void deleteState(String derivation, String type, String[] arguments) throws AxisFault
 	{
 		try
@@ -499,6 +508,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Snapshots the state of a component
+	 * 
+	 * @param derivation Nix store path to or name of the component
+	 * @param type Type identifier of the service
+	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void snapshot(String derivation, String type, String[] arguments) throws AxisFault
 	{
 		try
@@ -519,7 +536,15 @@ public class DisnixInterface
 		}
 	}
 	
-	public void restore(final String derivation, final String type, final String[] arguments) throws Exception
+	/**
+	 * Restores the state of a component.
+	 * 
+	 * @param derivation Nix store path to or name of the component
+	 * @param type Type identifier of the service
+	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
+	 * @throws AxisFault If an error occurs with the transport
+	 */
+	public void restore(final String derivation, final String type, final String[] arguments) throws AxisFault
 	{
 		try
 		{
@@ -539,6 +564,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Queries the paths to the all snapshots taken of a component deployed to a container.
+	 * 
+	 * @param container Name of the container to which a component is deployed
+	 * @param component Name of the deployed component
+	 * @return An array of relative paths to the snapshots
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] queryAllSnapshots(String container, String component) throws AxisFault
 	{
 		try
@@ -560,6 +593,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Queries the path to the last snapshot taken of a component deployed to a container.
+	 * 
+	 * @param container Name of the container to which a component is deployed
+	 * @param component Name of the deployed component
+	 * @return An array of relative paths to the snapshots
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] queryLatestSnapshot(String container, String component) throws AxisFault
 	{
 		try
@@ -581,6 +622,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Prints the absolute paths of the snapshots that are missing on the target machine.
+	 * 
+	 * @param component An array of snapshot paths of a component
+	 * @return All snapshots that are missing
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] printMissingSnapshots(String[] component) throws AxisFault
 	{
 		try
@@ -602,6 +650,14 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Imports snapshots into the snapshot store for a specific component deployed to a container.
+	 * 
+	 * @param container Name of the container to which a component is deployed
+	 * @param component Name of the deployed component
+	 * @param snapshots An array of paths to snapshots that must be imported
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void importSnapshots(String container, String component, String[] snapshots) throws AxisFault
 	{
 		try
@@ -622,7 +678,7 @@ public class DisnixInterface
 		}
 	}
 	
-	private void populatePathsVector(File[] paths, Vector<String> files)
+	private static void populatePathsVector(File[] paths, Vector<String> files)
 	{
 		for(File path : paths)
 		{
@@ -636,6 +692,15 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Transfers a set of snapshots to the target machine and imports them into the remote
+	 * snapshot store.
+	 * 
+	 * @param container Name of the container to which a component is deployed
+	 * @param component Name of the deployed component
+	 * @param snapshot Path to a snapshot
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void importLocalSnapshots(String container, String component, String snapshot) throws AxisFault
 	{
 		try
@@ -666,6 +731,15 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Retrieves a set of snapshots from the remote machine.
+	 * 
+	 * @param snapshots Absolute paths to the snapshots to retrieve
+	 * @return Path to a temp directory containing the retrieved snapshots
+	 * @throws AxisFault If an error occurs with the transport
+	 * @throws IOException If an error occurs with writing the snapshot
+	 * @throws FileNotFoundException If the file cannot be found
+	 */
 	public String exportRemoteSnapshots(String[] snapshots) throws AxisFault, IOException, FileNotFoundException
 	{
 		try
@@ -676,6 +750,7 @@ public class DisnixInterface
 
 			for(int i = 0; i < snapshots.length; i++)
 			{
+				/* Retrieves the absolute paths to the snapshots */
 				String[] paths;
 				
 				{
@@ -686,6 +761,7 @@ public class DisnixInterface
 					paths = (String[])response[0];
 				}
 				
+				/* Fetch the snapshots themselves */
 				DataHandler[] dataHandlers;
 				
 				{
@@ -709,6 +785,7 @@ public class DisnixInterface
 				fos.close();
 			}
 			
+			/* Return the path to the tempdir containing the retrieved snapshot */
 			return tempDir.getAbsolutePath();
 		}
 		catch(AxisFault ex)
@@ -722,6 +799,13 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Resolves the absolute paths of a set of snapshots from their relative paths.
+	 * 
+	 * @param snapshots An array of relative paths to snapshots
+	 * @return An array of absolute paths
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public String[] resolveSnapshots(String[] snapshots) throws AxisFault
 	{
 		try
@@ -743,6 +827,12 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Cleans all older generation snapshots from the remote machine.
+	 * 
+	 * @param keep Amount of snapshot generations to keep
+	 * @throws AxisFault If an error occurs with the transport
+	 */
 	public void cleanSnapshots(int keep) throws AxisFault
 	{
 		try

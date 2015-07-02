@@ -501,7 +501,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#delete_state(int, String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#deleteState(String, String, String[])
 	 */
 	public /*void*/ int deleteState(final String derivation, final String type, final String[] arguments) throws Exception
 	{
@@ -534,7 +534,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#snapshot(int, String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#snapshot(String, String, String[])
 	 */
 	public /*void*/ int snapshot(final String derivation, final String type, final String[] arguments) throws Exception
 	{
@@ -567,7 +567,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#restore(int, String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#restore(String, String, String[])
 	 */
 	public /*void*/ int restore(final String derivation, final String type, final String[] arguments) throws Exception
 	{
@@ -600,7 +600,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#query_all_snapshots(int, String, String)
+	 * @see org.nixos.disnix.client.DisnixInterface#queryAllSnapshots(String, String)
 	 */
 	public String[] queryAllSnapshots(final String container, final String component) throws Exception
 	{
@@ -635,7 +635,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#query_latest_snapshot(int, String, String)
+	 * @see org.nixos.disnix.client.DisnixInterface#queryLatestSnapshot(String, String)
 	 */
 	public String[] queryLatestSnapshot(final String container, final String component) throws Exception
 	{
@@ -670,9 +670,8 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#print_missing_snapshots(int, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#printMissingSnapshots(String[])
 	 */
-	
 	public String[] printMissingSnapshots(final String[] component) throws Exception
 	{
 		DisnixThread disnixThread = new DisnixThread()
@@ -705,7 +704,7 @@ public class DisnixWebService
 			throw new Exception("Unknown event caught! "+disnixThread.getSource());
 	}
 	
-	private void populatePathsVector(File[] paths, Vector<String> files)
+	private static void populatePathsVector(File[] paths, Vector<String> files)
 	{
 		for(File path : paths)
 		{
@@ -719,6 +718,12 @@ public class DisnixWebService
 		}
 	}
 
+	/**
+	 * Exports all snapshots paths of files belonging to snapshots
+	 * 
+	 * @param derivation Name of the component to take snapshots from
+	 * @return An array of absolute file paths
+	 */
 	public String[] exportRemoteSnapshotPaths(final String derivation)
 	{
 		File[] paths = { new File(derivation) };
@@ -731,7 +736,7 @@ public class DisnixWebService
 		return result;
 	}
 	
-	private void populateFilesVector(File[] paths, Vector<File> files)
+	private static void populateFilesVector(File[] paths, Vector<File> files)
 	{
 		for(File path : paths)
 		{
@@ -745,6 +750,9 @@ public class DisnixWebService
 		}
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#exportRemoteSnapshots(String[])
+	 */
 	public DataHandler[] exportRemoteSnapshots(final String derivation) throws Exception
 	{
 		File[] paths = { new File(derivation) };
@@ -762,7 +770,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#import_snapshots(int, String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#importSnapshots(String, String, String[])
 	 */
 	public int /*void*/ importSnapshots(final String container, final String component, final String[] snapshots) throws Exception
 	{
@@ -794,6 +802,9 @@ public class DisnixWebService
 		return 0;
 	}
 	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#importLocalSnapshots(String, String, String)
+	 */
 	public /*void*/ int importLocalSnapshots(final String container, final String component, String snapshot, DataHandler[] dataHandlers, String[] paths) throws Exception
 	{
 		/* Create temp directory */
@@ -862,7 +873,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#clean_snapshots(int, int)
+	 * @see org.nixos.disnix.client.DisnixInterface#cleanSnapshots(int)
 	 */
 	public int /*void*/ cleanSnapshots(final int keep) throws Exception
 	{
