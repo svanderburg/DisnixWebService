@@ -21,16 +21,15 @@
  */
 package org.nixos.disnix.client;
 import javax.xml.namespace.*;
+import javax.activation.*;
+import java.io.*;
+import java.util.*;
 
 import org.apache.axis2.*;
 import org.apache.axis2.rpc.client.*;
 import org.apache.axis2.client.*;
 import org.apache.axis2.addressing.*;
 import org.apache.axis2.transport.http.*;
-
-import javax.activation.*;
-import java.io.*;
-import java.util.*;
 
 /**
  * Provides a SOAP client interface to the Disnix Service.

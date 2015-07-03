@@ -43,7 +43,7 @@ services.disnix.useWebServiceInterface = true;
 		<para>
 			The web service itself does not have any security facilities whatsoever.
 			If authentication is required, you can put a HTTP reverse proxy in front of it
-			that does basic authentication. In NixOS (using Apache HTTP server) this can
+			that does basic authentication. In NixOS (using the Apache HTTP server) this can
 			be accomplished by adding the following snippet to the NixOS configuration:
 		</para>
 		
@@ -66,6 +66,7 @@ services.httpd.extraConfig = ''
   ProxyPreserveHost on
   ProxyPass         /    http://localhost:8080/ retry=5 disablereuse=on
   ProxyPassReverse  /    http://localhost:8080/
+'';
 </screen>
 		<para>
 			The <filename>htpasswd</filename> file (that contains one administrator user) can be generated as follows:
@@ -83,10 +84,10 @@ $ htpasswd -c admin htpasswd
 			
 			<para>
 				In order to build the <filename>DisnixWebService</filename> the following
-				dependencies are required. The tooling is implemented in Java
-				and thus a Java Development Kit (at least version 1.5) is required and
-				<link xlink:href="http://ant.apache.org">Apache Ant</link> to
-				perform the build.
+				dependencies are required. The tooling is implemented in Java.
+				Therefore, the Java Development Kit (at least version 1.5) must be installed.
+				<link xlink:href="http://ant.apache.org">Apache Ant</link> is required to
+				build the package from source code.
 				<link xlink:href="http://ws.apache.org/axis2">Apache Axis2</link>
 				is used to implement the client interface and as hosting environment
 				for the web service front-end.
@@ -102,7 +103,7 @@ $ htpasswd -c admin htpasswd
 			<title>Compiling from source code</title>
 			
 			<para>
-				After unpacking or checking out the Disnix sources, it can be
+				After unpacking or checking out the DisnixWebService source code, it can be
 				compiled by executing the following commands:
 			</para>
 			
@@ -137,7 +138,7 @@ ant install
 				</para>
 				
 <screen>
-$ usermod -G disnix tomcat
+$ usermod -a -G disnix tomcat
 </screen>
 
 				<para>
@@ -179,7 +180,7 @@ $ mkdir -p shared/lib
 				
 				<para>
 					The next step is to edit the Apache Tomcat configuration file to
-					enable the shared library loader and to use the 
+					enable the shared library loader using
 					<filename>shared/lib</filename> folder.
 					This can be done by editing the 
 					<filename>conf/catalina.properties</filename> configuration
@@ -226,25 +227,25 @@ $ export JAVA_OPTS="-Djava.library.path=/path/to/libmatthew-java/lib/jni"
 			<section>
 			  <title>Securing the web service interface</title>
 			  <para>
-				The web service interface has no security facilities whatsoever. To support basic HTTP authentication
+				The web service interface has no security facilities whatsoever. To support basic HTTP authentication,
 				a reverse proxy can be put in front of it taking care of it. For the Apache HTTP server you basically
 				need to integrate the following snippet in your configuration:
 			  </para>
 <screen>
-  &lt;Proxy *&gt;
-    Order deny,allow
-    Allow from all
-    AuthType basic
-    AuthName "DisnixWebService"
-    AuthBasicProvider file
-    AuthUserFile ./htpasswd
-    Require user admin
-  &lt;/Proxy&gt;
-  
-  ProxyRequests     off
-  ProxyPreserveHost on
-  ProxyPass         /    http://localhost:8080/ retry=5 disablereuse=on
-  ProxyPassReverse  /    http://localhost:8080/
+&lt;Proxy *&gt;
+  Order deny,allow
+  Allow from all
+  AuthType basic
+  AuthName "DisnixWebService"
+  AuthBasicProvider file
+  AuthUserFile ./htpasswd
+  Require user admin
+&lt;/Proxy&gt;
+
+ProxyRequests     off
+ProxyPreserveHost on
+ProxyPass         /    http://localhost:8080/ retry=5 disablereuse=on
+ProxyPassReverse  /    http://localhost:8080/
 </screen>
 				<para>
 					The <filename>htpasswd</filename> file (that contains one administrator user) can be generated as follows:
@@ -265,7 +266,7 @@ $ htpasswd -c admin htpasswd
 			Second, a target property must be configured. By default Disnix uses the
 			<varname>hostname</varname> attribute in the infrastructure model to connect to the
 			target interface. This property does not work with the <filename>DisnixWebService</filename>,
-			because a complete URL is required in order to connect to the web service.
+			because an URL is required in order to connect to the web service.
 		</para>
 		
 		<para>
@@ -286,7 +287,7 @@ $ export DISNIX_TARGET_PROPERTY=targetEPR
 </screen>
 
 			By setting this variable, the <varname>targetEPR</varname> attribute is used (which is a convention we use for web services).
-			Alternatively, you can use a different attribute name.
+			Alternatively, you can use also use a different attribute name if desired.
 		</para>
 		<para>
 			If a reverse proxy taking care of HTTP basic authentication has been configured, the following environment variables

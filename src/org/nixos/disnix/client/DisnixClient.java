@@ -37,7 +37,7 @@ public class DisnixClient
 	{
 		System.out.println("Usage: disnix-soap-client --target targetEPR operation [OPTION] paths\n"+
 			"\n"+
-			"The command `disnix-ssh-client' provides remote access to a `disnix-service'\n"+
+			"The command `disnix-soap-client' provides remote access to a `disnix-service'\n"+
 			"instance running on a machine in the network by using a SOAP/HTTP connection.\n"+
 			"This allows the user to perform remote deployment operations on a target machine\n"+
 			"through SOAP.\n"+
