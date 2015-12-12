@@ -98,10 +98,10 @@ simpleTest {
           die "${pkgs.bash} should be in the closure!\n";
       }
       
-      # Realise test. First a bash derivation file is instantiated,
+      # Realise test. First the coreutils derivation file is instantiated,
       # then it is realised. This test should succeed.
       
-      $result = $server->mustSucceed("nix-instantiate ${nixpkgs} -A bash");
+      $result = $server->mustSucceed("nix-instantiate ${nixpkgs} -A coreutils");
       $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --realise $result");
       
       # Export test. Exports the closure of the bash shell on the server
