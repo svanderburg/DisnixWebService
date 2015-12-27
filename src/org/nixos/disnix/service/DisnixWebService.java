@@ -41,6 +41,9 @@ public class DisnixWebService
 	/** Signal handler which waits and reacts on D-Bus signals of the Disnix core service */
 	private DisnixSignalHandler handler;
 	
+	/** Contains the location of the directory that stores logfiles */
+	private String logdir;
+	
 	/** 
 	 * Creates a new SOAP interface instance.
 	 * 
@@ -60,6 +63,9 @@ public class DisnixWebService
 		
 		System.out.println("Getting remote object");
 		disnixInterface = (Disnix)con.getRemoteObject("org.nixos.disnix.Disnix", "/org/nixos/disnix/Disnix", Disnix.class);
+		
+		System.out.println("Getting logfile location");
+		logdir = disnixInterface.get_logdir();
 	}
 	
 	/**
@@ -67,13 +73,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int importm(final String closure) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.importm(pid, closure);
 					suspend();
@@ -90,7 +97,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Import failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -120,13 +127,14 @@ public class DisnixWebService
 	 */
 	public String export(final String[] derivation) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.export(pid, derivation);
 					suspend();
@@ -143,7 +151,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Export failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation[0];
 		else
@@ -167,13 +175,14 @@ public class DisnixWebService
 	 */
 	public String[] printInvalid(final String[] derivation) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.print_invalid(pid, derivation);
 					suspend();
@@ -190,7 +199,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Print invalid failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -202,13 +211,14 @@ public class DisnixWebService
 	 */
 	public String[] realise(final String[] derivation) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.realise(pid, derivation);
 					suspend();
@@ -225,7 +235,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Realise failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -237,13 +247,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int set(final String profile, final String derivation) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
-		{
+		{	
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.set(pid, profile, derivation);
 					suspend();
@@ -260,7 +271,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Set failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -270,13 +281,13 @@ public class DisnixWebService
 	 */
 	public String[] queryInstalled(final String profile) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.query_installed(pid, profile);
 					suspend();
@@ -293,7 +304,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Query installed failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -305,13 +316,14 @@ public class DisnixWebService
 	 */
 	public String[] queryRequisites(final String[] derivation) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.query_requisites(pid, derivation);
 					suspend();
@@ -328,7 +340,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Query requisites failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -340,13 +352,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int collectGarbage(final boolean deleteOld) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.collect_garbage(pid, deleteOld);
 					suspend();
@@ -363,7 +376,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Collect garbage failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -373,13 +386,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int activate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.activate(pid, derivation, type, arguments);
 					suspend();
@@ -396,7 +410,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Activation failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -406,13 +420,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int deactivate(final String derivation, final String type, final String[] arguments) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.deactivate(pid, derivation, type, arguments);
 					suspend();
@@ -429,7 +444,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Deactivation failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -439,13 +454,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int lock(final String profile) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.lock(pid, profile);
 					suspend();
@@ -462,7 +478,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Lock failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -472,13 +488,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int unlock(final String profile) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.unlock(pid, profile);
 					suspend();
@@ -495,7 +512,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Unlock failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -505,13 +522,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int deleteState(final String derivation, final String type, final String[] arguments) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.delete_state(pid, derivation, type, arguments);
 					suspend();
@@ -528,7 +546,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Delete state failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -538,13 +556,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int snapshot(final String derivation, final String type, final String[] arguments) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.snapshot(pid, derivation, type, arguments);
 					suspend();
@@ -561,7 +580,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Snapshot failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -571,13 +590,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int restore(final String derivation, final String type, final String[] arguments) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
-				{
-					int pid = disnixInterface.get_job_id();
+				{	
 					handler.addPid(pid, this);
 					disnixInterface.restore(pid, derivation, type, arguments);
 					suspend();
@@ -594,7 +614,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Restore failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -604,13 +624,14 @@ public class DisnixWebService
 	 */
 	public String[] queryAllSnapshots(final String container, final String component) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
-				{
-					int pid = disnixInterface.get_job_id();
+				{	
 					handler.addPid(pid, this);
 					disnixInterface.query_all_snapshots(pid, container, component);
 					suspend();
@@ -627,7 +648,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Query all snapshots failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -639,13 +660,14 @@ public class DisnixWebService
 	 */
 	public String[] queryLatestSnapshot(final String container, final String component) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.query_latest_snapshot(pid, container, component);
 					suspend();
@@ -662,7 +684,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Query latest snapshot failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -674,13 +696,14 @@ public class DisnixWebService
 	 */
 	public String[] printMissingSnapshots(final String[] component) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
-				{
-					int pid = disnixInterface.get_job_id();
+				{	
 					handler.addPid(pid, this);
 					disnixInterface.print_missing_snapshots(pid, component);
 					suspend();
@@ -697,7 +720,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Print missing snapshots failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -774,13 +797,14 @@ public class DisnixWebService
 	 */
 	public int /*void*/ importSnapshots(final String container, final String component, final String[] snapshots) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
-				{
-					int pid = disnixInterface.get_job_id();
+				{			
 					handler.addPid(pid, this);
 					disnixInterface.import_snapshots(pid, container, component, snapshots);
 					suspend();
@@ -797,7 +821,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Import snapshots failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}
@@ -842,13 +866,14 @@ public class DisnixWebService
 	 */
 	public String[] resolveSnapshots(final String[] snapshots) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.resolve_snapshots(pid, snapshots);
 					suspend();
@@ -865,7 +890,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Query latest snapshot failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		else if(disnixThread.getSource() instanceof Disnix.success)
 			return ((Disnix.success)disnixThread.getSource()).derivation;
 		else
@@ -877,13 +902,14 @@ public class DisnixWebService
 	 */
 	public int /*void*/ cleanSnapshots(final int keep) throws Exception
 	{
+		final int pid = disnixInterface.get_job_id();
+		
 		DisnixThread disnixThread = new DisnixThread()
 		{
 			public void run()
 			{
 				try
 				{
-					int pid = disnixInterface.get_job_id();
 					handler.addPid(pid, this);
 					disnixInterface.clean_snapshots(pid, keep);
 					suspend();
@@ -900,7 +926,7 @@ public class DisnixWebService
 		thread.join();
 		
 		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw new Exception("Clean snapshots failed!");
+			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
 	}

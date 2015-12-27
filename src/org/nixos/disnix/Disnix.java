@@ -77,6 +77,8 @@ public interface Disnix extends DBusInterface
 	
 	public void clean_snapshots(int pid, int keep);
 	
+	public String get_logdir();
+	
 	public static class finish extends DBusSignal
 	{
 		public final int pid;

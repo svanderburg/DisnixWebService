@@ -1,3 +1,7 @@
+Version 0.5
+===========
+- Display the errors from the logs in case of a failure
+
 Version 0.4
 ===========
 - Manual page is generated now from the help page
