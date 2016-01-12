@@ -15,7 +15,7 @@ simpleTest {
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
         
-        jobs.disnix =
+        systemd.services.disnix =
           { description = "Disnix server";
 
             wantedBy = [ "multi-user.target" ];
@@ -26,7 +26,7 @@ simpleTest {
               HOME = "/root";
             };
 
-            exec = "disnix-service";
+            serviceConfig.ExecStart = "${disnix}/bin/disnix-service";
           };
 
         ids.gids = { disnix = 200; };
