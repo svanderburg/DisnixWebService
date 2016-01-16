@@ -34,9 +34,9 @@ services.disnix.useWebServiceInterface = true;
 </screen>
 
 		<para>
-			By enabling this option the Apache Tomcat service is automatically 
-			enabled, running the <filename>DisnixWebService</filename> web application
-			and configured with the right properties and permissions so that
+			By enabling this option, the Disnix module automatically configures the Apache Tomcat NixOS service,
+			running the <filename>DisnixWebService</filename> web application. The web application has been
+			configured with the right properties and permissions so that
 			the deployment operations of the core Disnix service can be accessed.
 		</para>
 		
@@ -152,11 +152,11 @@ $ usermod -a -G disnix tomcat
 				
 				<para>
 					The Disnix web service interface uses the D-Bus system bus to
-					connect to the core Disnix service. This connection is performed through
+					connect to the core Disnix service. D-Bus communicates through
 					Unix domain sockets, requiring the web service to use native libraries.
 					Native libraries can only be invoked by the servlet container itself
-					(not from web application directly) and therefore
-					it requires you the install some libraries as shared libraries
+					(not from web application directly) and Srequires you the install
+					some libraries as shared libraries
 					which can be used by both the servlet container and the 
 					web applications.
 				</para>
@@ -184,7 +184,7 @@ $ mkdir -p shared/lib
 					<filename>shared/lib</filename> folder.
 					This can be done by editing the 
 					<filename>conf/catalina.properties</filename> configuration
-					file in your Apache Tomcat distribution and replace the
+					file in your Apache Tomcat distribution and replacing the
 					line containing: <code>shared.loader</code> with the following line:
 				</para>
 				

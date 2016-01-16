@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008-2015 Sander van der Burg
+ * Copyright (c) 2008-2016 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -144,7 +144,7 @@ public class DisnixClient
 	private static void printVersion()
 	{
 		System.out.println("disnix-soap-client (DisnixWebService 0.4)\n");     
-		System.out.println("Copyright (C) 2008-2015 Sander van der Burg");
+		System.out.println("Copyright (C) 2008-2016 Sander van der Burg");
 	}
 	
 	/**
