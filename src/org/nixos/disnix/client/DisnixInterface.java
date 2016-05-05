@@ -375,16 +375,17 @@ public class DisnixInterface
 	 * Activates a given service.
 	 * 
 	 * @param derivation Nix store path of the service
+	 * @param container Name of the container to which a component is deployed
 	 * @param type Type identifier of the service
 	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
 	 * @throws AxisFault If an error occurs with the transport
 	 */
-	public void activate(String derivation, String type, String[] arguments) throws AxisFault
+	public void activate(String derivation, String container, String type, String[] arguments) throws AxisFault
 	{
 		try
 		{
 			QName operation = new QName(NAME_SPACE, "activate");
-			Object[] args = { derivation, type, arguments };
+			Object[] args = { derivation, container, type, arguments };
 			
 			serviceClient.invokeRobust(operation, args);
 		}
@@ -403,16 +404,17 @@ public class DisnixInterface
 	 * Deactivates a given service.
 	 * 
 	 * @param derivation Nix store path of the service
+	 * @param container Name of the container to which a component is deployed
 	 * @param type Type identifier of the service
 	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
 	 * @throws AxisFault If an error occurs with the transport
 	 */
-	public void deactivate(String derivation, String type, String[] arguments) throws AxisFault
+	public void deactivate(String derivation, String container, String type, String[] arguments) throws AxisFault
 	{
 		try
 		{
 			QName operation = new QName(NAME_SPACE, "deactivate");
-			Object[] args = { derivation, type, arguments };
+			Object[] args = { derivation, container, type, arguments };
 			
 			serviceClient.invokeRobust(operation, args);
 		}
@@ -483,16 +485,17 @@ public class DisnixInterface
 	 * Deletes the state of a component.
 	 * 
 	 * @param derivation Nix store path to or name of the component
+	 * @param container Name of the container to which a component is deployed
 	 * @param type Type identifier of the service
 	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
 	 * @throws AxisFault If an error occurs with the transport
 	 */
-	public void deleteState(String derivation, String type, String[] arguments) throws AxisFault
+	public void deleteState(String derivation, String container, String type, String[] arguments) throws AxisFault
 	{
 		try
 		{
 			QName operation = new QName(NAME_SPACE, "deleteState");
-			Object[] args = { derivation, type, arguments };
+			Object[] args = { derivation, container, type, arguments };
 			
 			serviceClient.invokeRobust(operation, args);
 		}
@@ -511,16 +514,17 @@ public class DisnixInterface
 	 * Snapshots the state of a component
 	 * 
 	 * @param derivation Nix store path to or name of the component
+	 * @param container Name of the container to which a component is deployed
 	 * @param type Type identifier of the service
 	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
 	 * @throws AxisFault If an error occurs with the transport
 	 */
-	public void snapshot(String derivation, String type, String[] arguments) throws AxisFault
+	public void snapshot(String derivation, String container, String type, String[] arguments) throws AxisFault
 	{
 		try
 		{
 			QName operation = new QName(NAME_SPACE, "snapshot");
-			Object[] args = { derivation, type, arguments };
+			Object[] args = { derivation, container, type, arguments };
 			
 			serviceClient.invokeRobust(operation, args);
 		}
@@ -539,16 +543,17 @@ public class DisnixInterface
 	 * Restores the state of a component.
 	 * 
 	 * @param derivation Nix store path to or name of the component
+	 * @param container Name of the container to which a component is deployed
 	 * @param type Type identifier of the service
 	 * @param arguments Array of key=value pairs containing environment variables for the activation scripts
 	 * @throws AxisFault If an error occurs with the transport
 	 */
-	public void restore(final String derivation, final String type, final String[] arguments) throws AxisFault
+	public void restore(String derivation, String container, String type, String[] arguments) throws AxisFault
 	{
 		try
 		{
 			QName operation = new QName(NAME_SPACE, "restore");
-			Object[] args = { derivation, type, arguments };
+			Object[] args = { derivation, container, type, arguments };
 			
 			serviceClient.invokeRobust(operation, args);
 		}

@@ -382,9 +382,9 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#activate(String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#activate(String, String, String, String[])
 	 */
-	public /*void*/ int activate(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int activate(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
 		final int pid = disnixInterface.get_job_id();
 		
@@ -395,7 +395,7 @@ public class DisnixWebService
 				try
 				{
 					handler.addPid(pid, this);
-					disnixInterface.activate(pid, derivation, type, arguments);
+					disnixInterface.activate(pid, derivation, container, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -416,9 +416,9 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#deactivate(String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#deactivate(String, String, String, String[])
 	 */
-	public /*void*/ int deactivate(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int deactivate(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
 		final int pid = disnixInterface.get_job_id();
 		
@@ -429,7 +429,7 @@ public class DisnixWebService
 				try
 				{
 					handler.addPid(pid, this);
-					disnixInterface.deactivate(pid, derivation, type, arguments);
+					disnixInterface.deactivate(pid, derivation, container, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -518,9 +518,9 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#deleteState(String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#deleteState(String, String, String, String[])
 	 */
-	public /*void*/ int deleteState(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int deleteState(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
 		final int pid = disnixInterface.get_job_id();
 		
@@ -531,7 +531,7 @@ public class DisnixWebService
 				try
 				{
 					handler.addPid(pid, this);
-					disnixInterface.delete_state(pid, derivation, type, arguments);
+					disnixInterface.delete_state(pid, derivation, container, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -552,9 +552,9 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#snapshot(String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#snapshot(String, String, String, String[])
 	 */
-	public /*void*/ int snapshot(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int snapshot(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
 		final int pid = disnixInterface.get_job_id();
 		
@@ -565,7 +565,7 @@ public class DisnixWebService
 				try
 				{
 					handler.addPid(pid, this);
-					disnixInterface.snapshot(pid, derivation, type, arguments);
+					disnixInterface.snapshot(pid, derivation, container, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}
@@ -586,9 +586,9 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#restore(String, String, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#restore(String, String, String, String[])
 	 */
-	public /*void*/ int restore(final String derivation, final String type, final String[] arguments) throws Exception
+	public /*void*/ int restore(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
 		final int pid = disnixInterface.get_job_id();
 		
@@ -599,7 +599,7 @@ public class DisnixWebService
 				try
 				{	
 					handler.addPid(pid, this);
-					disnixInterface.restore(pid, derivation, type, arguments);
+					disnixInterface.restore(pid, derivation, container, type, arguments);
 					suspend();
 					waitForNotificationToResume();
 				}

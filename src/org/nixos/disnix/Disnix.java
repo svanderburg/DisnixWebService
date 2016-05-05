@@ -51,19 +51,19 @@ public interface Disnix extends DBusInterface
 	
 	public void collect_garbage(int pid, boolean delete_old);
 	
-	public void activate(int pid, String derivation, String type, String[] arguments);
+	public void activate(int pid, String derivation, String container, String type, String[] arguments);
 	
-	public void deactivate(int pid, String derivation, String type, String[] arguments);
+	public void deactivate(int pid, String derivation, String container, String type, String[] arguments);
 	
 	public void lock(int pid, String profile);
 	
 	public void unlock(int pid, String profile);
 	
-	public void delete_state(int pid, String derivation, String type, String[] arguments);
+	public void delete_state(int pid, String derivation, String container, String type, String[] arguments);
 	
-	public void snapshot(int pid, String derivation, String type, String[] arguments);
+	public void snapshot(int pid, String derivation, String container, String type, String[] arguments);
 	
-	public void restore(int pid, String derivation, String type, String[] arguments);
+	public void restore(int pid, String derivation, String container, String type, String[] arguments);
 
 	public void query_all_snapshots(int pid, String container, String component);
 	

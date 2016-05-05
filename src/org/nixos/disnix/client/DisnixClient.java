@@ -123,6 +123,9 @@ public class DisnixClient
 			"                             used, such as echo or process.\n"+
 			"  --arguments=ARGUMENTS      Specifies the arguments passed to the Dysnomia\n"+
 			"                             module, which is a string with key=value pairs\n"+
+			"  --container=CONTAINER      Name of the container in which the component is\n"+
+			"                             managed. If omitted it will default to the same\n"+
+			"                             value as the type.\n" +
 			"\n"+
 			"Query all snapshots/Query latest snapshot options:\n"+
 			"  -C, --container=CONTAINER  Name of the container in which the component is managed\n"+
@@ -143,7 +146,7 @@ public class DisnixClient
 
 	private static void printVersion()
 	{
-		System.out.println("disnix-soap-client (DisnixWebService 0.4)\n");     
+		System.out.println("disnix-soap-client (DisnixWebService 0.6)\n");
 		System.out.println("Copyright (C) 2008-2016 Sander van der Burg");
 	}
 	
@@ -396,30 +399,44 @@ public class DisnixClient
 				disnixInterface.collectGarbage(deleteOld);
 			}
 			else if(value_activate != null)
-			{		
+			{
+				String container;
+				
+				if(value_container == null)
+					container = value_type;
+				else
+					container = value_container;
+				
 				/* Convert arguments vector to array */
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */
-				System.err.print("Activate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: ");
+				System.err.print("Activate derivation: "+derivation[0]+" of type: "+value_type+" in container: "+container+" with arguments: ");
 				printStringArray(arguments, System.err, " ");
 				System.err.println();
 				
-				disnixInterface.activate(derivation[0], value_type, arguments);
+				disnixInterface.activate(derivation[0], container, value_type, arguments);
 			}
 			else if(value_deactivate != null)
-			{		
+			{
+				String container;
+				
+				if(value_container == null)
+					container = value_type;
+				else
+					container = value_container;
+				
 				/* Convert arguments vector to array */
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */
-				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" with arguments: ");
+				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" in container: "+container+" with arguments: ");
 				printStringArray(arguments, System.err, " ");
 				System.err.println();
 				
-				disnixInterface.deactivate(derivation[0], value_type, arguments);
+				disnixInterface.deactivate(derivation[0], container, value_type, arguments);
 			}
 			else if(value_lock != null)
 			{
@@ -447,27 +464,48 @@ public class DisnixClient
 			}
 			else if(value_snapshot != null)
 			{
+				String container;
+				
+				if(value_container == null)
+					container = value_type;
+				else
+					container = value_container;
+				
 				/* Convert arguments vector to array */
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
-				disnixInterface.snapshot(derivation[0], value_type, arguments);
+				disnixInterface.snapshot(derivation[0], container, value_type, arguments);
 			}
 			else if(value_restore != null)
 			{
+				String container;
+				
+				if(value_container == null)
+					container = value_type;
+				else
+					container = value_container;
+				
 				/* Convert arguments vector to array */
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
-				disnixInterface.restore(derivation[0], value_type, arguments);
+				disnixInterface.restore(derivation[0], container, value_type, arguments);
 			}
 			else if(value_delete_state != null)
 			{
+				String container;
+				
+				if(value_container == null)
+					container = value_type;
+				else
+					container = value_container;
+				
 				/* Convert arguments vector to array */
 				String[] arguments = new String[value_arguments.size()];
 				value_arguments.toArray(arguments);
 				
-				disnixInterface.deleteState(derivation[0], value_type, arguments);
+				disnixInterface.deleteState(derivation[0], container, value_type, arguments);
 			}
 			else if(value_query_all_snapshots != null)
 			{
