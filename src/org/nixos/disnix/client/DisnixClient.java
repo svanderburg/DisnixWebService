@@ -95,6 +95,8 @@ public class DisnixClient
 			"  --resolve-snapshots        Converts the relative paths to the snapshots to\n"+
 			"                             absolute paths\n"+
 			"  --clean-snapshots          Removes older snapshots from the snapshot store\n"+
+			"  --capture-config           Captures the configuration of the machine from the\n"+
+			"                             Dysnomia container properties in a Nix expression\n"+
 			"  --help                     Shows the usage of this command to the user\n"+
 			"  --version                  Shows the version of this command to the user\n"+
 			"\n"+
@@ -200,6 +202,7 @@ public class DisnixClient
 		CmdLineParser.Option opt_export_snapshots = parser.addBooleanOption("export-snapshots");
 		CmdLineParser.Option opt_resolve_snapshots = parser.addBooleanOption("resolve-snapshots");
 		CmdLineParser.Option opt_clean_snapshots = parser.addBooleanOption("clean-snapshots");
+		CmdLineParser.Option opt_capture_config = parser.addBooleanOption("capture-config");
 		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");
 		CmdLineParser.Option opt_version = parser.addBooleanOption('v', "version");
 
@@ -243,6 +246,7 @@ public class DisnixClient
 			Boolean value_export_snapshots = (Boolean)parser.getOptionValue(opt_export_snapshots);
 			Boolean value_resolve_snapshots = (Boolean)parser.getOptionValue(opt_resolve_snapshots);
 			Boolean value_clean_snapshots = (Boolean)parser.getOptionValue(opt_clean_snapshots);
+			Boolean value_capture_config  = (Boolean)parser.getOptionValue(opt_capture_config);
 			Boolean value_help = (Boolean)parser.getOptionValue(opt_help);
 			Boolean value_version = (Boolean)parser.getOptionValue(opt_version);
 
@@ -561,6 +565,11 @@ public class DisnixClient
 					keep = 1;
 				
 				disnixInterface.cleanSnapshots(keep);
+			}
+			else if(value_capture_config != null)
+			{
+				String result = disnixInterface.captureConfig();
+				System.out.println(result);
 			}
 			else
 			{

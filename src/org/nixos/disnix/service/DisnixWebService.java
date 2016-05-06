@@ -23,12 +23,9 @@ package org.nixos.disnix.service;
 import org.freedesktop.dbus.*;
 import org.freedesktop.dbus.exceptions.*;
 import org.nixos.disnix.Disnix;
-
 import javax.activation.*;
-
 import java.io.*;
 import java.util.*;
-
 
 /**
  * Provides a SOAP interface to operations of the core Disnix service
@@ -929,5 +926,52 @@ public class DisnixWebService
 			throw DisnixException.constructDisnixException(pid, logdir);
 		
 		return 0;
+	}
+	
+	/**
+	 * @see org.nixos.disnix.client.DisnixInterface#captureConfig()
+	 */
+	public String captureConfig() throws Exception
+	{
+		final int pid = disnixInterface.get_job_id();
+		
+		DisnixThread disnixThread = new DisnixThread()
+		{
+			public void run()
+			{
+				try
+				{
+					handler.addPid(pid, this);
+					disnixInterface.capture_config(pid);
+					suspend();
+					waitForNotificationToResume();
+				}
+				catch(InterruptedException ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+		Thread thread = new Thread(disnixThread);
+		thread.start();
+		thread.join();
+		
+		if(disnixThread.getSource() instanceof Disnix.failure)
+			throw DisnixException.constructDisnixException(pid, logdir);
+		else if(disnixThread.getSource() instanceof Disnix.success)
+		{
+			String line;
+			String config = "";
+			BufferedReader br = new BufferedReader(new FileReader(((Disnix.success)disnixThread.getSource()).derivation[0]));
+			
+			while((line = br.readLine()) != null)
+				config += line + "\n";
+			
+			br.close();
+			
+			return config;
+		}
+		else
+			throw new Exception("Unknown event caught!"+disnixThread.getSource());
 	}
 }

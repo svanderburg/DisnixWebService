@@ -47,6 +47,14 @@ simpleTest {
           services.tomcat.webapps = [ DisnixWebService ];
           
           environment.systemPackages = [ pkgs.stdenv ];
+          environment.etc."dysnomia/properties" = {
+            source = pkgs.writeTextFile {
+            name = "dysnomia-properties";
+            text = ''
+              foo=bar
+            '';
+          };
+        };
       };
       
     client =
@@ -190,5 +198,9 @@ simpleTest {
       
       # Deactivate the same service using the echo type. This test should succeed.
       $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --deactivate --arguments foo=foo --arguments bar=bar --type echo @testService1");
+      
+      # Capture the remote machine's configuration and check whether the foo=bar
+      # property is there.
+      $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --capture-config | grep '\"foo\" = \"bar\"'");
     '';
 }
