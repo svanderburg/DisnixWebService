@@ -49,12 +49,12 @@ simpleTest {
           environment.systemPackages = [ pkgs.stdenv ];
           environment.etc."dysnomia/properties" = {
             source = pkgs.writeTextFile {
-            name = "dysnomia-properties";
-            text = ''
-              foo=bar
-            '';
+              name = "dysnomia-properties";
+              text = ''
+                foo=bar
+              '';
+            };
           };
-        };
       };
       
     client =
