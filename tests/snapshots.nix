@@ -12,10 +12,13 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
         {pkgs, config, ...}:
         
         {
+          imports = [ ../disnixwebservice-module.nix ];
+          
           virtualisation.writableStore = true;
           
           networking.firewall.allowedTCPPorts = [ 22 8080 ];
           
+          services.disnixWebServiceTest.enable = true;
           services.dbus.enable = true;
           services.dbus.packages = [ disnix ];
           
@@ -36,16 +39,6 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
             ids.gids = { disnix = 200; };
             users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
-            services.tomcat.enable = true;
-            services.tomcat.extraGroups = [ "disnix" ];
-            services.tomcat.javaOpts = "-Djava.library.path=${pkgs.libmatthew_java}/lib/jni";
-            services.tomcat.catalinaOpts = "-Xms64m -Xmx256m";
-            services.tomcat.sharedLibs = [
-              "${DisnixWebService}/share/java/DisnixConnection.jar"
-              "${pkgs.dbus_java}/share/java/dbus.jar"
-            ];
-            services.tomcat.webapps = [ DisnixWebService ];
-            
             environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
         };
       

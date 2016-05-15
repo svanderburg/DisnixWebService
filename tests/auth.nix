@@ -8,10 +8,13 @@ simpleTest {
       {pkgs, config, ...}:
       
       {
+        imports = [ ../disnixwebservice-module.nix ];
+        
         virtualisation.writableStore = true;
         
         networking.firewall.allowedTCPPorts = [ 22 80 ];
         
+        services.disnixWebServiceTest.enable = true;
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
         
@@ -32,16 +35,6 @@ simpleTest {
         ids.gids = { disnix = 200; };
         users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
-        services.tomcat.enable = true;
-        services.tomcat.extraGroups = [ "disnix" ];
-        services.tomcat.javaOpts = "-Djava.library.path=${pkgs.libmatthew_java}/lib/jni";
-        services.tomcat.catalinaOpts = "-Xms64m -Xmx256m";
-        services.tomcat.sharedLibs = [
-          "${DisnixWebService}/share/java/DisnixConnection.jar"
-          "${pkgs.dbus_java}/share/java/dbus.jar"
-        ];
-        services.tomcat.webapps = [ DisnixWebService ];
-        
         services.httpd.enable = true;
         services.httpd.adminAddr = "admin@localhost";
         services.httpd.hostName = "localhost";
