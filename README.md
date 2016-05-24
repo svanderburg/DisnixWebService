@@ -35,13 +35,15 @@ To use the `DisnixWebService` while deploying a system, you must add a property
 to the `infrastructure.nix` model that specifies how to connect to it. For
 example:
 
-    {
-      target1 = {
-        hostname = "target1";
-        tomcatPort = 8080;
-        targetEPR = http://target1:8080/DisnixService/services/DisnixService;
-      };
-    }
+```nix
+{
+  target1 = {
+    hostname = "target1";
+    tomcatPort = 8080;
+    targetEPR = http://target1:8080/DisnixService/services/DisnixService;
+  };
+}
+```
 
 The above model defines a `targetEPR` attribute containing the URL to the
 `DisnixWebService`.
