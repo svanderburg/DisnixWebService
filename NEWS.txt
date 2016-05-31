@@ -2,6 +2,8 @@ Version 0.5
 ===========
 - Display the errors from the logs in case of a failure
 
+- Feature parity with Disnix' new container formalism
+
 Version 0.4
 ===========
 - Manual page is generated now from the help page

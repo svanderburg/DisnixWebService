@@ -5,8 +5,8 @@
 <refmeta>
 <refentrytitle>disnix-soap-client</refentrytitle>
 <manvolnum>1</manvolnum>
-<refmiscinfo class='source'>January 2016</refmiscinfo>
-<refmiscinfo class='manual'>disnix-soap-client (DisnixWebService 0.4)</refmiscinfo>
+<refmiscinfo class='source'>January 1970</refmiscinfo>
+<refmiscinfo class='manual'>disnix-soap-client (DisnixWebService 0.6)</refmiscinfo>
 </refmeta>
 <refnamediv>
 <refname>disnix-soap-client</refname>
@@ -195,6 +195,13 @@ absolute paths</para>
   </listitem>
   </varlistentry>
   <varlistentry>
+  <term><option>--capture-config</option></term>
+  <listitem>
+<para>Captures the configuration of the machine from the
+Dysnomia container properties in a Nix expression</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
   <term><option>--help</option></term>
   <listitem>
 <para>Shows the usage of this command to the user</para>
@@ -280,6 +287,14 @@ used, such as echo or process.</para>
   <listitem>
 <para>Specifies the arguments passed to the Dysnomia
 module, which is a string with key=value pairs</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--container</option>=<emphasis remap='I'>CONTAINER</emphasis></term>
+  <listitem>
+<para>Name of the container in which the component is
+managed. If omitted it will default to the same
+value as the type.</para>
   </listitem>
   </varlistentry>
 </variablelist>
