@@ -84,7 +84,10 @@ simpleTest {
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
       };
   };
-  testScript = 
+  testScript =
+    let
+      env = "NIX_PATH='nixpkgs=${nixpkgs}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'";
+    in
     ''
       startAll;
       
@@ -108,12 +111,12 @@ simpleTest {
       
       # Deploy the test configuration.
       # This test should succeed.
-      $coordinator->mustSucceed("NIX_PATH='nixpkgs=${nixpkgs}' SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' disnix-env --build-on-targets -s ${deployment}/DistributedDeployment/services.nix -i ${deployment}/DistributedDeployment/infrastructure-multiproto.nix -d ${deployment}/DistributedDeployment/distribution.nix");
+      $coordinator->mustSucceed("${env} disnix-env --build-on-targets -s ${deployment}/DistributedDeployment/services.nix -i ${deployment}/DistributedDeployment/infrastructure-multiproto.nix -d ${deployment}/DistributedDeployment/distribution.nix");
       
       # Query the installed services per machine and check if the
       # expected services are there.
       # This test should succeed.
-      my @lines = split('\n', $coordinator->mustSucceed("SSH_OPTS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' disnix-query ${deployment}/DistributedDeployment/infrastructure-multiproto.nix"));
+      my @lines = split('\n', $coordinator->mustSucceed("${env} disnix-query ${deployment}/DistributedDeployment/infrastructure-multiproto.nix"));
       
       if($lines[1] ne "Services on: http://testTarget1:8080/DisnixWebService/services/DisnixWebService") {
           die "disnix-query output line 1 does not match what we expect!\n";
