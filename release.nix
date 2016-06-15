@@ -95,6 +95,21 @@ let
           inherit nixpkgs dysnomia disnix DisnixWebService;
         };
       };
+    
+    release = pkgs.releaseTools.aggregate {
+      name = "DisnixWebService-${tarball.version}";
+      constituents = [
+        tarball
+      ]
+      ++ map (system: builtins.getAttr system build) systems
+      ++ [
+        tests.install
+        tests.multiproto
+        tests.auth
+        tests.snapshots
+      ];
+      meta.description = "Release-critical builds";
+    };
   };
 in
 jobs
