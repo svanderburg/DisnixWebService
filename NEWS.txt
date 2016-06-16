@@ -1,3 +1,7 @@
+Version 0.6
+===========
+- Add capture-config operation
+
 Version 0.5
 ===========
 - Display the errors from the logs in case of a failure
