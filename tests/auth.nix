@@ -15,6 +15,7 @@ simpleTest {
         networking.firewall.allowedTCPPorts = [ 22 80 ];
         
         services.disnixWebServiceTest.enable = true;
+        services.disnixWebServiceTest.package = DisnixWebService;
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
         

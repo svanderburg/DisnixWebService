@@ -19,6 +19,7 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
           networking.firewall.allowedTCPPorts = [ 22 8080 ];
           
           services.disnixWebServiceTest.enable = true;
+          services.disnixWebServiceTest.package = DisnixWebService;
           services.dbus.enable = true;
           services.dbus.packages = [ disnix ];
           
