@@ -895,9 +895,9 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#cleanSnapshots(int)
+	 * @see org.nixos.disnix.client.DisnixInterface#cleanSnapshots(int, String, String)
 	 */
-	public int /*void*/ cleanSnapshots(final int keep) throws Exception
+	public int /*void*/ cleanSnapshots(final int keep, final String container, final String component) throws Exception
 	{
 		final int pid = disnixInterface.get_job_id();
 		
@@ -907,8 +907,20 @@ public class DisnixWebService
 			{
 				try
 				{
+					String realContainer, realComponent;
+					
+					if(container == null)
+					    realContainer = "";
+					else
+					    realContainer = container;
+					
+					if(component == null)
+					    realComponent = "";
+					else
+					    realComponent = component;
+					
 					handler.addPid(pid, this);
-					disnixInterface.clean_snapshots(pid, keep);
+					disnixInterface.clean_snapshots(pid, keep, realContainer, realComponent);
 					suspend();
 					waitForNotificationToResume();
 				}

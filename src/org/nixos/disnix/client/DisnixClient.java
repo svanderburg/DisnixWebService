@@ -136,6 +136,8 @@ public class DisnixClient
 			"Clean snapshots options:\n"+
 			"  --keep=NUM                 Amount of snapshot generations to keep. Defaults\n"+
 			"                             to: 1\n"+
+			"  -C, --container=CONTAINER  Name of the container to filter on\n"+
+			"  -c, --component=COMPONENT  Name of the component to filter on\n"+
 			"\n"+
 			"Environment:\n"+
 			"  DISNIX_PROFILE             Sets the name of the profile that stores the\n"+
@@ -564,7 +566,7 @@ public class DisnixClient
 				if(keep == null)
 					keep = 1;
 				
-				disnixInterface.cleanSnapshots(keep);
+				disnixInterface.cleanSnapshots(keep, value_container, value_component);
 			}
 			else if(value_capture_config != null)
 			{

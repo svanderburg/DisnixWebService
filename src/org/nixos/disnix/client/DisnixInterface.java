@@ -835,14 +835,16 @@ public class DisnixInterface
 	 * Cleans all older generation snapshots from the remote machine.
 	 * 
 	 * @param keep Amount of snapshot generations to keep
+	 * @param container Name of the container to filter on or null to consult all containers
+	 * @param component Name of the component to filter on or null to consult all components
 	 * @throws AxisFault If an error occurs with the transport
 	 */
-	public void cleanSnapshots(int keep) throws AxisFault
+	public void cleanSnapshots(int keep, String container, String component) throws AxisFault
 	{
 		try
 		{
 			QName operation = new QName(NAME_SPACE, "cleanSnapshots");
-			Object[] args = { keep };
+			Object[] args = { keep, container, component };
 			
 			serviceClient.invokeRobust(operation, args);
 		}

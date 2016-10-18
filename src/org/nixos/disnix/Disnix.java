@@ -75,7 +75,7 @@ public interface Disnix extends DBusInterface
 	
 	public void resolve_snapshots(int pid, String[] snapshots);
 	
-	public void clean_snapshots(int pid, int keep);
+	public void clean_snapshots(int pid, int keep, String container, String component);
 	
 	public String get_logdir();
 	

@@ -1,3 +1,7 @@
+Version 0.7
+===========
+- clean snapshots operation can filter on containers and components
+
 Version 0.6
 ===========
 - Add capture-config operation
