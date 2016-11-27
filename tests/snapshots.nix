@@ -40,7 +40,7 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
             ids.gids = { disnix = 200; };
             users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
-            environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+            environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         };
       
       client =
@@ -48,7 +48,7 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
         
         {
           virtualisation.writableStore = true;
-          environment.systemPackages = [ dysnomia disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ];
+          environment.systemPackages = [ dysnomia disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         };
     };
     testScript = 

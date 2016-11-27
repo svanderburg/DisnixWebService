@@ -14,7 +14,7 @@ simpleTest {
         imports = [ ../disnixwebservice-module.nix ];
         
         virtualisation.writableStore = true;
-        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox pkgs.patchelf ];
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox pkgs.patchelf ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
         
@@ -49,7 +49,7 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
-        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ];
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
@@ -80,7 +80,7 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
-        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ];
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
       };
