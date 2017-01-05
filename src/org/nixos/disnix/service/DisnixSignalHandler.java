@@ -92,6 +92,10 @@ public class DisnixSignalHandler implements DBusSigHandler
 		
 		/* Resume the thread attached to the received PID */
 		thread.setSource(s);
+		
+		/* Wait for the thread to get suspended, before we attempt to resume it */
+		while(!thread.isSuspended());
+		
 		thread.resume();
 	}
 }

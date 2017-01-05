@@ -341,16 +341,16 @@ public class DisnixClient
 				printStringArray(derivation, System.err, " ");
 				System.err.println("\nReturns:");
 				String[] result = disnixInterface.printInvalid(derivation);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 				System.out.println();
 			}
 			else if(value_realise != null)
 			{
 				System.err.println("Realise: ");
-				printStringArray(derivation, System.err,"");
+				printStringArray(derivation, System.err, "\n");
 				System.err.println("\nReturns:");
 				String[] result = disnixInterface.realise(derivation);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 				System.out.println();
 			}
 			else if(value_set != null)
@@ -378,17 +378,17 @@ public class DisnixClient
 				System.err.println("Query installed: "+profile);
 				
 				String[] result = disnixInterface.queryInstalled(profile);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 				System.out.println();
 			}
 			else if(value_query_requisites != null)
 			{
 				System.err.println("Query requisites: ");
-				printStringArray(derivation, System.err, "");
+				printStringArray(derivation, System.err, "\n");
 				System.err.println("\nReturns:");
 				
 				String[] result = disnixInterface.queryRequisites(derivation);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 				System.out.println();
 			}
 			else if(value_collect_garbage != null)
@@ -516,35 +516,35 @@ public class DisnixClient
 			else if(value_query_all_snapshots != null)
 			{
 				String[] result = disnixInterface.queryAllSnapshots(value_container, value_component);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 			}
 			else if(value_query_latest_snapshot != null)
 			{
 				String[] result = disnixInterface.queryLatestSnapshot(value_container, value_component);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 			}
 			else if(value_print_missing_snapshots != null)
 			{
 				String[] result = disnixInterface.printMissingSnapshots(derivation);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 			}
 			else if(value_resolve_snapshots != null)
 			{
 				String[] result = disnixInterface.resolveSnapshots(derivation);
-				printStringArray(result, System.out, "");
+				printStringArray(result, System.out, "\n");
 			}
 			else if(value_import_snapshots != null)
 			{
 				if(value_remotefile != null)
 				{
 					System.err.println("Importing remote snapshots: ");
-					printStringArray(derivation, System.err, "");
+					printStringArray(derivation, System.err, "\n");
 					disnixInterface.importSnapshots(value_container, value_component, derivation);
 				}
 				else if(value_localfile != null)
 				{
 					System.err.println("Import local snapshots: "+derivation);
-					printStringArray(derivation, System.err, "");
+					printStringArray(derivation, System.err, "\n");
 					disnixInterface.importLocalSnapshots(value_container, value_component, derivation[0]);
 				}
 				else

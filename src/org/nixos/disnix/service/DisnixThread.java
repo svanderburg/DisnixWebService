@@ -75,6 +75,16 @@ public abstract class DisnixThread implements Runnable
 	}
 	
 	/**
+	 * Indicates whether the thread has been suspended
+	 *
+	 * @return true iff it has been suspended
+	 */
+	public boolean isSuspended()
+	{
+		return suspended;
+	}
+	
+	/**
 	 * Suspends this thread until it receives a notification.
 	 * 
 	 * @throws InterruptedException If this thread is interrupted
