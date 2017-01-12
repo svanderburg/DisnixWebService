@@ -70,32 +70,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int importm(final String closure) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.importm(pid, closure);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.importm(pid, closure);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		
+		disnixThread.waitForFinish();
 		return 0;
 	}
 	
@@ -124,35 +106,15 @@ public class DisnixWebService
 	 */
 	public String export(final String[] derivation) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.export(pid, derivation);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.export(pid, derivation);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation[0];
-		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+		String[] paths = disnixThread.waitForSuccess();
+		return paths[0];
 	}
 	
 	/**
@@ -172,35 +134,14 @@ public class DisnixWebService
 	 */
 	public String[] printInvalid(final String[] derivation) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.print_invalid(pid, derivation);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.print_invalid(pid, derivation);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource()); 
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -208,35 +149,14 @@ public class DisnixWebService
 	 */
 	public String[] realise(final String[] derivation) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.realise(pid, derivation);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.realise(pid, derivation);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -244,31 +164,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int set(final String profile, final String derivation) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
-		{	
-			public void run()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
+		{
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.set(pid, profile, derivation);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.set(pid, profile, derivation);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -278,34 +181,14 @@ public class DisnixWebService
 	 */
 	public String[] queryInstalled(final String profile) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.query_installed(pid, profile);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.query_installed(pid, profile);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -313,35 +196,14 @@ public class DisnixWebService
 	 */
 	public String[] queryRequisites(final String[] derivation) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.query_requisites(pid, derivation);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.query_requisites(pid, derivation);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -349,31 +211,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int collectGarbage(final boolean deleteOld) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.collect_garbage(pid, deleteOld);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.collect_garbage(pid, deleteOld);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -383,31 +228,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int activate(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.activate(pid, derivation, container, type, arguments);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.activate(pid, derivation, container, type, arguments);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -417,31 +245,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int deactivate(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.deactivate(pid, derivation, container, type, arguments);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.deactivate(pid, derivation, container, type, arguments);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -451,31 +262,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int lock(final String profile) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.lock(pid, profile);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.lock(pid, profile);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -485,31 +279,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int unlock(final String profile) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.unlock(pid, profile);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.unlock(pid, profile);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -519,31 +296,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int deleteState(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.delete_state(pid, derivation, container, type, arguments);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.delete_state(pid, derivation, container, type, arguments);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -553,31 +313,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int snapshot(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.snapshot(pid, derivation, container, type, arguments);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.snapshot(pid, derivation, container, type, arguments);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -587,31 +330,14 @@ public class DisnixWebService
 	 */
 	public /*void*/ int restore(final String derivation, final String container, final String type, final String[] arguments) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{	
-					handler.addPid(pid, this);
-					disnixInterface.restore(pid, derivation, container, type, arguments);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.restore(pid, derivation, container, type, arguments);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -621,35 +347,15 @@ public class DisnixWebService
 	 */
 	public String[] queryAllSnapshots(final String container, final String component) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{	
-					handler.addPid(pid, this);
-					disnixInterface.query_all_snapshots(pid, container, component);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.query_all_snapshots(pid, container, component);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
 		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -657,35 +363,15 @@ public class DisnixWebService
 	 */
 	public String[] queryLatestSnapshot(final String container, final String component) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.query_latest_snapshot(pid, container, component);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.query_latest_snapshot(pid, container, component);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
 		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -693,35 +379,15 @@ public class DisnixWebService
 	 */
 	public String[] printMissingSnapshots(final String[] component) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{	
-					handler.addPid(pid, this);
-					disnixInterface.print_missing_snapshots(pid, component);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.print_missing_snapshots(pid, component);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
 		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	private static void populatePathsVector(File[] paths, Vector<String> files)
@@ -794,31 +460,14 @@ public class DisnixWebService
 	 */
 	public int /*void*/ importSnapshots(final String container, final String component, final String[] snapshots) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{			
-					handler.addPid(pid, this);
-					disnixInterface.import_snapshots(pid, container, component, snapshots);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.import_snapshots(pid, container, component, snapshots);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -863,35 +512,15 @@ public class DisnixWebService
 	 */
 	public String[] resolveSnapshots(final String[] snapshots) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.resolve_snapshots(pid, snapshots);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.resolve_snapshots(pid, snapshots);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
 		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-			return ((Disnix.success)disnixThread.getSource()).derivation;
-		else
-			throw new Exception("Unknown event caught! "+disnixThread.getSource());
+		return disnixThread.waitForSuccess();
 	}
 	
 	/**
@@ -899,43 +528,26 @@ public class DisnixWebService
 	 */
 	public int /*void*/ cleanSnapshots(final int keep, final String container, final String component) throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					String realContainer, realComponent;
-					
-					if(container == null)
-					    realContainer = "";
-					else
-					    realContainer = container;
-					
-					if(component == null)
-					    realComponent = "";
-					else
-					    realComponent = component;
-					
-					handler.addPid(pid, this);
-					disnixInterface.clean_snapshots(pid, keep, realContainer, realComponent);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				String realContainer, realComponent;
+				
+				if(container == null)
+				    realContainer = "";
+				else
+				    realContainer = container;
+				
+				if(component == null)
+				    realComponent = "";
+				else
+				    realComponent = component;
+				
+				disnixInterface.clean_snapshots(pid, keep, realContainer, realComponent);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
-		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
+		disnixThread.waitForFinish();
 		
 		return 0;
 	}
@@ -945,45 +557,25 @@ public class DisnixWebService
 	 */
 	public String captureConfig() throws Exception
 	{
-		final int pid = disnixInterface.get_job_id();
-		
-		DisnixThread disnixThread = new DisnixThread()
+		DisnixThread disnixThread = new DisnixThread(disnixInterface.get_job_id(), disnixInterface, handler, logdir)
 		{
-			public void run()
+			public void invokeOperation()
 			{
-				try
-				{
-					handler.addPid(pid, this);
-					disnixInterface.capture_config(pid);
-					suspend();
-					waitForNotificationToResume();
-				}
-				catch(InterruptedException ex)
-				{
-					ex.printStackTrace();
-				}
+				disnixInterface.capture_config(pid);
 			}
 		};
-		Thread thread = new Thread(disnixThread);
-		thread.start();
-		thread.join();
+		String[] derivation = disnixThread.waitForSuccess();
 		
-		if(disnixThread.getSource() instanceof Disnix.failure)
-			throw DisnixException.constructDisnixException(pid, logdir);
-		else if(disnixThread.getSource() instanceof Disnix.success)
-		{
-			String line;
-			String config = "";
-			BufferedReader br = new BufferedReader(new FileReader(((Disnix.success)disnixThread.getSource()).derivation[0]));
+		/* Read the captured config file and buffer it into a string */
+		String line;
+		String config = "";
+		BufferedReader br = new BufferedReader(new FileReader(derivation[0]));
 			
-			while((line = br.readLine()) != null)
-				config += line + "\n";
+		while((line = br.readLine()) != null)
+			config += line + "\n";
 			
-			br.close();
+		br.close();
 			
-			return config;
-		}
-		else
-			throw new Exception("Unknown event caught!"+disnixThread.getSource());
+		return config;
 	}
 }
