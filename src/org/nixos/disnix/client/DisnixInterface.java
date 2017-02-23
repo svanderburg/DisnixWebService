@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008-2016 Sander van der Burg
+ * Copyright (c) 2008-2017 Sander van der Burg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -859,6 +859,9 @@ public class DisnixInterface
 		}
 	}
 	
+	/**
+	 * Captures the configuration of the target machine
+	 */
 	public String captureConfig() throws AxisFault
 	{
 		try

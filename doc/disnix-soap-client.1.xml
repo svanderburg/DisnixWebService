@@ -326,6 +326,18 @@ value as the type.</para>
 to: 1</para>
   </listitem>
   </varlistentry>
+  <varlistentry>
+  <term><option>-C</option>, <option>--container</option>=<emphasis remap='I'>CONTAINER</emphasis></term>
+  <listitem>
+<para>Name of the container to filter on</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>-c</option>, <option>--component</option>=<emphasis remap='I'>COMPONENT</emphasis></term>
+  <listitem>
+<para>Name of the component to filter on</para>
+  </listitem>
+  </varlistentry>
 </variablelist>
 </refsect2>
 </refsect1>
@@ -352,7 +364,7 @@ coordinator machine (defaults to: <filename>/var/dysnomia</filename>)</para>
 </refsect1>
 
 <refsect1 xml:id='copyright'><title>COPYRIGHT</title>
-<para>Copyright (C) 2008-2016 Sander van der Burg</para>
+<para>Copyright (C) 2008-2017 Sander van der Burg</para>
 </refsect1>
 </refentry>
 
