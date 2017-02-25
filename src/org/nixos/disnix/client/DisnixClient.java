@@ -157,7 +157,7 @@ public class DisnixClient
 	/**
 	 * Prints the given string array through the given print stream using a
 	 * specific separator.
-	 * 
+	 *
 	 * @param string Array of strings
 	 * @param printStream Print stream, such as the standard output or standard error
 	 * @param separator Separator between strings, such as a line feed
@@ -288,7 +288,6 @@ public class DisnixClient
 			
 			/* Create SOAP connection interface */
 			
-			System.err.println("Connecting to target endpoint reference: "+value_target);
 			DisnixInterface disnixInterface = new DisnixInterface(value_target);
 			
 			/* Execute operation */
@@ -296,15 +295,9 @@ public class DisnixClient
 			if(value_import != null)
 			{
 				if(value_remotefile != null)
-				{
-					System.err.println("Importing remote closure: "+derivation[0]);
 					disnixInterface.importm(derivation[0]);
-				}
 				else if(value_localfile != null)
-				{
-					System.err.println("Import local closure: "+derivation[0]);
 					disnixInterface.importLocalFile(derivation[0]);
-				}
 				else
 				{
 					System.err.println("ERROR: Either --localfile or --remotefile should be specified!");
@@ -315,17 +308,11 @@ public class DisnixClient
 			{
 				if(value_remotefile != null)
 				{
-					System.err.println("Exporting remote derivation: ");
-					printStringArray(derivation, System.err, " ");
-					System.err.println();
 					String result = disnixInterface.exportRemoteFile(derivation);
 					System.out.println(result);
 				}
 				else if(value_localfile != null)
 				{
-					System.err.println("Exporting local derivation: ");
-					printStringArray(derivation, System.err, " ");
-					System.err.println();
 					String result = disnixInterface.export(derivation);
 					System.out.println(result);
 				}
@@ -337,21 +324,13 @@ public class DisnixClient
 			}
 			else if(value_print_invalid != null)
 			{
-				System.err.println("Print invalid: ");
-				printStringArray(derivation, System.err, " ");
-				System.err.println("\nReturns:");
 				String[] result = disnixInterface.printInvalid(derivation);
 				printStringArray(result, System.out, "\n");
-				System.out.println();
 			}
 			else if(value_realise != null)
 			{
-				System.err.println("Realise: ");
-				printStringArray(derivation, System.err, "\n");
-				System.err.println("\nReturns:");
 				String[] result = disnixInterface.realise(derivation);
 				printStringArray(result, System.out, "\n");
-				System.out.println();
 			}
 			else if(value_set != null)
 			{
@@ -361,8 +340,6 @@ public class DisnixClient
 					profile = "default";
 				else
 					profile = value_profile;
-				
-				System.err.println("Set profile: "+profile+" derivation: "+derivation[0]);
 				
 				disnixInterface.set(profile, derivation[0]);
 			}
@@ -375,21 +352,13 @@ public class DisnixClient
 				else
 					profile = value_profile;
 				
-				System.err.println("Query installed: "+profile);
-				
 				String[] result = disnixInterface.queryInstalled(profile);
 				printStringArray(result, System.out, "\n");
-				System.out.println();
 			}
 			else if(value_query_requisites != null)
 			{
-				System.err.println("Query requisites: ");
-				printStringArray(derivation, System.err, "\n");
-				System.err.println("\nReturns:");
-				
 				String[] result = disnixInterface.queryRequisites(derivation);
 				printStringArray(result, System.out, "\n");
-				System.out.println();
 			}
 			else if(value_collect_garbage != null)
 			{
@@ -418,10 +387,6 @@ public class DisnixClient
 				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */
-				System.err.print("Activate derivation: "+derivation[0]+" of type: "+value_type+" in container: "+container+" with arguments: ");
-				printStringArray(arguments, System.err, " ");
-				System.err.println();
-				
 				disnixInterface.activate(derivation[0], container, value_type, arguments);
 			}
 			else if(value_deactivate != null)
@@ -438,10 +403,6 @@ public class DisnixClient
 				value_arguments.toArray(arguments);
 				
 				/* Invoke operation */
-				System.err.println("Deactivate derivation: "+derivation[0]+" of type: "+value_type+" in container: "+container+" with arguments: ");
-				printStringArray(arguments, System.err, " ");
-				System.err.println();
-				
 				disnixInterface.deactivate(derivation[0], container, value_type, arguments);
 			}
 			else if(value_lock != null)
@@ -536,17 +497,9 @@ public class DisnixClient
 			else if(value_import_snapshots != null)
 			{
 				if(value_remotefile != null)
-				{
-					System.err.println("Importing remote snapshots: ");
-					printStringArray(derivation, System.err, "\n");
 					disnixInterface.importSnapshots(value_container, value_component, derivation);
-				}
 				else if(value_localfile != null)
-				{
-					System.err.println("Import local snapshots: "+derivation);
-					printStringArray(derivation, System.err, "\n");
 					disnixInterface.importLocalSnapshots(value_container, value_component, derivation[0]);
-				}
 				else
 				{
 					System.err.println("ERROR: Either --localfile or --remotefile should be specified!");
@@ -555,9 +508,6 @@ public class DisnixClient
 			}
 			else if(value_export_snapshots != null)
 			{
-				System.err.println("Exporting remote derivation: ");
-				printStringArray(derivation, System.err, " ");
-				System.err.println();
 				String result = disnixInterface.exportRemoteSnapshots(derivation);
 				System.out.println(result);
 			}
