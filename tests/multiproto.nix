@@ -129,20 +129,33 @@ simpleTest {
           die "disnix-query output line 3 does not contain testService1!\n";
       }
       
-      if($lines[6] ne "Services on: testTarget2") {
+      if($lines[5] ne "Services on: testTarget2") {
           die "disnix-query output line 6 does not match what we expect $lines[6]!\n";
       }
       
-      if($lines[8] =~ /\-testService2/) {
+      if($lines[7] =~ /\-testService2/) {
           print "Found testService2 on disnix-query output line 8\n";
       } else {
           die "disnix-query output line 7 does not contain testService2!\n";
       }
       
-      if($lines[9] =~ /\-testService3/) {
+      if($lines[8] =~ /\-testService3/) {
           print "Found testService3 on disnix-query output line 9\n";
       } else {
           die "disnix-query output line 9 does not contain testService3!\n";
+      }
+      
+      # Test disnix-reconstruct. First, we remove the old manifests. They
+      # should have been reconstructed.
+      
+      $coordinator->mustSucceed("rm /nix/var/nix/profiles/per-user/root/disnix-coordinator/*");
+      $coordinator->mustSucceed("${env} disnix-reconstruct ${deployment}/DistributedDeployment/infrastructure.nix");
+      my $result = $coordinator->mustSucceed("ls /nix/var/nix/profiles/per-user/root/disnix-coordinator | wc -l");
+      
+      if($result == 2) {
+          print "We have a reconstructed manifest!\n";
+      } else {
+          die "We don't have any reconstructed manifests!";
       }
     '';
 }

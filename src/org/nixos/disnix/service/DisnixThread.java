@@ -100,7 +100,7 @@ public abstract class DisnixThread implements Runnable
 	 *
 	 * @return true iff it has been suspended
 	 */
-	public boolean isSuspended()
+	public synchronized boolean isSuspended()
 	{
 		return suspended;
 	}
