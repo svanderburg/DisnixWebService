@@ -56,7 +56,7 @@ let
           mv * ../bin/DisnixWebService-$version
           cd ../bin
           ensureDir $out/tarballs
-          tar cfvj $out/tarballs/DisnixWebService-$version.tar.bz2 DisnixWebService-$version
+          tar cfvz $out/tarballs/DisnixWebService-$version.tar.gz DisnixWebService-$version
         '';
       };
 
