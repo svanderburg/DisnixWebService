@@ -1,3 +1,7 @@
+Version 0.8
+===========
+- add placeholder for --shell option
+
 Version 0.7
 ===========
 - clean snapshots operation can filter on containers and components

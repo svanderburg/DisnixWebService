@@ -97,6 +97,8 @@ public class DisnixClient
 			"  --clean-snapshots          Removes older snapshots from the snapshot store\n"+
 			"  --capture-config           Captures the configuration of the machine from the\n"+
 			"                             Dysnomia container properties in a Nix expression\n"+
+			"  --shell                    Spawns a Dysnomia shell to run arbitrary\n"+
+			"                             maintenance tasks\n"+
 			"  --help                     Shows the usage of this command to the user\n"+
 			"  --version                  Shows the version of this command to the user\n"+
 			"\n"+
@@ -105,13 +107,16 @@ public class DisnixClient
 			"                             the SSH server used to connect to the target\n"+
 			"                             machine\n"+
 			"\n"+
-			"Import/Export/Import snapshots/Export snapshots options:\n"+
+			"Import/Export/Import snapshots/Export snapshots/Shell options:\n"+
 			"  --localfile                Specifies that the given paths are stored locally\n"+
 			"                             and must be transferred to the remote machine if\n"+
 			"                             needed\n"+
 			"  --remotefile               Specifies that the given paths are stored remotely\n"+
 			"                             and must transferred from the remote machine if\n"+
 			"                             needed\n"+
+			"\n"+
+			"Shell options:\n"+
+			"  --command=COMMAND          Commands to execute in the shell session\n"+
 			"\n"+
 			"Set/Query installed/Lock/Unlock options:\n"+
 			"  -p, --profile=PROFILE      Name of the Disnix profile. Defaults to: default\n"+
@@ -205,6 +210,7 @@ public class DisnixClient
 		CmdLineParser.Option opt_resolve_snapshots = parser.addBooleanOption("resolve-snapshots");
 		CmdLineParser.Option opt_clean_snapshots = parser.addBooleanOption("clean-snapshots");
 		CmdLineParser.Option opt_capture_config = parser.addBooleanOption("capture-config");
+		CmdLineParser.Option opt_shell = parser.addBooleanOption("shell");
 		CmdLineParser.Option opt_help = parser.addBooleanOption('h', "help");
 		CmdLineParser.Option opt_version = parser.addBooleanOption('v', "version");
 
@@ -219,6 +225,7 @@ public class DisnixClient
 		CmdLineParser.Option opt_container = parser.addStringOption("container");
 		CmdLineParser.Option opt_component = parser.addStringOption("component");
 		CmdLineParser.Option opt_keep = parser.addIntegerOption("keep");
+		CmdLineParser.Option opt_command = parser.addIntegerOption("command");
 		
 		try
 		{
@@ -248,7 +255,8 @@ public class DisnixClient
 			Boolean value_export_snapshots = (Boolean)parser.getOptionValue(opt_export_snapshots);
 			Boolean value_resolve_snapshots = (Boolean)parser.getOptionValue(opt_resolve_snapshots);
 			Boolean value_clean_snapshots = (Boolean)parser.getOptionValue(opt_clean_snapshots);
-			Boolean value_capture_config  = (Boolean)parser.getOptionValue(opt_capture_config);
+			Boolean value_capture_config = (Boolean)parser.getOptionValue(opt_capture_config);
+			Boolean value_shell = (Boolean)parser.getOptionValue(opt_shell);
 			Boolean value_help = (Boolean)parser.getOptionValue(opt_help);
 			Boolean value_version = (Boolean)parser.getOptionValue(opt_version);
 
@@ -262,6 +270,7 @@ public class DisnixClient
 			String value_component = (String)parser.getOptionValue(opt_component);
 			String value_container = (String)parser.getOptionValue(opt_container);
 			Integer keep = (Integer)parser.getOptionValue(opt_keep);
+			String command = (String)parser.getOptionValue(opt_command);
 			
 			String[] derivation = parser.getRemainingArgs();
 			
@@ -522,6 +531,11 @@ public class DisnixClient
 			{
 				String result = disnixInterface.captureConfig();
 				System.out.println(result);
+			}
+			else if(value_shell != null)
+			{
+				System.err.println("ERROR: This operation is unsupported by this client!");
+				System.exit(1);
 			}
 			else
 			{
