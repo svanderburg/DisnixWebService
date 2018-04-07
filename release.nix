@@ -55,7 +55,7 @@ let
           rm -Rf `find . -name .git`
           mv * ../bin/DisnixWebService-$version
           cd ../bin
-          ensureDir $out/tarballs
+          mkdir -p $out/tarballs
           tar cfvz $out/tarballs/DisnixWebService-$version.tar.gz DisnixWebService-$version
         '';
       };
