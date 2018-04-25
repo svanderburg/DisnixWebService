@@ -56,6 +56,13 @@ simpleTest {
           ProxyPassReverse  /    http://localhost:8080/
         '';
         
+        # We can't download any substitutes in a test environment. To make tests
+        # faster, we disable substitutes so that Nix does not waste any time by
+        # attempting to download them.
+        nix.extraOptions = ''
+          substitute = false
+        '';
+
         environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
       
@@ -64,6 +71,14 @@ simpleTest {
       
       {
         virtualisation.writableStore = true;
+
+        # We can't download any substitutes in a test environment. To make tests
+        # faster, we disable substitutes so that Nix does not waste any time by
+        # attempting to download them.
+        nix.extraOptions = ''
+          substitute = false
+        '';
+
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ]  ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
   };

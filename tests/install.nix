@@ -41,6 +41,13 @@ simpleTest {
           ids.gids = { disnix = 200; };
           users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
+          # We can't download any substitutes in a test environment. To make tests
+          # faster, we disable substitutes so that Nix does not waste any time by
+          # attempting to download them.
+          nix.extraOptions = ''
+            substitute = false
+          '';
+
           environment.systemPackages = [ pkgs.stdenv ];
           environment.etc."dysnomia/properties" = {
             source = pkgs.writeTextFile {
@@ -58,7 +65,14 @@ simpleTest {
       {
         virtualisation.writableStore = true;
         virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
-        
+
+        # We can't download any substitutes in a test environment. To make tests
+        # faster, we disable substitutes so that Nix does not waste any time by
+        # attempting to download them.
+        nix.extraOptions = ''
+          substitute = false
+        '';
+
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
       };
   };
@@ -75,12 +89,12 @@ simpleTest {
       # which should return the path we have given.
       # This test should succeed.
       
-      my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-invalid /nix/store/invalid");
+      my $result = $client->mustSucceed("disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-invalid /nix/store/00000000000000000000000000000000-invalid");
       
-      if($result =~ /\/nix\/store\/invalid/) {
-          print "/nix/store/invalid is invalid\n";
+      if($result =~ /\/nix\/store\/00000000000000000000000000000000-invalid/) {
+          print "/nix/store/00000000000000000000000000000000-invalid is invalid\n";
       } else {
-          die "/nix/store/invalid should be invalid\n";
+          die "/nix/store/00000000000000000000000000000000-invalid should be invalid\n";
       }
       
       # Check invalid path. We query a valid path from the service

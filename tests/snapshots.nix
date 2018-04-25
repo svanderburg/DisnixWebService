@@ -40,6 +40,13 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
             ids.gids = { disnix = 200; };
             users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
+            # We can't download any substitutes in a test environment. To make tests
+            # faster, we disable substitutes so that Nix does not waste any time by
+            # attempting to download them.
+            nix.extraOptions = ''
+              substitute = false
+            '';
+
             environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         };
       
@@ -48,6 +55,14 @@ with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem
         
         {
           virtualisation.writableStore = true;
+
+          # We can't download any substitutes in a test environment. To make tests
+          # faster, we disable substitutes so that Nix does not waste any time by
+          # attempting to download them.
+          nix.extraOptions = ''
+            substitute = false
+          '';
+
           environment.systemPackages = [ dysnomia disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         };
     };

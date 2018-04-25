@@ -41,6 +41,13 @@ simpleTest {
         ids.gids = { disnix = 200; };
         users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
+        # We can't download any substitutes in a test environment. To make tests
+        # faster, we disable substitutes so that Nix does not waste any time by
+        # attempting to download them.
+        nix.extraOptions = ''
+          substitute = false
+        '';
+
         environment.systemPackages = [ pkgs.stdenv ];
       };
     
@@ -72,6 +79,13 @@ simpleTest {
         ids.gids = { disnix = 200; };
         users.extraGroups = [ { gid = 200; name = "disnix"; } ];
         
+        # We can't download any substitutes in a test environment. To make tests
+        # faster, we disable substitutes so that Nix does not waste any time by
+        # attempting to download them.
+        nix.extraOptions = ''
+          substitute = false
+        '';
+
         environment.systemPackages = [ pkgs.stdenv disnix ];
       };
     
@@ -81,7 +95,14 @@ simpleTest {
       {
         virtualisation.writableStore = true;
         virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
-        
+
+        # We can't download any substitutes in a test environment. To make tests
+        # faster, we disable substitutes so that Nix does not waste any time by
+        # attempting to download them.
+        nix.extraOptions = ''
+          substitute = false
+        '';
+
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
       };
   };
@@ -101,7 +122,7 @@ simpleTest {
       $testTarget2->waitForJob("sshd");
       
       # Initialise ssh stuff by creating a key pair for communication
-      my $key=`${pkgs.openssh}/bin/ssh-keygen -t dsa -f key -N ""`;
+      my $key=`${pkgs.openssh}/bin/ssh-keygen -t ecdsa -f key -N ""`;
 
       $testTarget2->mustSucceed("mkdir -m 700 /root/.ssh");
       $testTarget2->copyFileFromHost("key.pub", "/root/.ssh/authorized_keys");
