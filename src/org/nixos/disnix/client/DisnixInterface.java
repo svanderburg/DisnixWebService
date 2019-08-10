@@ -30,6 +30,7 @@ import org.apache.axis2.rpc.client.*;
 import org.apache.axis2.client.*;
 import org.apache.axis2.addressing.*;
 import org.apache.axis2.transport.http.*;
+import org.apache.axis2.transport.http.impl.httpclient4.*;
 
 /**
  * Provides a SOAP client interface to the Disnix Service.
@@ -72,7 +73,7 @@ public class DisnixInterface
 		if(System.getenv("DISNIX_SOAP_CLIENT_USERNAME") != null)
 		{
 			/* Authentication settings */
-			HttpTransportProperties.Authenticator auth = new HttpTransportProperties.Authenticator();
+			HttpTransportPropertiesImpl.Authenticator auth = new HttpTransportPropertiesImpl.Authenticator();
 			auth.setUsername(System.getenv("DISNIX_SOAP_CLIENT_USERNAME"));
 			auth.setPassword(System.getenv("DISNIX_SOAP_CLIENT_PASSWORD"));
 			options.setProperty(HTTPConstants.AUTHENTICATE, auth);
