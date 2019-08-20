@@ -133,7 +133,7 @@ simpleTest {
       
       # Deploy the test configuration.
       # This test should succeed.
-      $coordinator->mustSucceed("${env} disnix-env --build-on-targets -s ${deployment}/DistributedDeployment/services.nix -i ${deployment}/DistributedDeployment/infrastructure-multiproto.nix -d ${deployment}/DistributedDeployment/distribution.nix");
+      $coordinator->mustSucceed("${env} disnix-env -s ${deployment}/DistributedDeployment/services.nix -i ${deployment}/DistributedDeployment/infrastructure-multiproto.nix -d ${deployment}/DistributedDeployment/distribution.nix");
       
       # Query the installed services per machine and check if the
       # expected services are there.

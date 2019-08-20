@@ -7,7 +7,7 @@
     targetProperty = "targetEPR";
     clientInterface = "disnix-soap-client"; # This machine requires the disnix-soap-client to connect to the remote web service
   };
-  
+
   testTarget2 = {
     properties = {
       hostname = "testTarget2";

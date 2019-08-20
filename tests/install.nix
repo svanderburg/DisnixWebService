@@ -14,7 +14,7 @@ simpleTest {
         imports = [ ../disnixwebservice-module.nix ];
         
         virtualisation.writableStore = true;
-        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.coreutils.all ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
         
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
         
