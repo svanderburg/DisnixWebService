@@ -9,27 +9,27 @@ simpleTest {
   nodes = {
     testTarget1 =
       {pkgs, config, ...}:
-      
+
       {
         imports = [ ../disnixwebservice-module.nix ];
-        
+
         virtualisation.writableStore = true;
         virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox pkgs.patchelf ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
-        
+
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
-        
+
         services.disnixWebServiceTest.enable = true;
         services.disnixWebServiceTest.package = DisnixWebService;
-        
+
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
-        
+
         systemd.services.disnix =
           { description = "Disnix server";
 
             wantedBy = [ "multi-user.target" ];
             after = [ "dbus.service" ];
-            
+
             path = [ pkgs.nix pkgs.getopt disnix dysnomia ];
             environment = {
               HOME = "/root";
@@ -50,24 +50,24 @@ simpleTest {
 
         environment.systemPackages = [ pkgs.stdenv ];
       };
-    
+
     testTarget2 = 
       {pkgs, config, ...}:
-      
+
       {
         virtualisation.writableStore = true;
         virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
-        
+
         services.dbus.enable = true;
         services.dbus.packages = [ disnix ];
         services.openssh.enable = true;
-        
+
         systemd.services.disnix =
           { description = "Disnix server";
 
             wantedBy = [ "multi-user.target" ];
             after = [ "dbus.service" ];
-            
+
             path = [ pkgs.nix pkgs.getopt disnix dysnomia ];
             environment = {
               HOME = "/root";
@@ -78,7 +78,7 @@ simpleTest {
 
         ids.gids = { disnix = 200; };
         users.extraGroups = [ { gid = 200; name = "disnix"; } ];
-        
+
         # We can't download any substitutes in a test environment. To make tests
         # faster, we disable substitutes so that Nix does not waste any time by
         # attempting to download them.
@@ -88,10 +88,10 @@ simpleTest {
 
         environment.systemPackages = [ pkgs.stdenv disnix ];
       };
-    
+
     coordinator =
       {pkgs, config, ...}:
-      
+
       {
         virtualisation.writableStore = true;
         virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
@@ -103,7 +103,7 @@ simpleTest {
           substitute = false
         '';
 
-        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv ];
+        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.libxml2 ];
       };
   };
   testScript =
@@ -112,15 +112,15 @@ simpleTest {
     in
     ''
       startAll;
-      
+
       # Wait until tomcat is started and the DisnixWebService is activated
       $testTarget1->waitForJob("tomcat");
       $testTarget1->waitForFile("/var/tomcat/webapps/DisnixWebService");
       $testTarget1->mustSucceed("sleep 10");
-      
+
       # Wait until SSH is running
       $testTarget2->waitForJob("sshd");
-      
+
       # Initialise ssh stuff by creating a key pair for communication
       my $key=`${pkgs.openssh}/bin/ssh-keygen -t ecdsa -f key -N ""`;
 
@@ -130,49 +130,27 @@ simpleTest {
       $coordinator->mustSucceed("mkdir -m 700 /root/.ssh");
       $coordinator->copyFileFromHost("key", "/root/.ssh/id_dsa");
       $coordinator->mustSucceed("chmod 600 /root/.ssh/id_dsa");
-      
+
       # Deploy the test configuration.
       # This test should succeed.
-      $coordinator->mustSucceed("${env} disnix-env -s ${deployment}/DistributedDeployment/services.nix -i ${deployment}/DistributedDeployment/infrastructure-multiproto.nix -d ${deployment}/DistributedDeployment/distribution.nix");
-      
+      $coordinator->mustSucceed("${env} disnix-env --build-on-targets -s ${deployment}/DistributedDeployment/services.nix -i ${deployment}/DistributedDeployment/infrastructure-multiproto.nix -d ${deployment}/DistributedDeployment/distribution.nix");
+
       # Query the installed services per machine and check if the
       # expected services are there.
       # This test should succeed.
-      my @lines = split('\n', $coordinator->mustSucceed("${env} disnix-query ${deployment}/DistributedDeployment/infrastructure-multiproto.nix"));
-      
-      if($lines[1] ne "Services on: http://testTarget1:8080/DisnixWebService/services/DisnixWebService") {
-          die "disnix-query output line 1 does not match what we expect!\n";
-      }
+      $coordinator->mustSucceed("${env} disnix-query -f xml ${deployment}/DistributedDeployment/infrastructure-multiproto.nix > query.xml");
 
-      if($lines[3] =~ /\-testService1/) {
-          print "Found testService1 on disnix-query output line 3\n";
-      } else {
-          die "disnix-query output line 3 does not contain testService1!\n";
-      }
-      
-      if($lines[5] ne "Services on: testTarget2") {
-          die "disnix-query output line 6 does not match what we expect $lines[6]!\n";
-      }
-      
-      if($lines[7] =~ /\-testService2/) {
-          print "Found testService2 on disnix-query output line 8\n";
-      } else {
-          die "disnix-query output line 7 does not contain testService2!\n";
-      }
-      
-      if($lines[8] =~ /\-testService3/) {
-          print "Found testService3 on disnix-query output line 9\n";
-      } else {
-          die "disnix-query output line 9 does not contain testService3!\n";
-      }
-      
+      $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='http://testTarget1:8080/DisnixWebService/services/DisnixWebService']/profileManifest/services/service[name='testService1']/name\" query.xml");
+      $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='testTarget2']/profileManifest/services/service[name='testService2']/name\" query.xml");
+      $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='testTarget2']/profileManifest/services/service[name='testService3']/name\" query.xml");
+
       # Test disnix-reconstruct. First, we remove the old manifests. They
       # should have been reconstructed.
-      
-      $coordinator->mustSucceed("rm /nix/var/nix/profiles/per-user/root/disnix-coordinator/*");
+
+      $coordinator->mustSucceed("${env} disnix-env --delete-all-generations");
       $coordinator->mustSucceed("${env} disnix-reconstruct ${deployment}/DistributedDeployment/infrastructure.nix");
       my $result = $coordinator->mustSucceed("ls /nix/var/nix/profiles/per-user/root/disnix-coordinator | wc -l");
-      
+
       if($result == 2) {
           print "We have a reconstructed manifest!\n";
       } else {
