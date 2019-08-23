@@ -53,54 +53,56 @@ public class DisnixClient
 			"Operations:\n"+
 			"\n"+
 			"Operations:\n"+
-			"  --import                   Imports a given closure into the Nix store of the\n"+
+			"      --import               Imports a given closure into the Nix store of the\n"+
 			"                             target machine. Optionally, transfers the closure\n"+
 			"                             from this machine to the target machine\n"+
-			"  --export                   Exports the closure of a given Nix store path of\n"+
+			"      --export               Exports the closure of a given Nix store path of\n"+
 			"                             the target machine into a file, and optionally\n"+
 			"                             downloads it\n"+
-			"  --print-invalid            Prints all the paths that are not valid in the Nix\n"+
+			"      --print-invalid        Prints all the paths that are not valid in the Nix\n"+
 			"                             store of the target machine\n"+
 			"  -r, --realise              Realises the given store derivation on the target\n"+
 			"                             machine\n"+
-			"  --set                      Creates a Disnix profile only containing the given\n"+
+			"      --set                  Creates a Disnix profile only containing the given\n"+
 			"                             derivation on the target machine\n"+
 			"  -q, --query-installed      Queries all the installed services on the given\n"+
 			"                             target machine\n"+
-			"  --query-requisites         Queries all the requisites (intra-dependencies) of\n"+
+			"      --query-requisites     Queries all the requisites (intra-dependencies) of\n"+
 			"                             the given services on the target machine\n"+
-			"  --collect-garbage          Collects garbage on the given target machine\n"+
-			"  --activate                 Activates the given service on the target machine\n"+
-			"  --deactivate               Deactivates the given service on the target machine\n"+
-			"  --lock                     Acquires a lock on a Disnix profile of the target\n"+
+			"      --collect-garbage      Collects garbage on the given target machine\n"+
+			"      --activate             Activates the given service on the target machine\n"+
+			"      --deactivate           Deactivates the given service on the target machine\n"+
+			"      --lock                 Acquires a lock on a Disnix profile of the target\n"+
 			"                             machine\n"+
-			"  --unlock                   Release the lock on a Disnix profile of the target\n"+
+			"      --unlock               Release the lock on a Disnix profile of the target\n"+
 			"                             machine\n"+
-			"  --snapshot                 Snapshots the logical state of a component on the\n"+
+			"      --snapshot             Snapshots the logical state of a component on the\n"+
 			"                             given target machine\n"+
-			"  --restore                  Restores the logical state of a component on the\n"+
+			"      --restore              Restores the logical state of a component on the\n"+
 			"                             given target machine\n"+
-			"  --delete-state             Deletes the state of a component on the given\n"+
+			"      --delete-state         Deletes the state of a component on the given\n"+
 			"                             machine\n"+
-			"  --query-all-snapshots      Queries all available snapshots of a component on\n"+
+			"      --query-all-snapshots  Queries all available snapshots of a component on\n"+
 			"                             the given target machine\n"+
-			"  --query-latest-snapshot    Queries the latest snapshot of a component on the\n"+
+			"      --query-latest-snapshot\n"+
+			"                             Queries the latest snapshot of a component on the\n"+
 			"                             given target machine\n"+
-			"  --print-missing-snapshots  Prints the paths of all snapshots not present on\n"+
+			"      --print-missing-snapshots\n"+
+			"                             Prints the paths of all snapshots not present on\n"+
 			"                             the given target machine\n"+
-			"  --import-snapshots         Imports the specified snapshots into the remote\n"+
+			"      --import-snapshots     Imports the specified snapshots into the remote\n"+
 			"                             snapshot store\n"+
-			"  --export-snapshots         Exports the specified snapshot to the local\n"+
+			"      --export-snapshots     Exports the specified snapshot to the local\n"+
 			"                             snapshot store\n"+
-			"  --resolve-snapshots        Converts the relative paths to the snapshots to\n"+
+			"      --resolve-snapshots    Converts the relative paths to the snapshots to\n"+
 			"                             absolute paths\n"+
-			"  --clean-snapshots          Removes older snapshots from the snapshot store\n"+
-			"  --capture-config           Captures the configuration of the machine from the\n"+
+			"      --clean-snapshots      Removes older snapshots from the snapshot store\n"+
+			"      --capture-config       Captures the configuration of the machine from the\n"+
 			"                             Dysnomia container properties in a Nix expression\n"+
-			"  --shell                    Spawns a Dysnomia shell to run arbitrary\n"+
+			"      --shell                Spawns a Dysnomia shell to run arbitrary\n"+
 			"                             maintenance tasks\n"+
-			"  --help                     Shows the usage of this command to the user\n"+
-			"  --version                  Shows the version of this command to the user\n"+
+			"      --help                 Shows the usage of this command to the user\n"+
+			"      --version              Shows the version of this command to the user\n"+
 			"\n"+
 			"General options:\n"+
 			"  -t, --target=TARGET        Specifies the hostname and optional port number of\n"+
@@ -108,15 +110,15 @@ public class DisnixClient
 			"                             machine\n"+
 			"\n"+
 			"Import/Export/Import snapshots/Export snapshots/Shell options:\n"+
-			"  --localfile                Specifies that the given paths are stored locally\n"+
+			"      --localfile            Specifies that the given paths are stored locally\n"+
 			"                             and must be transferred to the remote machine if\n"+
 			"                             needed\n"+
-			"  --remotefile               Specifies that the given paths are stored remotely\n"+
+			"      --remotefile           Specifies that the given paths are stored remotely\n"+
 			"                             and must transferred from the remote machine if\n"+
 			"                             needed\n"+
 			"\n"+
 			"Shell options:\n"+
-			"  --command=COMMAND          Commands to execute in the shell session\n"+
+			"      --command=COMMAND      Commands to execute in the shell session\n"+
 			"\n"+
 			"Set/Query installed/Lock/Unlock options:\n"+
 			"  -p, --profile=PROFILE      Name of the Disnix profile. Defaults to: default\n"+
@@ -126,11 +128,11 @@ public class DisnixClient
 			"                             profiles must be removed as well\n"+
 			"\n"+
 			"Activation/Deactivation/Snapshot/Restore/Delete state options:\n"+
-			"  --type=TYPE                Specifies the activation module that should be\n"+
+			"      --type=TYPE            Specifies the activation module that should be\n"+
 			"                             used, such as echo or process.\n"+
-			"  --arguments=ARGUMENTS      Specifies the arguments passed to the Dysnomia\n"+
+			"      --arguments=ARGUMENTS  Specifies the arguments passed to the Dysnomia\n"+
 			"                             module, which is a string with key=value pairs\n"+
-			"  --container=CONTAINER      Name of the container in which the component is\n"+
+			"      --container=CONTAINER  Name of the container in which the component is\n"+
 			"                             managed. If omitted it will default to the same\n"+
 			"                             value as the type.\n" +
 			"\n"+
@@ -139,7 +141,7 @@ public class DisnixClient
 			"  -c, --component=COMPONENT  Name of the component hosted in a container\n"+
 			"\n"+
 			"Clean snapshots options:\n"+
-			"  --keep=NUM                 Amount of snapshot generations to keep. Defaults\n"+
+			"      --keep=NUM             Amount of snapshot generations to keep. Defaults\n"+
 			"                             to: 1\n"+
 			"  -C, --container=CONTAINER  Name of the container to filter on\n"+
 			"  -c, --component=COMPONENT  Name of the component to filter on\n"+
@@ -156,7 +158,7 @@ public class DisnixClient
 	private static void printVersion()
 	{
 		System.out.println("disnix-soap-client (DisnixWebService 0.6)\n");
-		System.out.println("Copyright (C) 2008-2018 Sander van der Burg");
+		System.out.println("Copyright (C) 2008-2019 Sander van der Burg");
 	}
 	
 	/**
