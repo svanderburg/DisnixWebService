@@ -140,7 +140,7 @@ simpleTest {
       # This test should succeed.
       $coordinator->mustSucceed("${env} disnix-query -f xml ${deployment}/DistributedDeployment/infrastructure-multiproto.nix > query.xml");
 
-      $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='http://testTarget1:8080/DisnixWebService/services/DisnixWebService']/profileManifest/services/service[name='testService1']/name\" query.xml");
+      $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='testTarget1']/profileManifest/services/service[name='testService1']/name\" query.xml");
       $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='testTarget2']/profileManifest/services/service[name='testService2']/name\" query.xml");
       $coordinator->mustSucceed("xmllint --xpath \"/profileManifestTargets/target[\@name='testTarget2']/profileManifest/services/service[name='testService3']/name\" query.xml");
 

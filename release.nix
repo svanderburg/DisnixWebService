@@ -7,21 +7,21 @@
 
 let
   pkgs = import nixpkgs {};
-  
+
   # Refer either to dysnomia in the parent folder, or to the one in Nixpkgs
   dysnomiaJobset = if fetchDependenciesFromNixpkgs then {
     build = pkgs.lib.genAttrs systems (system:
       (import nixpkgs { inherit system; }).dysnomia
     );
   } else import ../dysnomia/release.nix { inherit nixpkgs systems officialRelease; };
-  
+
   # Refer either to disnix in the parent folder, or to the one in Nixpkgs
   disnixJobset = if fetchDependenciesFromNixpkgs then {
     build = pkgs.lib.genAttrs systems (system:
       (import nixpkgs { inherit system; }).disnix
     );
   } else import ../disnix/release.nix { inherit nixpkgs systems officialRelease; };
-  
+
   jobs = rec {
     tarball =
       pkgs.releaseTools.sourceTarball {
@@ -33,7 +33,7 @@ let
         PREFIX = ''''${env.out}'';
         AXIS2_LIB = "${pkgs.axis2}/lib";
         DBUS_JAVA_LIB = "${pkgs.dbus_java}/share/java";
-        
+
         preConfigure = ''
           # TeX needs a writable font cache.
           export VARTEXFONTS=$TMPDIR/texfonts
@@ -46,11 +46,11 @@ let
           cd ..
           ant install.doc
           ant install.javadoc
-          
+
           echo "doc manual $out/share/doc/DisnixWebService" >> $out/nix-support/hydra-build-products
           echo "doc-pdf manual $out/index.pdf" >> $out/nix-support/hydra-build-products
           echo "doc api $out/share/doc/javadoc" >> $out/nix-support/hydra-build-products
-          
+
           mkdir -p ../bin/DisnixWebService-$version
           rm -Rf `find . -name .git`
           mv * ../bin/DisnixWebService-$version
@@ -83,7 +83,7 @@ let
           checkPhase = "echo hello";
           buildInputs = [ apacheAnt jdk ];
       });
-      
+
     tests = 
       let
         dysnomia = builtins.getAttr (builtins.currentSystem) (dysnomiaJobset.build);
@@ -94,21 +94,21 @@ let
         install = import ./tests/install.nix {
           inherit nixpkgs dysnomia disnix DisnixWebService;
         };
-        
+
         multiproto = import ./tests/multiproto.nix {
           inherit nixpkgs dysnomia disnix DisnixWebService;
         };
-        
+
         auth = import ./tests/auth.nix {
           inherit nixpkgs dysnomia disnix DisnixWebService;
         };
-        
+
         snapshots = import ./tests/snapshots.nix {
           inherit (pkgs) stdenv;
           inherit nixpkgs dysnomia disnix DisnixWebService;
         };
       };
-    
+
     release = pkgs.releaseTools.aggregate {
       name = "DisnixWebService-${tarball.version}";
       constituents = [
