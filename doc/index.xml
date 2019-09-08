@@ -29,18 +29,18 @@
       <holder>Sander van der Burg</holder>
     </copyright>
 
-    <date>March 2018</date>
+    <date>September 2019</date>
   </info>
-  
+
   <xi:include href="introduction.xml" />
   <xi:include href="installation.xml" />
-  
+
   <appendix>
     <title>Command Reference</title>
-    
+
     <section>
       <title>Utilities</title>
-      
+
       <xi:include href="disnix-soap-client.1.xml" />
     </section>
   </appendix>
