@@ -1,45 +1,28 @@
 { nixpkgs, dysnomia, disnix, DisnixWebService }:
 
-with import "${nixpkgs}/nixos/lib/testing.nix" { system = builtins.currentSystem; };
+with import "${nixpkgs}/nixos/lib/testing-python.nix" { system = builtins.currentSystem; };
 
 simpleTest {
   nodes = {
     server =
       {pkgs, config, ...}:
-      
+
       {
-        imports = [ ../disnixwebservice-module.nix ];
-        
+        imports = [ ./disnix-module.nix ../disnixwebservice-module.nix ];
+
         virtualisation.writableStore = true;
-        
+
         networking.firewall.allowedTCPPorts = [ 22 80 ];
-        
+
+        services.disnixTest.enable = true;
+        services.disnixTest.package = disnix;
+        services.disnixTest.dysnomia = dysnomia;
         services.disnixWebServiceTest.enable = true;
         services.disnixWebServiceTest.package = DisnixWebService;
-        services.dbus.enable = true;
-        services.dbus.packages = [ disnix ];
-        
-        systemd.services.disnix =
-          { description = "Disnix server";
-
-            wantedBy = [ "multi-user.target" ];
-            after = [ "dbus.service" ];
-            
-            path = [ pkgs.nix pkgs.getopt disnix dysnomia ];
-            environment = {
-              HOME = "/root";
-            };
-
-            serviceConfig.ExecStart = "${disnix}/bin/disnix-service";
-          };
-
-        ids.gids = { disnix = 200; };
-        users.extraGroups = [ { gid = 200; name = "disnix"; } ];
 
         services.httpd.enable = true;
         services.httpd.adminAddr = "admin@localhost";
-        services.httpd.hostName = "localhost";
-        services.httpd.extraConfig = ''
+        services.httpd.virtualHosts.localhost.extraConfig = ''
           <Proxy *>
             Order deny,allow
             Allow from all
@@ -49,13 +32,13 @@ simpleTest {
             AuthUserFile ${./auth/passwd}
             Require user admin
           </Proxy>
-          
+
           ProxyRequests     off
           ProxyPreserveHost on
           ProxyPass         /    http://localhost:8080/ retry=5 disablereuse=on
           ProxyPassReverse  /    http://localhost:8080/
         '';
-        
+
         # We can't download any substitutes in a test environment. To make tests
         # faster, we disable substitutes so that Nix does not waste any time by
         # attempting to download them.
@@ -65,10 +48,10 @@ simpleTest {
 
         environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
-      
+
     client =
       {pkgs, config, ...}:
-      
+
       {
         virtualisation.writableStore = true;
 
@@ -82,21 +65,25 @@ simpleTest {
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ]  ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
   };
-  testScript = 
+  testScript =
     ''
-      startAll;
-      
+      start_all()
+
       # Wait until tomcat is started and the DisnixWebService is activated
-      $server->waitForJob("tomcat");
-      $server->waitForFile("/var/tomcat/webapps/DisnixWebService");
-      $server->mustSucceed("sleep 10");
-      
+      server.wait_for_unit("tomcat")
+      server.wait_for_file("/var/tomcat/webapps/DisnixWebService")
+      server.succeed("sleep 10")
+
       # Check authorization. The following operation should fail, since
       # we're not authorized.
-      $client->mustFail("disnix-soap-client --target http://server/DisnixWebService/services/DisnixWebService --print-invalid ${pkgs.bash}");
-      
+      client.fail(
+          "disnix-soap-client --target http://server/DisnixWebService/services/DisnixWebService --print-invalid ${pkgs.bash}"
+      )
+
       # Check authorization. The following operation should succeed,
       # since we're properly authorized.
-      $client->mustSucceed("DISNIX_SOAP_CLIENT_USERNAME=admin DISNIX_SOAP_CLIENT_PASSWORD=secret disnix-soap-client --target http://server/DisnixWebService/services/DisnixWebService --print-invalid ${pkgs.bash}");
+      client.succeed(
+          "DISNIX_SOAP_CLIENT_USERNAME=admin DISNIX_SOAP_CLIENT_PASSWORD=secret disnix-soap-client --target http://server/DisnixWebService/services/DisnixWebService --print-invalid ${pkgs.bash}"
+      )
     '';
 }
