@@ -50,5 +50,6 @@ in
     users.extraGroups = {
       disnix = { gid = 200; };
     };
+    environment.variables.DISNIX_REMOTE_CLIENT = "disnix-client";
   };
 }

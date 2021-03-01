@@ -36,7 +36,7 @@ in
       webapps = [ cfg.package ];
     };
 
-    services.disnixWebServiceTest.package = mkDefault (import ./release.nix {}).build."${builtins.currentSystem}";
+    services.disnixWebServiceTest.package = mkDefault (import ./release.nix {}).build."${pkgs.stdenv.system}";
 
     environment.systemPackages = [ cfg.package ];
   };

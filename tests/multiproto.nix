@@ -73,6 +73,7 @@ simpleTest {
         '';
 
         environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.libxml2 ];
+        environment.variables.DISNIX_REMOTE_CLIENT = "disnix-client";
       };
   };
   testScript =
