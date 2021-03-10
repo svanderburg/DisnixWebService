@@ -147,18 +147,22 @@ public class DisnixClient
 			"  -c, --component=COMPONENT  Name of the component to filter on\n"+
 			"\n"+
 			"Environment:\n"+
-			"  DISNIX_PROFILE             Sets the name of the profile that stores the\n"+
-			"                             manifest on the coordinator machine and the\n"+
-			"                             deployed services per machine on each target\n"+
-			"                             (Defaults to: default)\n"+
-			"  DYSNOMIA_STATEDIR          Specifies where the snapshots must be stored on the\n"+
-			"                             coordinator machine (defaults to: /var/dysnomia)\n");
+			"  DISNIX_PROFILE              Sets the name of the profile that stores the\n"+
+			"                              manifest on the coordinator machine and the\n"+
+			"                              deployed services per machine on each target\n"+
+			"                              (Defaults to: default)\n"+
+			"  DYSNOMIA_STATEDIR           Specifies where the snapshots must be stored on the\n"+
+			"                              coordinator machine (defaults to: /var/dysnomia)\n"+
+			"  DISNIX_SOAP_CLIENT_USERNAME Specifies the username to use for HTTP basic\n"+
+			"                              authentication\n"+
+			"  DISNIX_SOAP_CLIENT_PASSWORD Specifies the password to use for HTTP basic\n"+
+			"                              authentication\n");
 	}
 
 	private static void printVersion()
 	{
-		System.out.println("disnix-soap-client (DisnixWebService 0.6)\n");
-		System.out.println("Copyright (C) 2008-2019 Sander van der Burg");
+		System.out.println("disnix-soap-client (DisnixWebService 0.10.1)\n");
+		System.out.println("Copyright (C) 2008-2021 Sander van der Burg");
 	}
 	
 	/**

@@ -51,12 +51,16 @@ The above model defines a `targetEPR` attribute containing the URL to the
 By setting the following environment variable, Disnix is instructed to use
 `targetEPR` to connect to the remote Disnix service:
 
-    $ export DISNIX_TARGET_PROPERTY=targetEPR
+```bash
+$ export DISNIX_TARGET_PROPERTY=targetEPR
+```
 
 By setting the following environment variable, Disnix uses the
 `disnix-soap-client` interface to establish the remote connection:
 
-    $ export DISNIX_CLIENT_INTERFACE=disnix-soap-client
+```bash
+$ export DISNIX_CLIENT_INTERFACE=disnix-soap-client
+```
 
 Manual
 ======
