@@ -24,7 +24,7 @@ let
         version = builtins.readFile ./version;
         src = DisnixWebService;
         inherit officialRelease;
-        buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.dblatex (pkgs.dblatex.tex or pkgs.tetex) pkgs.apacheAnt pkgs.jdk pkgs.help2man pkgs.doclifter ];
+        buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.dblatex (pkgs.dblatex.tex or pkgs.tetex) pkgs.apacheAnt pkgs.jdk8 pkgs.help2man pkgs.doclifter ];
         PREFIX = ''''${env.out}'';
         AXIS2_LIB = "${pkgs.axis2}/lib";
         DBUS_JAVA_LIB = "${pkgs.dbus_java}/share/java";
@@ -69,14 +69,14 @@ let
           DBUS_JAVA_LIB = "${dbus_java}/share/java";
           patchPhase =
           ''
-            sed -i -e "s|#JAVA_HOME=|JAVA_HOME=${jdk}|" \
+            sed -i -e "s|#JAVA_HOME=|JAVA_HOME=${jdk8}|" \
                    -e "s|#AXIS2_LIB=|AXIS2_LIB=${axis2}/lib|" \
                 scripts/disnix-soap-client
           '';
           buildPhase = "ant generate.war";
           installPhase = "ant install";
           checkPhase = "echo hello";
-          buildInputs = [ apacheAnt jdk ];
+          buildInputs = [ apacheAnt jdk8 ];
       });
 
     tests = 
