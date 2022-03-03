@@ -33,7 +33,7 @@ simpleTest {
           substitute = false
         '';
 
-        environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        environment.systemPackages = [ pkgs.stdenv ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
 
     client =
@@ -49,7 +49,7 @@ simpleTest {
           substitute = false
         '';
 
-        environment.systemPackages = [ dysnomia disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        environment.systemPackages = [ pkgs.stdenv dysnomia disnix DisnixWebService ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
   };
   testScript =
@@ -114,7 +114,9 @@ simpleTest {
       # should not, so it should return only one snapshot.
 
       result = client.succeed(
-          "disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-missing-snapshots --container wrapper --component ${wrapper} $lastSnapshot wrapper/wrapper/foo | wc -l"
+          "disnix-soap-client --target http://server:8080/DisnixWebService/services/DisnixWebService --print-missing-snapshots --container wrapper --component ${wrapper} {} wrapper/wrapper/foo | wc -l".format(
+              lastSnapshot
+          )
       )
 
       if int(result) == 1:

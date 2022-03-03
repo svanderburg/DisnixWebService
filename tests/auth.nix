@@ -48,7 +48,7 @@ simpleTest {
           substitute = false
         '';
 
-        environment.systemPackages = [ pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        environment.systemPackages = [ pkgs.stdenv ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
 
     client =
@@ -64,7 +64,7 @@ simpleTest {
           substitute = false
         '';
 
-        environment.systemPackages = [ disnix DisnixWebService pkgs.stdenv pkgs.paxctl pkgs.busybox pkgs.gnumake pkgs.patchelf pkgs.gcc ]  ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        environment.systemPackages = [ disnix DisnixWebService ]  ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
       };
   };
   testScript =
