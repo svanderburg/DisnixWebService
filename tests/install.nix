@@ -14,7 +14,7 @@ simpleTest {
         imports = [ ./disnix-module.nix ../disnixwebservice-module.nix ];
 
         virtualisation.writableStore = true;
-        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.coreutils.all ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.coreutils.all ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
 
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
 
@@ -23,6 +23,8 @@ simpleTest {
         services.disnixTest.dysnomia = dysnomia;
         services.disnixWebServiceTest.enable = true;
         services.disnixWebServiceTest.package = DisnixWebService;
+        users.users.tomcat.group = "tomcat";
+        services.tomcat.package = pkgs.tomcat9;
 
         # We can't download any substitutes in a test environment. To make tests
         # faster, we disable substitutes so that Nix does not waste any time by
@@ -49,7 +51,7 @@ simpleTest {
         imports = [ ./disnix-module.nix ];
 
         virtualisation.writableStore = true;
-        virtualisation.pathsInNixDB = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
 
         # We can't download any substitutes in a test environment. To make tests
         # faster, we disable substitutes so that Nix does not waste any time by
