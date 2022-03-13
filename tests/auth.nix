@@ -19,8 +19,6 @@ simpleTest {
         services.disnixTest.dysnomia = dysnomia;
         services.disnixWebServiceTest.enable = true;
         services.disnixWebServiceTest.package = DisnixWebService;
-        users.users.tomcat.group = "tomcat";
-        services.tomcat.package = pkgs.tomcat9;
 
         services.httpd.enable = true;
         services.httpd.adminAddr = "admin@localhost";
