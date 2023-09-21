@@ -6,6 +6,7 @@ in
 with import "${nixpkgs}/nixos/lib/testing-python.nix" { system = builtins.currentSystem; };
 
 simpleTest {
+  name = "deployment";
   nodes = {
     testTarget1 =
       {pkgs, config, ...}:
@@ -14,7 +15,7 @@ simpleTest {
         imports = [ ./disnix-module.nix ../disnixwebservice-module.nix ];
 
         virtualisation.writableStore = true;
-        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox pkgs.patchelf ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.stdenvNoCC ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
 
         networking.firewall.allowedTCPPorts = [ 22 8080 ];
 
@@ -41,7 +42,7 @@ simpleTest {
         imports = [ ./disnix-module.nix ];
 
         virtualisation.writableStore = true;
-        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.stdenvNoCC ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
 
         services.openssh.enable = true;
         services.disnixTest.enable = true;
@@ -63,7 +64,7 @@ simpleTest {
 
       {
         virtualisation.writableStore = true;
-        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.perlPackages.ArchiveCpio pkgs.busybox ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
+        virtualisation.additionalPaths = [ pkgs.stdenv pkgs.stdenvNoCC ] ++ pkgs.libxml2.all ++ pkgs.libxslt.all;
 
         # We can't download any substitutes in a test environment. To make tests
         # faster, we disable substitutes so that Nix does not waste any time by

@@ -36,7 +36,7 @@ let
 
         distPhase = ''
           cd doc
-          make docbookrng=${pkgs.docbook5}/xml/rng/docbook docbookxsl=${pkgs.docbook5_xsl}/xml/xsl/docbook
+          make docbookrng=${pkgs.docbook5}/xml/rng/docbook docbookxsl=${pkgs.docbook_xsl_ns}/xml/xsl/docbook
           cp index.pdf $out
           cd ..
           ant install.doc

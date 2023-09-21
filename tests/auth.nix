@@ -3,6 +3,7 @@
 with import "${nixpkgs}/nixos/lib/testing-python.nix" { system = builtins.currentSystem; };
 
 simpleTest {
+  name = "auth";
   nodes = {
     server =
       {pkgs, config, ...}:
