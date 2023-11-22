@@ -1,5 +1,7 @@
 Unreleased
 ==========
+- Fix javadoc
+
 - Update implementation to work with Axis2 1.8.x
 
 Version 0.9
