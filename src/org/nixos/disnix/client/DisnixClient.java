@@ -161,7 +161,7 @@ public class DisnixClient
 
 	private static void printVersion()
 	{
-		System.out.println("disnix-soap-client (DisnixWebService 0.10.1)\n");
+		System.out.println("disnix-soap-client (DisnixWebService 0.10.2)\n");
 		System.out.println("Copyright (C) 2008-2021 Sander van der Burg");
 	}
 	
