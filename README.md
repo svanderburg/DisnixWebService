@@ -14,7 +14,7 @@ In order to build this package from source code the following packages are
 required:
 
 * [dbus-java](http://www.freedesktop.org/wiki/Software/DBusBindings) to connect to the `disnix-service` instance
-* [Apache Axis2](http://axis.apache.org/axis2/java/core) for implementing the SOAP layer
+* [Apache Axis2](http://axis.apache.org/axis2/java/core) (>= v1.8.1) for implementing the SOAP layer
 * [Apache Ant](http://ant.apache.org) is required to build the project
 
 To run the package the following packages must be installed:

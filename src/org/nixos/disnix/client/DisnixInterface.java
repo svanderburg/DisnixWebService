@@ -32,6 +32,8 @@ import org.apache.axis2.addressing.*;
 import org.apache.axis2.transport.http.*;
 import org.apache.axis2.transport.http.impl.httpclient4.*;
 
+import org.apache.axis2.kernel.http.HTTPConstants;
+
 /**
  * Provides a SOAP client interface to the Disnix Service.
  */
