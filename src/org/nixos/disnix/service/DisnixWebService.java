@@ -508,7 +508,7 @@ public class DisnixWebService
 	}
 	
 	/**
-	 * @see org.nixos.disnix.client.DisnixInterface#resolve_snapshots(int, String[])
+	 * @see org.nixos.disnix.client.DisnixInterface#resolveSnapshots(String[])
 	 */
 	public String[] resolveSnapshots(final String[] snapshots) throws Exception
 	{

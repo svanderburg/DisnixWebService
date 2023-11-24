@@ -1,3 +1,9 @@
+Version 0.10.2
+==============
+- Fix javadoc
+
+- Update implementation to work with Axis2 1.8.x
+
 Version 0.9
 ===========
 - Update implementation to work with Axis2 1.7.x
